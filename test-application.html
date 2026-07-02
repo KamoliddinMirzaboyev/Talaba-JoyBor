@@ -32,7 +32,7 @@
             formData.append('course', document.getElementById('course').value);
 
             try {
-                const response = await fetch('https://joyboryangi.pythonanywhere.com/application/create/', {
+                const response = await fetch('https://api.joyboronline.uz/application/create/', {
                     method: 'POST',
                     body: formData,
                     headers: {

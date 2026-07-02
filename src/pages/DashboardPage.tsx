@@ -29,7 +29,7 @@ import {
 import { Application, StudentDashboard } from "../types";
 import { useAuth } from "../contexts/AuthContext";
 import Header from "../components/Header";
-import { authAPI } from "../services/api";
+import { API_ORIGIN, authAPI } from "../services/api";
 import { formatDate, formatDateTime } from "../utils/format";
 
 
@@ -235,7 +235,7 @@ const DashboardPage: React.FC = () => {
 
   // Student Dashboard mavjud bo'lsa (yotoqxonaga qabul qilingan talaba)
   if (studentDashboard) {
-    const baseUrl = "https://joyborv1.pythonanywhere.com";
+    const baseUrl = API_ORIGIN;
     const userImage = studentDashboard.picture ? (studentDashboard.picture.startsWith('http') ? studentDashboard.picture : `${baseUrl}${studentDashboard.picture}`) : null;
 
     const totalPaid = studentDashboard.recent_payments?.reduce((sum, p) => sum + p.amount, 0) || 0;
