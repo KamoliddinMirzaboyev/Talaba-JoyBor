@@ -2,8 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Application, StudentDashboard } from '../types';
 
 // API base URL
-const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://api.joyboronline.uz/';
-export const API_BASE_URL = rawApiBaseUrl.replace(/\/+$/, '');
+export const API_BASE_URL = 'https://api.joyboronline.uz';
 export const API_ORIGIN = new URL(API_BASE_URL).origin;
 export const apiUrl = (path: string) => `${API_BASE_URL}/${path.replace(/^\/+/, '')}`;
 
