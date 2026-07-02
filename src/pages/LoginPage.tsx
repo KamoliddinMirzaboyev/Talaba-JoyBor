@@ -55,10 +55,6 @@ const LoginPage: React.FC = () => {
         password: formData.password,
       });
 
-      // Tokenlarni localStorage ga saqlash (AuthContext ularni sessionStorage ga ko'chiradi)
-      localStorage.setItem('access', data.access);
-      localStorage.setItem('refresh', data.refresh);
-      
       await login(data.access, data.refresh);
       navigate('/dashboard', { replace: true });
     } catch (error: any) {

@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Application, StudentDashboard } from '../types';
 
 // API base URL
-export const API_BASE_URL = 'https://api.joyboronline.uz';
+export const API_BASE_URL = 'https://api.joyboronline.uz/api';
 export const API_ORIGIN = new URL(API_BASE_URL).origin;
 export const apiUrl = (path: string) => `${API_BASE_URL}/${path.replace(/^\/+/, '')}`;
 
@@ -161,6 +161,13 @@ export const authAPI = {
     } catch {
       // Even if logout fails, clear local storage
     }
+    sessionStorage.removeItem('access');
+    sessionStorage.removeItem('refresh');
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('user');
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
@@ -315,9 +322,6 @@ export const authAPI = {
       // Send request
       const response = await api.post('/applications/create/', formData, {
         timeout: 30000, // 30 seconds timeout
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
       });
       
       return response.data;
