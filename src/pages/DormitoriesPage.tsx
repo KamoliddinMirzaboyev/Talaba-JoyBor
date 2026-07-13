@@ -7,6 +7,8 @@ import DormitoryCard from '../components/DormitoryCard';
 import DormitoryMap from '../components/DormitoryMap';
 import { Dormitory as MapDormitory } from '../components/DormitoryMap';
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 import { authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -152,12 +154,12 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
   const convertDormitoryToListing = (dormitory: DormitoryType): Listing => {
     // Handle images - can be empty array
     const images = Array.isArray(dormitory.images) && dormitory.images.length > 0
-      ? (dormitory.images as any[]).map(img => typeof img === 'string' ? img : img?.image || '')
+      ? dormitory.images.map(img => typeof img === 'string' ? img : img?.image || '')
       : ['/placeholder-dormitory.svg'];
-    
+
     // Handle amenities - can be empty array
     const amenities = Array.isArray(dormitory.amenities_list) && dormitory.amenities_list.length > 0
-      ? (dormitory.amenities_list as any[]).map(amenity => amenity?.name || '')
+      ? dormitory.amenities_list.map(amenity => amenity?.name || '')
       : [];
 
     return {
@@ -185,7 +187,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
         parking: amenities.some((a: string) => a.toLowerCase().includes('parking')),
         security: amenities.some((a: string) => a.toLowerCase().includes('security'))
       },
-      rules: (dormitory.rules || []).map((r: any) => typeof r === 'string' ? r : r.rule),
+      rules: (dormitory.rules || []).map((r) => typeof r === 'string' ? r : r.rule),
       coordinates: {
         lat: dormitory.latitude,
         lng: dormitory.longitude
@@ -223,14 +225,11 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-300">Yotoqxonalar yuklanmoqda...</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Skeleton className="h-80 w-full rounded-2xl" count={6} />
           </div>
         </div>
       </div>
@@ -238,7 +237,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -249,10 +248,10 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold text-surface-900 dark:text-white mb-4">
             Yotoqxonalar
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
             O'zbekiston universitetlarining eng yaxshi yotoqxonalarini toping
           </p>
         </motion.div>
@@ -262,18 +261,18 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
+          className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-8"
         >
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             {/* Search Input */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Yotoqxona, universitet yoki manzilni qidiring..."
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                className="w-full pl-12 pr-4 py-3 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
               />
             </div>
 
@@ -281,7 +280,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                className="px-4 py-3 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
               >
                 <option value="name">Nomi bo'yicha</option>
                 <option value="price-low">Arzon narx</option>
@@ -294,7 +293,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors duration-200 flex items-center gap-2"
+                className="px-4 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-150 flex items-center gap-2"
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 Filtrlar
@@ -309,17 +308,17 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="border-t border-gray-200 dark:border-gray-700 pt-4"
+              className="border-t border-surface-200 dark:border-surface-700 pt-4"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Universitet
                   </label>
                   <select
                     value={selectedFilters.university}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, university: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
                   >
                     <option value="">Barcha universitetlar</option>
                     {universities.map(uni => (
@@ -329,13 +328,13 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Narx oralig'i
                   </label>
                   <select
                     value={selectedFilters.priceRange}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, priceRange: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
                   >
                     <option value="">Barcha narxlar</option>
                     {priceRanges.map(range => (
@@ -345,13 +344,13 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Minimal joy soni
                   </label>
                   <select
                     value={selectedFilters.capacity}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, capacity: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
                   >
                     <option value="">Istalgan</option>
                     <option value="1">1+ joy</option>
@@ -372,7 +371,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
                       capacity: '',
                       amenities: []
                     })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                    className="w-full px-4 py-2 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-150"
                   >
                     Tozalash
                   </motion.button>
@@ -384,27 +383,27 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
 
         {/* Results */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600 dark:text-gray-300">
-            <span className="font-semibold text-gray-900 dark:text-white">{filteredDormitories.length}</span> ta yotoqxona topildi
+          <p className="text-surface-600 dark:text-surface-300">
+            <span className="font-semibold text-surface-900 dark:text-white">{filteredDormitories.length}</span> ta yotoqxona topildi
           </p>
 
-          <div className="flex bg-white dark:bg-gray-800 rounded-xl p-1 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex bg-white dark:bg-surface-900 rounded-xl p-1 shadow-sm border border-surface-200 dark:border-surface-800">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-2 rounded-xl transition-colors duration-150 ${
                 viewMode === 'grid' 
-                  ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' 
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400' 
+                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
               }`}
             >
               <LayoutGrid className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('map')}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-2 rounded-xl transition-colors duration-150 ${
                 viewMode === 'map' 
-                  ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' 
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400' 
+                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
               }`}
             >
               <MapIcon className="w-5 h-5" />
@@ -415,19 +414,11 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
         {/* View Content */}
         {viewMode === 'grid' ? (
           filteredDormitories.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-12"
-            >
-              <Building2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Yotoqxona topilmadi
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Qidiruv shartlarini o'zgartirib qaytadan urinib ko'ring
-              </p>
-            </motion.div>
+            <EmptyState
+              icon={Building2}
+              title="Yotoqxona topilmadi"
+              description="Qidiruv shartlarini o'zgartirib qaytadan urinib ko'ring"
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredDormitories.map((dormitory) => renderDormitoryCard(dormitory))}

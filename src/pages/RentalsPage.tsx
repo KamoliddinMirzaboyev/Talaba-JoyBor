@@ -5,6 +5,8 @@ import { Listing } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import ListingCard from '../components/ListingCard';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 import { authAPI } from '../services/api';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -70,7 +72,27 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
         const apartmentsData = await authAPI.getApartments();
 
         // API strukturasiga mos apartments mapping
-        const convertedListings: Listing[] = (apartmentsData as any[]).map((apartment: any) => ({
+        type ApartmentAPI = {
+          id: number | string;
+          title?: string;
+          monthly_price?: number;
+          exact_address?: string;
+          room_type?: string;
+          gender?: string;
+          images?: Array<{ image: string }>;
+          amenities?: Array<{ name?: string }>;
+          description?: string;
+          total_rooms?: number;
+          available_rooms?: number;
+          is_active?: boolean;
+          user?: { username?: string; email?: string };
+          phone_number?: string;
+          user_phone_number?: string;
+          province?: number;
+          created_at?: string;
+        };
+
+        const convertedListings: Listing[] = (apartmentsData as ApartmentAPI[]).map((apartment) => ({
           id: `apt-${apartment.id}`,
           title: String(apartment.title || 'Ijara Xonadon'),
           type: 'rental' as const,
@@ -206,7 +228,7 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
   const roomTypes = ['1-xonali', '2-xonali', '3-xonali', '4+ xonali'];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -217,10 +239,10 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-white mb-4">
             Ijara Xonadonlar
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
             Talabalar uchun qulay va arzon ijara xonadonlarini toping
           </p>
         </motion.div>
@@ -230,21 +252,21 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
+          className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-8"
         >
           {/* Search Bar */}
           <div className="flex flex-col lg:flex-row gap-4 mb-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Kvartira yoki xona qidiring..."
-                className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150 ${
                   theme === 'dark' 
-                    ? 'border-gray-600 bg-gray-700 text-white' 
-                    : 'border-gray-300 bg-white text-gray-900'
+                    ? 'border-surface-600 bg-surface-700 text-white' 
+                    : 'border-surface-300 bg-white text-surface-900'
                 }`}
               />
             </div>
@@ -253,10 +275,10 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150 ${
                   theme === 'dark' 
-                    ? 'border-gray-600 bg-gray-700 text-white' 
-                    : 'border-gray-300 bg-white text-gray-900'
+                    ? 'border-surface-600 bg-surface-700 text-white' 
+                    : 'border-surface-300 bg-white text-surface-900'
                 }`}
               >
                 <option value="rating">Reyting bo'yicha</option>
@@ -269,7 +291,7 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors duration-200 flex items-center justify-center gap-2 whitespace-nowrap"
+                className="px-4 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-150 flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 Filtrlar
@@ -284,20 +306,20 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="border-t border-gray-200 dark:border-gray-700 pt-4"
+              className="border-t border-surface-200 dark:border-surface-700 pt-4"
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Viloyat
                   </label>
                   <select
                     value={selectedFilters.location}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, location: e.target.value }))}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150 ${
                       theme === 'dark' 
-                        ? 'border-gray-600 bg-gray-700 text-white' 
-                        : 'border-gray-300 bg-white text-gray-900'
+                        ? 'border-surface-600 bg-surface-700 text-white' 
+                        : 'border-surface-300 bg-white text-surface-900'
                     }`}
                   >
                     <option value="">Barcha viloyatlar</option>
@@ -308,16 +330,16 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Narx oralig'i
                   </label>
                   <select
                     value={selectedFilters.priceRange}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, priceRange: e.target.value }))}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150 ${
                       theme === 'dark' 
-                        ? 'border-gray-600 bg-gray-700 text-white' 
-                        : 'border-gray-300 bg-white text-gray-900'
+                        ? 'border-surface-600 bg-surface-700 text-white' 
+                        : 'border-surface-300 bg-white text-surface-900'
                     }`}
                   >
                     <option value="">Barcha narxlar</option>
@@ -328,16 +350,16 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
                     Xonalar soni
                   </label>
                   <select
                     value={selectedFilters.roomType}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, roomType: e.target.value }))}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150 ${
                       theme === 'dark' 
-                        ? 'border-gray-600 bg-gray-700 text-white' 
-                        : 'border-gray-300 bg-white text-gray-900'
+                        ? 'border-surface-600 bg-surface-700 text-white' 
+                        : 'border-surface-300 bg-white text-surface-900'
                     }`}
                   >
                     <option value="">Barcha turlar</option>
@@ -354,7 +376,7 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedFilters({ location: '', priceRange: '', roomType: '' })}
-                  className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium transition-colors duration-200"
+                  className="px-4 py-2 text-surface-600 dark:text-surface-400 hover:text-surface-800 dark:hover:text-surface-200 font-medium transition-colors duration-150"
                 >
                   Filtrlarni Tozalash
                 </motion.button>
@@ -365,33 +387,22 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
 
         {/* Results */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-surface-600 dark:text-surface-300">
             {loading ? 'Yuklanmoqda...' : `${filteredApartments.length} ta ijara xonadoni topildi`}
           </p>
         </div>
 
         {/* Listings Grid */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-300">Ijara xonadonlar yuklanmoqda...</p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <Skeleton className="h-80 w-full rounded-2xl" count={6} />
           </div>
         ) : filteredApartments.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
-            <Building2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Ijara xonadonlar topilmadi
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300">
-              Qidiruv shartlarini o'zgartirib qaytadan urinib ko'ring
-            </p>
-          </motion.div>
+          <EmptyState
+            icon={Building2}
+            title="Ijara xonadonlar topilmadi"
+            description="Qidiruv shartlarini o'zgartirib qaytadan urinib ko'ring"
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredApartments.map((apartment, index) => (
@@ -418,7 +429,7 @@ const RentalsPage: React.FC<RentalsPageProps> = ({ onListingSelect }) => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-12"
         >
-          <button className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+          <button className="bg-gradient-to-r from-brand-600 to-success-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-150">
             Ko'proq Ko'rish
           </button>
         </motion.div>

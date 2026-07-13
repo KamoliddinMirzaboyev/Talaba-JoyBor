@@ -46,7 +46,7 @@ const DormitoryLocationMap: React.FC<DormitoryLocationMapProps> = ({
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
       {/* Map Container */}
-      <div className="relative w-full h-[300px] rounded-[12px] overflow-hidden shadow-md border border-gray-200 dark:border-gray-800">
+      <div className="relative w-full h-[300px] rounded-[12px] overflow-hidden shadow-md border border-surface-200 dark:border-surface-800">
         <MapContainer
           center={position}
           zoom={17}
@@ -64,18 +64,18 @@ const DormitoryLocationMap: React.FC<DormitoryLocationMapProps> = ({
           <Marker position={position} icon={customIcon}>
             <Popup minWidth={200}>
               <div className="p-1">
-                <h4 className="font-bold text-gray-900 text-sm mb-1">{name}</h4>
-                <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
-                  <MapPin size={12} className="text-gray-400" />
+                <h4 className="font-bold text-surface-900 text-sm mb-1">{name}</h4>
+                <div className="flex items-center gap-1.5 text-xs text-surface-600 mb-1">
+                  <MapPin size={12} className="text-surface-400" />
                   <span>{address}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
-                  <DollarSign size={12} className="text-gray-400" />
+                <div className="flex items-center gap-1.5 text-xs text-surface-600 mb-1">
+                  <DollarSign size={12} className="text-surface-400" />
                   <span>{formatPrice(month_price)}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                  <Phone size={12} className="text-gray-400" />
-                  <a href={`tel:${phone_number}`} className="text-blue-500 hover:underline">
+                <div className="flex items-center gap-1.5 text-xs text-surface-600">
+                  <Phone size={12} className="text-surface-400" />
+                  <a href={`tel:${phone_number}`} className="text-brand-500 hover:underline">
                     {phone_number}
                   </a>
                 </div>
@@ -88,7 +88,7 @@ const DormitoryLocationMap: React.FC<DormitoryLocationMapProps> = ({
       {/* Navigation Button */}
       <button
         onClick={handleOpenNavigation}
-        className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 shadow-sm active:scale-[0.98]"
+        className="w-full flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-4 rounded-xl transition-all duration-150 shadow-sm active:scale-[0.98]"
       >
         <Navigation size={18} />
         <span>Yo‘lni boshlash</span>

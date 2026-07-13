@@ -6,6 +6,8 @@ import { Notification } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 import { authAPI } from '../services/api';
 import { formatTime } from "../utils/format";
 
@@ -131,15 +133,15 @@ const NotificationDetailPage: React.FC = () => {
   const getNotificationColor = (type: string) => {
     switch (type) {
       case 'application':
-        return 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
+        return 'text-success-600 bg-success-100 dark:bg-success-900/30 dark:text-success-400';
       case 'message':
-        return 'text-blue-600 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400';
+        return 'text-brand-600 bg-brand-100 dark:bg-brand-900/30 dark:text-brand-400';
       case 'system':
-        return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400';
+        return 'text-info-600 bg-info-100 dark:bg-info-900/30 dark:text-info-400';
       case 'reminder':
-        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400';
+        return 'text-warning-600 bg-warning-100 dark:bg-warning-900/30 dark:text-warning-400';
       default:
-        return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30 dark:text-gray-400';
+        return 'text-surface-600 bg-surface-100 dark:bg-surface-900/30 dark:text-surface-400';
     }
   };
 
@@ -147,14 +149,14 @@ const NotificationDetailPage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
             Tizimga kirish talab etiladi
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-150"
           >
             Tizimga kirish
           </button>
@@ -165,13 +167,10 @@ const NotificationDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
         <Header />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center py-16">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 dark:text-gray-300">Bildirishnoma yuklanmoqda...</p>
-          </div>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-4">
+          <Skeleton className="h-40 w-full rounded-2xl" count={3} />
         </div>
       </div>
     );
@@ -179,27 +178,21 @@ const NotificationDetailPage: React.FC = () => {
 
   if (!notification) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
         <Header />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center py-16">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Bildirishnoma topilmadi
-            </h3>
-            <button
-              onClick={() => navigate('/notifications')}
-              className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200"
-            >
-              Orqaga qaytish
-            </button>
-          </div>
+          <EmptyState
+            icon={Info}
+            title="Bildirishnoma topilmadi"
+            action={{ label: "Orqaga qaytish", onClick: () => navigate('/notifications') }}
+          />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -208,7 +201,7 @@ const NotificationDetailPage: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={() => navigate('/notifications')}
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors duration-200 mb-6"
+          className="flex items-center gap-2 text-surface-600 dark:text-surface-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors duration-150 mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
           Bildirishnomalarga qaytish
@@ -219,29 +212,29 @@ const NotificationDetailPage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden"
+          className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 overflow-hidden"
         >
           {/* Header */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-surface-200 dark:border-surface-800">
             <div className="flex items-start gap-4">
-              <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${getNotificationColor(notification.type)}`}>
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${getNotificationColor(notification.type)}`}>
                 {getNotificationIcon(notification.type)}
               </div>
               <div className="flex-1">
                 <div className="flex items-start justify-between mb-2">
-                  <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-2xl font-bold text-surface-900 dark:text-white">
                     {notification.title}
                   </h1>
                   <div className="flex items-center gap-2">
                     {notification.read ? (
-                      <div className="flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg text-sm">
+                      <div className="flex items-center gap-1 px-3 py-1 bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400 rounded-xl text-sm">
                         <CheckCircle className="w-4 h-4" />
                         O'qilgan
                       </div>
                     ) : (
                       <button
                         onClick={() => handleMarkAsRead(notification.id)}
-                        className="flex items-center gap-1 px-3 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-200 text-sm"
+                        className="flex items-center gap-1 px-3 py-1 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-150 text-sm"
                       >
                         <Check className="w-4 h-4" />
                         O'qilgan
@@ -249,7 +242,7 @@ const NotificationDetailPage: React.FC = () => {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-4 text-sm text-surface-500 dark:text-surface-400">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
                     <span>{formatTime(notification.timestamp)}</span>
@@ -273,25 +266,25 @@ const NotificationDetailPage: React.FC = () => {
                 <img
                   src={notification.image}
                   alt="Notification"
-                  className="w-full max-w-2xl mx-auto rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                  className="w-full max-w-2xl mx-auto rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-150"
                   onClick={() => setImageModalOpen(true)}
                 />
               </div>
             )}
 
             {/* Message */}
-            <div className="prose prose-gray dark:prose-invert max-w-none">
-              <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+            <div className="prose prose-slate dark:prose-invert max-w-none">
+              <p className="text-lg leading-relaxed text-surface-700 dark:text-surface-300 whitespace-pre-wrap">
                 {notification.message}
               </p>
             </div>
 
             {/* Action button if actionUrl exists */}
             {notification.actionUrl && (
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="mt-6 pt-6 border-t border-surface-200 dark:border-surface-800">
                 <button
                   onClick={() => navigate(notification.actionUrl!)}
-                  className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200 font-medium"
+                  className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-150 font-medium"
                 >
                   Ko'proq ma'lumot
                 </button>
@@ -318,14 +311,14 @@ const NotificationDetailPage: React.FC = () => {
             >
               <button
                 onClick={() => setImageModalOpen(false)}
-                className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors duration-200"
+                className="absolute -top-10 right-0 text-white hover:text-surface-300 transition-colors duration-150"
               >
                 <X className="w-8 h-8" />
               </button>
               <img
                 src={notification.image}
                 alt="Notification"
-                className="max-w-full max-h-full object-contain rounded-lg"
+                className="max-w-full max-h-full object-contain rounded-xl"
               />
             </motion.div>
           </motion.div>

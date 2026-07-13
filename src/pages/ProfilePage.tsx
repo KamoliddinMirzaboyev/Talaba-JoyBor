@@ -1,14 +1,18 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { isAxiosError } from 'axios';
 import { User, Mail, Phone, MapPin, Edit3, Save, X, Camera, Lock, FileText, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
 
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 import { useAuth } from '../contexts/AuthContext';
 import { formatPhoneInput, formatPhoneNumber, formatDate, formatPrice } from '../utils/format';
 import { useTheme } from '../contexts/ThemeContext';
-import { authAPI } from '../services/api';
+import { authAPI, UserProfile } from '../services/api';
 import { Application } from '../types';
+import { statusTone, statusLabel } from '../utils/applicationStatus';
 
 interface ProfileData {
   username: string;
@@ -60,8 +64,8 @@ const ProfilePage: React.FC = () => {
         setEditedProfile(hydrated);
         setImageFile(null);
         setPassword('');
-      } catch (error: any) {
-        if (error.response?.status === 401) {
+      } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 401) {
             navigate('/login');
             return;
         }
@@ -82,8 +86,8 @@ const ProfilePage: React.FC = () => {
     try {
       const data = await authAPI.getApplications();
       setApplications(data as Application[]);
-    } catch (error: any) {
-      if (error.response?.status === 401) {
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 401) {
           navigate('/login');
           return;
       }
@@ -112,7 +116,7 @@ const ProfilePage: React.FC = () => {
     }
     try {
       // API faqat JSON qabul qiladi, FormData emas
-      const updateData: any = {
+      const updateData: Partial<UserProfile> = {
         email: editedProfile.email,
         first_name: editedProfile.first_name || '',
         last_name: editedProfile.last_name || '',
@@ -132,13 +136,13 @@ const ProfilePage: React.FC = () => {
       setSuccess('Profil muvaffaqiyatli yangilandi!');
       setIsEditing(false);
       updateUserProfile(data); // Update AuthContext after successful profile update
-    } catch (error: any) {
-        if (error.response?.status === 401) {
+    } catch (error) {
+        if (isAxiosError(error) && error.response?.status === 401) {
             navigate('/login');
             return;
         }
-        
-        if (error.response?.data) {
+
+        if (isAxiosError(error) && error.response?.data) {
              const data = error.response.data;
              if (typeof data === 'object') {
               const fieldErrs: Record<string, string> = {};
@@ -185,49 +189,42 @@ const ProfilePage: React.FC = () => {
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
-      case 'APPROVED':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'REJECTED':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+    switch (statusTone(status)) {
+      case 'pending':
+        return <Clock className="w-5 h-5 text-warning-500" />;
+      case 'approved':
+      case 'completed':
+        return <CheckCircle className="w-5 h-5 text-success-500" />;
+      case 'rejected':
+        return <XCircle className="w-5 h-5 text-danger-500" />;
+      case 'interview':
+        return <Clock className="w-5 h-5 text-brand-500" />;
       default:
-        return <Clock className="w-5 h-5 text-gray-500" />;
+        return <Clock className="w-5 h-5 text-surface-500" />;
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'Kutilmoqda';
-      case 'APPROVED':
-        return 'Tasdiqlangan';
-      case 'REJECTED':
-        return 'Rad etilgan';
-      default:
-        return 'Noma\'lum';
-    }
-  };
+  const getStatusText = statusLabel;
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return theme === 'dark' 
-          ? 'bg-yellow-900/30 text-yellow-400' 
-          : 'bg-yellow-100 text-yellow-800';
-      case 'APPROVED':
-        return theme === 'dark' 
-          ? 'bg-green-900/30 text-green-400' 
-          : 'bg-green-100 text-green-800';
-      case 'REJECTED':
-        return theme === 'dark' 
-          ? 'bg-red-900/30 text-red-400' 
-          : 'bg-red-100 text-red-800';
+    switch (statusTone(status)) {
+      case 'pending':
+        return theme === 'dark'
+          ? 'bg-warning-900/30 text-warning-400'
+          : 'bg-warning-100 text-warning-800';
+      case 'approved':
+      case 'completed':
+        return theme === 'dark'
+          ? 'bg-success-900/30 text-success-400'
+          : 'bg-success-100 text-success-800';
+      case 'rejected':
+        return theme === 'dark'
+          ? 'bg-danger-900/30 text-danger-400'
+          : 'bg-danger-100 text-danger-800';
       default:
-        return theme === 'dark' 
-          ? 'bg-gray-700 text-gray-300' 
-          : 'bg-gray-100 text-gray-800';
+        return theme === 'dark'
+          ? 'bg-surface-700 text-surface-300'
+          : 'bg-surface-100 text-surface-800';
     }
   };
 
@@ -240,13 +237,10 @@ const ProfilePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-surface-950' : 'bg-surface-50'}`}>
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Profil yuklanmoqda...</p>
-          </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Skeleton className="h-40 w-full rounded-2xl" count={3} />
         </div>
       </div>
     );
@@ -254,22 +248,22 @@ const ProfilePage: React.FC = () => {
 
   if (error) {
     return (
-      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-surface-950' : 'bg-surface-50'}`}>
         <Header />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center max-w-md mx-auto p-6">
-            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 bg-danger-100 dark:bg-danger-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-danger-600 dark:text-danger-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h2 className={`text-xl font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            <h2 className={`text-xl font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
               Xatolik yuz berdi
             </h2>
-            <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+            <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors duration-200"
+              className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors duration-200"
             >
               Qaytadan urinish
             </button>
@@ -281,20 +275,17 @@ const ProfilePage: React.FC = () => {
 
   if (!profile || !editedProfile) {
     return (
-      <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-surface-950' : 'bg-surface-50'}`}>
         <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="w-12 h-12 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Ma'lumotlar tayyorlanmoqda...</p>
-          </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <Skeleton className="h-40 w-full rounded-2xl" count={3} />
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-surface-950' : 'bg-surface-50'}`}>
       <Header />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -304,10 +295,10 @@ const ProfilePage: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <h1 className={`text-3xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+          <h1 className={`text-3xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
             Profil
           </h1>
-          <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
+          <p className={theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}>
             Shaxsiy ma'lumotlaringizni boshqaring
           </p>
         </motion.div>
@@ -318,7 +309,7 @@ const ProfilePage: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className={`rounded-2xl shadow-lg p-6 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}
+              className={`rounded-2xl shadow-sm p-6 ${theme === 'dark' ? 'bg-surface-900' : 'bg-white'}`}
             >
               {/* Profile Picture */}
               <div className="text-center mb-6">
@@ -327,16 +318,16 @@ const ProfilePage: React.FC = () => {
                     <img
                       src={editedProfile.image}
                       alt="Profile"
-                      className="w-24 h-24 rounded-full object-cover border-4 border-teal-500 mx-auto"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-brand-500 mx-auto"
                     />
                   ) : imageFile ? (
                     <img
                       src={URL.createObjectURL(imageFile)}
                       alt="Profile preview"
-                      className="w-24 h-24 rounded-full object-cover border-4 border-teal-500 mx-auto"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-brand-500 mx-auto"
                     />
                   ) : (
-                    <div className="w-24 h-24 bg-gradient-to-r from-teal-600 to-green-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                    <div className="w-24 h-24 bg-gradient-to-r from-brand-600 to-success-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                       {editedProfile.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   )}
@@ -344,7 +335,7 @@ const ProfilePage: React.FC = () => {
                     <motion.label
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      className="absolute bottom-0 right-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center hover:bg-teal-700 transition-colors duration-200 cursor-pointer"
+                      className="absolute bottom-0 right-0 w-8 h-8 bg-brand-600 text-white rounded-full flex items-center justify-center hover:bg-brand-700 transition-colors duration-200 cursor-pointer"
                     >
                       <Camera className="w-4 h-4" />
                       <input
@@ -356,10 +347,10 @@ const ProfilePage: React.FC = () => {
                     </motion.label>
                   )}
                 </div>
-                <h3 className={`text-lg font-semibold mt-3 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                <h3 className={`text-lg font-semibold mt-3 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
                   {editedProfile.username}
                 </h3>
-                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                   {editedProfile.bio || ''}
                 </p>
               </div>
@@ -374,11 +365,11 @@ const ProfilePage: React.FC = () => {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                       activeTab === tab.id
                         ? theme === 'dark' 
-                          ? 'bg-teal-900/30 text-teal-400'
-                          : 'bg-teal-50 text-teal-600'
+                          ? 'bg-brand-900/30 text-brand-400'
+                          : 'bg-brand-50 text-brand-600'
                         : theme === 'dark'
-                          ? 'text-gray-300 hover:bg-gray-700'
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'text-surface-300 hover:bg-surface-700'
+                          : 'text-surface-600 hover:bg-surface-100'
                     }`}
                   >
                     <tab.icon className="w-5 h-5" />
@@ -394,13 +385,13 @@ const ProfilePage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className={`rounded-2xl shadow-lg p-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}
+              className={`rounded-2xl shadow-sm p-8 ${theme === 'dark' ? 'bg-surface-900' : 'bg-white'}`}
             >
               {/* Profile Tab */}
               {activeTab === 'profile' && (
                 <form onSubmit={handleSave}>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
                       Shaxsiy Ma'lumotlar
                     </h2>
                     {!isEditing ? (
@@ -408,7 +399,7 @@ const ProfilePage: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-200"
+                        className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200"
                         type="button"
                       >
                         <Edit3 className="w-4 h-4" />
@@ -419,7 +410,7 @@ const ProfilePage: React.FC = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors duration-200"
                           type="submit"
                           disabled={saving}
                         >
@@ -430,7 +421,7 @@ const ProfilePage: React.FC = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={handleCancel}
-                          className="flex items-center gap-2 px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 border border-surface-600 text-surface-300 rounded-lg hover:bg-surface-700 transition-colors duration-200"
                           type="button"
                           disabled={saving}
                         >
@@ -442,120 +433,120 @@ const ProfilePage: React.FC = () => {
                   </div>
                   {success && <div className={`mb-4 p-3 rounded-xl text-sm ${
                     theme === 'dark' 
-                      ? 'bg-green-900/20 border border-green-800 text-green-400' 
-                      : 'bg-green-50 border border-green-200 text-green-600'
+                      ? 'bg-success-900/20 border border-success-800 text-success-400' 
+                      : 'bg-success-50 border border-success-200 text-success-600'
                   }`}>{success}</div>}
                   {error && <div className={`mb-4 p-3 rounded-xl text-sm ${
                     theme === 'dark' 
-                      ? 'bg-red-900/20 border border-red-800 text-red-400' 
-                      : 'bg-red-50 border border-red-200 text-red-600'
+                      ? 'bg-danger-900/20 border border-danger-800 text-danger-400' 
+                      : 'bg-danger-50 border border-danger-200 text-danger-600'
                   }`}>{error}</div>}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Foydalanuvchi nomi
                       </label>
                       <div className="relative">
-                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="text"
                           value={editedProfile.username}
                           onChange={(e) => handleInputChange('username', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.username ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.username ? 'border-danger-500' : ''}`}
                           placeholder="Foydalanuvchi nomi"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.username && <div className="text-red-500 text-xs mt-1">{fieldErrors.username}</div>}
+                        {fieldErrors.username && <div className="text-danger-500 text-xs mt-1">{fieldErrors.username}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Ism
                       </label>
                       <div className="relative">
-                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="text"
                           value={editedProfile.first_name || ''}
                           onChange={(e) => handleInputChange('first_name', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.first_name ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.first_name ? 'border-danger-500' : ''}`}
                           placeholder="Ism"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.first_name && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.first_name}</div>}
+                        {fieldErrors.first_name && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.first_name}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Familiya
                       </label>
                       <div className="relative">
-                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="text"
                           value={editedProfile.last_name || ''}
                           onChange={(e) => handleInputChange('last_name', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.last_name ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.last_name ? 'border-danger-500' : ''}`}
                           placeholder="Familiya"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.last_name && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.last_name}</div>}
+                        {fieldErrors.last_name && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.last_name}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Email
                       </label>
                       <div className="relative">
-                        <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="email"
                           value={editedProfile.email}
                           disabled
                           className={`w-full pl-10 pr-4 py-3 border rounded-xl ${
                             theme === 'dark' 
-                              ? 'bg-gray-600 border-gray-500 text-gray-400' 
-                              : 'bg-gray-100 border-gray-300 text-gray-500'
+                              ? 'bg-surface-600 border-surface-500 text-surface-400' 
+                              : 'bg-surface-100 border-surface-300 text-surface-500'
                           }`}
                           placeholder="Email"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Telefon
                       </label>
                       <div className="relative">
-                        <Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="tel"
                           value={editedProfile.phone || ''}
                           onChange={(e) => handleInputChange('phone', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.phone ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.phone ? 'border-danger-500' : ''}`}
                           placeholder="Telefon raqam"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.phone && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.phone}</div>}
+                        {fieldErrors.phone && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.phone}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Tug'ilgan sana
                       </label>
                       <div className="relative">
@@ -563,40 +554,40 @@ const ProfilePage: React.FC = () => {
                           type="date"
                           value={editedProfile.birth_date || ''}
                           onChange={(e) => handleInputChange('birth_date', e.target.value)}
-                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.birth_date ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.birth_date ? 'border-danger-500' : ''}`}
                           placeholder="YYYY-MM-DD"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.birth_date && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.birth_date}</div>}
+                        {fieldErrors.birth_date && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.birth_date}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Manzil
                       </label>
                       <div className="relative">
-                        <MapPin className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <MapPin className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="text"
                           value={editedProfile.address || ''}
                           onChange={(e) => handleInputChange('address', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.address ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.address ? 'border-danger-500' : ''}`}
                           placeholder="Manzil"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.address && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.address}</div>}
+                        {fieldErrors.address && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.address}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Telegram
                       </label>
                       <div className="relative">
@@ -604,56 +595,56 @@ const ProfilePage: React.FC = () => {
                           type="text"
                           value={editedProfile.telegram || ''}
                           onChange={(e) => handleInputChange('telegram', e.target.value)}
-                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.telegram ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.telegram ? 'border-danger-500' : ''}`}
                           placeholder="@username"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.telegram && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.telegram}</div>}
+                        {fieldErrors.telegram && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.telegram}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Bio
                       </label>
                       <div className="relative">
                         <textarea
                           value={editedProfile.bio || ''}
                           onChange={(e) => handleInputChange('bio', e.target.value)}
-                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-4 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.bio ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.bio ? 'border-danger-500' : ''}`}
                           placeholder="O'zingiz haqida qisqacha ma'lumot"
                           disabled={!isEditing}
                           rows={3}
                         />
-                        {fieldErrors.bio && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.bio}</div>}
+                        {fieldErrors.bio && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.bio}</div>}
                       </div>
                     </div>
                     <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Parol (ixtiyoriy)
                       </label>
                       <div className="relative">
-                        <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
                           type="password"
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border-gray-600 text-white' 
-                              : 'bg-white border-gray-300 text-gray-900'
-                          } ${fieldErrors.password ? 'border-red-500' : ''}`}
+                              ? 'bg-surface-700 border-surface-600 text-white' 
+                              : 'bg-white border-surface-300 text-surface-900'
+                          } ${fieldErrors.password ? 'border-danger-500' : ''}`}
                           placeholder="Yangi parol (ixtiyoriy)"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.password && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}>{fieldErrors.password}</div>}
+                        {fieldErrors.password && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.password}</div>}
                       </div>
                     </div>
                   </div>
@@ -664,14 +655,14 @@ const ProfilePage: React.FC = () => {
               {activeTab === 'applications' && (
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 className={`text-2xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
                       Mening Arizalarim
                     </h2>
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={fetchApplications}
-                      className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-200"
+                      className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200"
                       type="button"
                       disabled={applicationsLoading}
                     >
@@ -680,32 +671,25 @@ const ProfilePage: React.FC = () => {
                   </div>
 
                   {applicationsLoading && (
-                    <div className="text-center py-8">
-                      <div className="w-8 h-8 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                      <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>Arizalar yuklanmoqda...</p>
-                    </div>
+                    <Skeleton className="h-32 w-full rounded-2xl" count={2} />
                   )}
 
                   {applicationsError && (
                     <div className={`p-4 rounded-xl text-center ${
                       theme === 'dark' 
-                        ? 'bg-red-900/20 border border-red-800 text-red-400' 
-                        : 'bg-red-50 border border-red-200 text-red-600'
+                        ? 'bg-danger-900/20 border border-danger-800 text-danger-400' 
+                        : 'bg-danger-50 border border-danger-200 text-danger-600'
                     }`}>
                       {applicationsError}
                     </div>
                   )}
 
                   {!applicationsLoading && !applicationsError && applications.length === 0 && (
-                    <div className="text-center py-12">
-                      <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                      <h3 className={`text-lg font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                        Hech qanday ariza topilmadi
-                      </h3>
-                      <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
-                        Siz hali hech qanday yotoqxonaga ariza bermagansiz.
-                      </p>
-                    </div>
+                    <EmptyState
+                      icon={FileText}
+                      title="Hech qanday ariza topilmadi"
+                      description="Siz hali hech qanday yotoqxonaga ariza bermagansiz."
+                    />
                   )}
 
                   {!applicationsLoading && !applicationsError && applications.length > 0 && (
@@ -718,16 +702,16 @@ const ProfilePage: React.FC = () => {
                           transition={{ duration: 0.3 }}
                           className={`rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 ${
                             theme === 'dark' 
-                              ? 'bg-gray-700 border border-gray-600' 
-                              : 'bg-white border border-gray-200'
+                              ? 'bg-surface-700 border border-surface-600' 
+                              : 'bg-white border border-surface-200'
                           }`}
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex-1">
-                              <h3 className={`text-lg font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                              <h3 className={`text-lg font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
                                 {application.dormitory?.name}
                               </h3>
-                              <p className={`text-sm mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 {application.dormitory?.university?.name || 'Universitet nomi mavjud emas'} - {application.dormitory?.address || 'Manzil mavjud emas'}
                               </p>
                               <div className="flex items-center gap-2 mb-2">
@@ -738,41 +722,41 @@ const ProfilePage: React.FC = () => {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                              <p className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
                                 {formatPrice(application.dormitory?.month_price || 0)}
                               </p>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>oyiga</p>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>oyiga</p>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>F.I.O:</strong> {application.name} {application.middle_name || ''} {application.last_name}
                               </p>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Telefon:</strong> {formatPhoneNumber('+' + String(application.phone))}
                               </p>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Viloyat:</strong> {(typeof application.province === 'object' ? application.province?.name : application.province) || 'Noma\'lum'}
                               </p>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Tuman:</strong> {(typeof application.district === 'object' ? application.district?.name : application.district) || 'Noma\'lum'}
                               </p>
                             </div>
                             <div>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Fakultet:</strong> {application.faculty || 'Noma\'lum'}
                               </p>
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Kurs:</strong> {application.course || 'Noma\'lum'}
                               </p>
                               {application.direction && (
-                                <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                                <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                   <strong>Yo'nalish:</strong> {application.direction}
                                 </p>
                               )}
-                              <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Ariza sanasi:</strong> {formatDate(application.created_at)}
                               </p>
                             </div>
@@ -780,13 +764,13 @@ const ProfilePage: React.FC = () => {
 
                           {application.comment && (
                             <div className="mb-4">
-                              <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Sizning izohingiz:</strong>
                               </p>
                               <p className={`text-sm p-3 rounded-lg ${
                                 theme === 'dark' 
-                                  ? 'text-gray-200 bg-gray-600' 
-                                  : 'text-gray-700 bg-gray-100'
+                                  ? 'text-surface-200 bg-surface-600' 
+                                  : 'text-surface-700 bg-surface-100'
                               }`}>
                                 {application.comment}
                               </p>
@@ -795,13 +779,13 @@ const ProfilePage: React.FC = () => {
 
                           {application.admin_comment && (
                             <div className="mb-4">
-                              <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                              <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Admin izohi:</strong>
                               </p>
                               <p className={`text-sm p-3 rounded-lg ${
                                 theme === 'dark' 
-                                  ? 'text-blue-200 bg-blue-900/30 border border-blue-800' 
-                                  : 'text-blue-700 bg-blue-50 border border-blue-200'
+                                  ? 'text-brand-200 bg-brand-900/30 border border-brand-800' 
+                                  : 'text-brand-700 bg-brand-50 border border-brand-200'
                               }`}>
                                 {application.admin_comment}
                               </p>
@@ -810,7 +794,7 @@ const ProfilePage: React.FC = () => {
 
                           {/* Hujjatlar bo'limi */}
                           <div className="mb-4">
-                            <p className={`text-sm mb-3 font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                            <p className={`text-sm mb-3 font-medium ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                               <strong>Yuklangan hujjatlar:</strong>
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -821,8 +805,8 @@ const ProfilePage: React.FC = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
                                     theme === 'dark' 
-                                      ? 'bg-gray-600 border-gray-500 hover:bg-gray-500 text-teal-400' 
-                                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-teal-600'
+                                      ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-brand-400' 
+                                      : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-brand-600'
                                   }`}
                                 >
                                   <FileText className="w-4 h-4" />
@@ -837,8 +821,8 @@ const ProfilePage: React.FC = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
                                     theme === 'dark' 
-                                      ? 'bg-gray-600 border-gray-500 hover:bg-gray-500 text-green-400' 
-                                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-green-600'
+                                      ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-success-400' 
+                                      : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-success-600'
                                   }`}
                                 >
                                   <Eye className="w-4 h-4" />
@@ -853,8 +837,8 @@ const ProfilePage: React.FC = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
                                     theme === 'dark' 
-                                      ? 'bg-gray-600 border-gray-500 hover:bg-gray-500 text-green-400' 
-                                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-green-600'
+                                      ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-success-400' 
+                                      : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-success-600'
                                   }`}
                                 >
                                   <Eye className="w-4 h-4" />
@@ -869,8 +853,8 @@ const ProfilePage: React.FC = () => {
                                   rel="noopener noreferrer"
                                   className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
                                     theme === 'dark' 
-                                      ? 'bg-gray-600 border-gray-500 hover:bg-gray-500 text-purple-400' 
-                                      : 'bg-gray-50 border-gray-200 hover:bg-gray-100 text-purple-600'
+                                      ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-brand-400' 
+                                      : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-brand-600'
                                   }`}
                                 >
                                   <User className="w-4 h-4" />

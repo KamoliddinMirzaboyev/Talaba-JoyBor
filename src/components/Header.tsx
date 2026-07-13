@@ -99,7 +99,7 @@ const Header: React.FC = () => {
     "F")[0].toUpperCase();
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
+    <header className="bg-white dark:bg-surface-900 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -110,7 +110,7 @@ const Header: React.FC = () => {
             className="flex items-center gap-2"
           >
             <img src="/logo.svg" alt="JoyBor" className="w-10 h-10" />
-            <span className="text-xl font-bold text-gray-900 dark:text-white">
+            <span className="text-xl font-bold text-surface-900 dark:text-white">
               JoyBor
             </span>
           </motion.button>
@@ -119,14 +119,14 @@ const Header: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => navigate("/dormitories")}
-              className={`${isActive("/dormitories") ? "text-teal-600 dark:text-teal-400 font-semibold after:w-full" : "text-gray-700 dark:text-gray-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-teal-500 after:rounded-full after:transition-all after:duration-300 hover:text-teal-600 dark:hover:text-teal-400 hover:after:w-full`}
+              className={`${isActive("/dormitories") ? "text-brand-600 dark:text-brand-400 font-semibold after:w-full" : "text-surface-700 dark:text-surface-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-brand-500 after:rounded-full after:transition-all after:duration-300 hover:text-brand-600 dark:hover:text-brand-400 hover:after:w-full`}
             >
               Yotoqxonalar
             </button>
 
             <button
               onClick={() => navigate("/help")}
-              className={`${isActive("/help") ? "text-teal-600 dark:text-teal-400 font-semibold after:w-full" : "text-gray-700 dark:text-gray-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-teal-500 after:rounded-full after:transition-all after:duration-300 hover:text-teal-600 dark:hover:text-teal-400 hover:after:w-full`}
+              className={`${isActive("/help") ? "text-brand-600 dark:text-brand-400 font-semibold after:w-full" : "text-surface-700 dark:text-surface-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-brand-500 after:rounded-full after:transition-all after:duration-300 hover:text-brand-600 dark:hover:text-brand-400 hover:after:w-full`}
             >
               Yordam
             </button>
@@ -141,14 +141,14 @@ const Header: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigate("/notifications")}
-                  className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors duration-200"
+                  className="relative p-2 text-surface-600 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors duration-150"
                 >
                   <Bell className="w-6 h-6" />
                   {unreadCount > 0 && (
                     <motion.span
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg animate-pulse"
+                      className="absolute -top-1 -right-1 min-w-[20px] h-[20px] bg-gradient-to-r from-danger-500 to-danger-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-sm animate-pulse"
                     >
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </motion.span>
@@ -163,20 +163,20 @@ const Header: React.FC = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                    className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                    className="flex items-center gap-2 p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-150"
                   >
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
                         alt={displayName}
-                        className="w-8 h-8 rounded-full object-cover border-2 border-teal-500"
+                        className="w-8 h-8 rounded-full object-cover border-2 border-brand-500"
                       />
                     ) : (
-                      <div className="w-8 h-8 bg-gradient-to-r from-teal-600 to-green-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                      <div className="w-8 h-8 bg-gradient-to-r from-brand-600 to-brand-700 rounded-full flex items-center justify-center text-white text-sm font-semibold">
                         {avatarLetter}
                       </div>
                     )}
-                    <span className="hidden md:block text-gray-700 dark:text-gray-300 font-medium">
+                    <span className="hidden md:block text-surface-700 dark:text-surface-300 font-medium">
                       {displayName}
                     </span>
                   </motion.button>
@@ -188,7 +188,7 @@ const Header: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2"
+                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 py-2"
                       >
                         {profileMenuItems.map((item) => (
                           <button
@@ -197,16 +197,16 @@ const Header: React.FC = () => {
                               navigate(item.path);
                               setIsProfileMenuOpen(false);
                             }}
-                            className="w-full flex items-center gap-3 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="w-full flex items-center gap-3 px-4 py-2 text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-150"
                           >
                             <item.icon className="w-4 h-4" />
                             {item.label}
                           </button>
                         ))}
-                        <hr className="my-2 border-gray-200 dark:border-gray-700" />
+                        <hr className="my-2 border-surface-200 dark:border-surface-800" />
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+                          className="w-full flex items-center gap-3 px-4 py-2 text-danger-600 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors duration-150"
                         >
                           <LogOut className="w-4 h-4" />
                           Chiqish
@@ -222,7 +222,7 @@ const Header: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/login")}
-                  className="text-gray-700 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors duration-200"
+                  className="text-surface-700 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 font-medium transition-colors duration-150"
                 >
                   Kirish
                 </motion.button>
@@ -230,7 +230,7 @@ const Header: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate("/register")}
-                  className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                  className="bg-gradient-to-r from-brand-600 to-brand-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-colors duration-150"
                 >
                   Ro'yhatdan O'tish
                 </motion.button>
@@ -242,7 +242,7 @@ const Header: React.FC = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors duration-200"
+              className="md:hidden p-2 text-surface-600 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors duration-150"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -263,7 +263,7 @@ const Header: React.FC = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700"
+            className="md:hidden bg-white dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800"
           >
             <div className="px-4 py-4 space-y-2">
               {menuItems.map((item) => (
@@ -273,7 +273,7 @@ const Header: React.FC = () => {
                     navigate(item.path);
                     setIsMenuOpen(false);
                   }}
-                  className={`w-full relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 ${isActive(item.path) ? "bg-gray-100 dark:bg-gray-700 text-teal-600 dark:text-teal-400 font-semibold before:w-1" : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 before:w-0"} before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:bg-teal-500 before:rounded-full before:transition-all before:duration-300`}
+                  className={`w-full relative flex items-center gap-3 px-3 py-2 rounded-xl transition-colors duration-150 ${isActive(item.path) ? "bg-surface-100 dark:bg-surface-700 text-brand-600 dark:text-brand-400 font-semibold before:w-1" : "text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 before:w-0"} before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:bg-brand-500 before:rounded-full before:transition-all before:duration-300`}
                 >
                   <item.icon className="w-5 h-5" />
                   {item.label}
@@ -282,13 +282,13 @@ const Header: React.FC = () => {
 
               {!isAuthenticated && (
                 <>
-                  <hr className="my-3 border-gray-200 dark:border-gray-700" />
+                  <hr className="my-3 border-surface-200 dark:border-surface-800" />
                   <button
                     onClick={() => {
                       navigate("/login");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+                    className="w-full flex items-center gap-3 px-3 py-2 text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 rounded-xl transition-colors duration-150"
                   >
                     <User className="w-5 h-5" />
                     Kirish
@@ -298,7 +298,7 @@ const Header: React.FC = () => {
                       navigate("/register");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full bg-gradient-to-r from-teal-600 to-green-600 text-white px-3 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white px-3 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-colors duration-150"
                   >
                     Ro'yhatdan O'tish
                   </button>

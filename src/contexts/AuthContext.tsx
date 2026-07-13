@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { jwtDecode } from 'jwt-decode';
 import { User } from '../types';
 import { authAPI } from '../services/api';
+import { sessionStore } from '../services/sessionStore';
 
 interface AuthContextType {
   user: User | null;
@@ -34,38 +35,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     // Migrate tokens from localStorage -> sessionStorage; keep only theme in localStorage
-    try {
-      const theme = localStorage.getItem('theme');
-      const accessLocal = localStorage.getItem('access') || localStorage.getItem('access_token');
-      const refreshLocal = localStorage.getItem('refresh') || localStorage.getItem('refresh_token');
-      if (accessLocal) sessionStorage.setItem('access', accessLocal);
-      if (refreshLocal) sessionStorage.setItem('refresh', refreshLocal);
-      // Clear everything except theme
-      Object.keys(localStorage).forEach((key) => {
-        if (key !== 'theme') localStorage.removeItem(key);
-      });
-      if (theme) localStorage.setItem('theme', theme);
-    } catch {
-      // Ignore migration errors
-    }
+    sessionStore.migrateFromLocalStorage();
 
     const initializeAuth = async () => {
-      const token = sessionStorage.getItem('access');
-      
+      const token = sessionStore.getAccess();
+
       if (token) {
         try {
           const decoded: any = jwtDecode(token);
-          
+
           // Token muddati tugaganmi tekshirish
           if (decoded.exp * 1000 < Date.now()) {
-            sessionStorage.removeItem('access');
-            sessionStorage.removeItem('refresh');
+            sessionStore.clear();
             setUser(null);
             setIsAuthenticated(false);
             setIsLoading(false);
             return;
           }
-          
+
           try {
             // API dan to'liq profile ma'lumotlarini yuklash
             const profileData = await authAPI.getProfile();
@@ -73,8 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setIsAuthenticated(true);
           } catch (error: any) {
             if (error.response?.status === 401) {
-                sessionStorage.removeItem('access');
-                sessionStorage.removeItem('refresh');
+                sessionStore.clear();
                 setUser(null);
                 setIsAuthenticated(false);
             } else {
@@ -91,8 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
           }
         } catch (error) {
-          sessionStorage.removeItem('access');
-          sessionStorage.removeItem('refresh');
+          sessionStore.clear();
           setUser(null);
           setIsAuthenticated(false);
         }
@@ -107,9 +92,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (access: string, refresh: string) => {
-    sessionStorage.setItem('access', access);
-    sessionStorage.setItem('refresh', refresh);
-    
+    sessionStore.setTokens(access, refresh);
+
+
     try {
       const decoded: any = jwtDecode(access);
       try {
@@ -134,8 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    sessionStorage.removeItem('access');
-    sessionStorage.removeItem('refresh');
+    sessionStore.clear();
     setUser(null);
     setIsAuthenticated(false);
   };

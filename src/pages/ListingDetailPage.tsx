@@ -43,6 +43,8 @@ import { Listing } from "../types";
 import { formatCapacityBucket, formatPhoneNumber } from "../utils/format";
 import { useAuth } from "../contexts/AuthContext";
 import Header from "../components/Header";
+import Skeleton from "../components/Skeleton";
+import EmptyState from "../components/EmptyState";
 import DormitoryLocationMap from "../components/DormitoryLocationMap";
 import { getGlobalSelectedListing, setGlobalSelectedListing } from "../App";
 import { authAPI } from "../services/api";
@@ -209,10 +211,12 @@ const ListingDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Yuklanmoqda...</p>
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <Skeleton className="h-96 w-full rounded-2xl" />
+          <Skeleton className="h-6 w-2/3 rounded-2xl" />
+          <Skeleton className="h-40 w-full rounded-2xl" />
         </div>
       </div>
     );
@@ -220,18 +224,12 @@ const ListingDetailPage: React.FC = () => {
 
   if (!listing) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Elon topilmadi
-          </h2>
-          <button
-            onClick={() => navigate("/")}
-            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200"
-          >
-            Bosh sahifaga qaytish
-          </button>
-        </div>
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
+        <EmptyState
+          icon={Building2}
+          title="Elon topilmadi"
+          action={{ label: "Bosh sahifaga qaytish", onClick: () => navigate("/") }}
+        />
       </div>
     );
   }
@@ -245,53 +243,53 @@ const ListingDetailPage: React.FC = () => {
 
     // Internet va texnologiya
     if (name.includes("wifi") || name.includes("internet"))
-      return <Wifi className="w-5 h-5 text-teal-600 dark:text-teal-400" />;
+      return <Wifi className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (name.includes("tv") || name.includes("televizor"))
-      return <Tv className="w-5 h-5 text-pink-600 dark:text-pink-400" />;
+      return <Tv className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (name.includes("ac") || name.includes("konditsioner"))
-      return <Snowflake className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />;
+      return <Snowflake className="w-5 h-5 text-info-600 dark:text-info-400" />;
     if (name.includes("zap") || name.includes("elektr"))
-      return <Zap className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+      return <Zap className="w-5 h-5 text-warning-600 dark:text-warning-400" />;
 
     // Transport va parking
     if (name.includes("parking") || name.includes("avto"))
-      return <Car className="w-5 h-5 text-green-600 dark:text-green-400" />;
+      return <Car className="w-5 h-5 text-success-600 dark:text-success-400" />;
     if (name.includes("bus") || name.includes("avtobus"))
-      return <Bus className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      return <Bus className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (name.includes("bike") || name.includes("velosiped"))
-      return <Bike className="w-5 h-5 text-green-600 dark:text-green-400" />;
+      return <Bike className="w-5 h-5 text-success-600 dark:text-success-400" />;
 
     // Xavfsizlik va monitoring
     if (name.includes("security") || name.includes("xavfsizlik"))
       return (
-        <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+        <Shield className="w-5 h-5 text-brand-600 dark:text-brand-400" />
       );
     if (name.includes("camera") || name.includes("kamera"))
-      return <Eye className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+      return <Eye className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
 
     // Oshxona va ovqat
     if (name.includes("coffee") || name.includes("kofe"))
       return (
-        <Coffee className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+        <Coffee className="w-5 h-5 text-warning-600 dark:text-warning-400" />
       );
     if (name.includes("kitchen") || name.includes("oshxona"))
-      return <Utensils className="w-5 h-5 text-red-600 dark:text-red-400" />;
+      return <Utensils className="w-5 h-5 text-danger-600 dark:text-danger-400" />;
     if (name.includes("restaurant") || name.includes("restoran"))
-      return <Utensils className="w-5 h-5 text-red-600 dark:text-red-400" />;
+      return <Utensils className="w-5 h-5 text-danger-600 dark:text-danger-400" />;
 
     // O'qish va ish
     if (name.includes("library") || name.includes("kutubxona"))
-      return <BookOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      return <BookOpen className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (
       name.includes("darsxona") ||
       name.includes("study") ||
       name.includes("classroom")
     )
       return (
-        <GraduationCap className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+        <GraduationCap className="w-5 h-5 text-brand-600 dark:text-brand-400" />
       );
     if (name.includes("computer") || name.includes("kompyuter"))
-      return <Tv className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+      return <Tv className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
 
     // Sport va mashg'ulot
     if (
@@ -300,22 +298,22 @@ const ListingDetailPage: React.FC = () => {
       name.includes("sport")
     )
       return (
-        <Dumbbell className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+        <Dumbbell className="w-5 h-5 text-brand-600 dark:text-brand-400" />
       );
     if (name.includes("pool") || name.includes("basseyn"))
-      return <Droplets className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      return <Droplets className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (name.includes("tennis") || name.includes("basketball"))
       return (
-        <Dumbbell className="w-5 h-5 text-green-600 dark:text-green-400" />
+        <Dumbbell className="w-5 h-5 text-success-600 dark:text-success-400" />
       );
 
     // Turar joy va mebel
     if (name.includes("bed") || name.includes("krovat"))
-      return <Bed className="w-5 h-5 text-purple-600 dark:text-purple-400" />;
+      return <Bed className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
     if (name.includes("furniture") || name.includes("mebel"))
-      return <Home className="w-5 h-5 text-brown-600" />;
+      return <Home className="w-5 h-5 text-warning-600" />;
     if (name.includes("balcony") || name.includes("balkon"))
-      return <Home className="w-5 h-5 text-green-600 dark:text-green-400" />;
+      return <Home className="w-5 h-5 text-success-600 dark:text-success-400" />;
 
     // Xizmatlar
     if (
@@ -323,28 +321,28 @@ const ListingDetailPage: React.FC = () => {
       name.includes("washing") ||
       name.includes("laundry")
     )
-      return <Droplets className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />;
+      return <Droplets className="w-5 h-5 text-info-600 dark:text-info-400" />;
     if (name.includes("mashina") || name.includes("machine"))
-      return <Droplets className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />;
+      return <Droplets className="w-5 h-5 text-info-600 dark:text-info-400" />;
     if (name.includes("cleaning") || name.includes("tozalash"))
-      return <Droplets className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      return <Droplets className="w-5 h-5 text-brand-600 dark:text-brand-400" />;
 
     // Iqlim va muhit
     if (name.includes("heating") || name.includes("isitish"))
-      return <Sun className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />;
+      return <Sun className="w-5 h-5 text-warning-600 dark:text-warning-400" />;
     if (name.includes("fan") || name.includes("ventilyator"))
-      return <Moon className="w-5 h-5 text-gray-600 dark:text-gray-400" />;
+      return <Moon className="w-5 h-5 text-surface-600 dark:text-surface-400" />;
     if (name.includes("garden") || name.includes("bog"))
-      return <Trees className="w-5 h-5 text-green-600 dark:text-green-400" />;
+      return <Trees className="w-5 h-5 text-success-600 dark:text-success-400" />;
     if (name.includes("nature") || name.includes("tabiat"))
-      return <Leaf className="w-5 h-5 text-green-600 dark:text-green-400" />;
+      return <Leaf className="w-5 h-5 text-success-600 dark:text-success-400" />;
 
     // Boshqa
     if (name.includes("building") || name.includes("binolar"))
-      return <Building2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />;
+      return <Building2 className="w-5 h-5 text-surface-600 dark:text-surface-400" />;
 
     return (
-      <CheckCircle className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+      <CheckCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
     );
   };
 
@@ -367,7 +365,7 @@ const ListingDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -379,7 +377,7 @@ const ListingDetailPage: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-teal-600 hover:text-teal-700 mb-6 transition-colors duration-200"
+          className="flex items-center gap-2 text-brand-600 hover:text-brand-700 mb-6 transition-colors duration-150"
         >
           <ArrowLeft className="w-5 h-5" />
           Orqaga
@@ -439,10 +437,10 @@ const ListingDetailPage: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleLike}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 shadow-lg ${
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-150 shadow-lg ${
                     listing && isLiked(listing.id)
-                      ? "bg-red-500 text-white"
-                      : "bg-white/90 text-gray-600 hover:bg-white backdrop-blur-sm"
+                      ? "bg-danger-500 text-white"
+                      : "bg-white/90 text-surface-600 hover:bg-white backdrop-blur-sm"
                   }`}
                 >
                   <Heart
@@ -455,7 +453,7 @@ const ListingDetailPage: React.FC = () => {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleShare}
-                  className="w-10 h-10 bg-white/90 text-gray-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 backdrop-blur-sm shadow-lg"
+                  className="w-10 h-10 bg-white/90 text-surface-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-150 backdrop-blur-sm shadow-lg"
                 >
                   <Share2 className="w-5 h-5" />
                 </motion.button>
@@ -463,7 +461,7 @@ const ListingDetailPage: React.FC = () => {
 
               {/* Type Badge */}
               <div className="absolute bottom-4 left-4 z-10">
-                <span className="px-3 py-1 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm bg-teal-100/90 text-teal-800 dark:bg-green-900/60 dark:text-teal-300">
+                <span className="px-3 py-1 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm bg-brand-100/90 text-brand-800 dark:bg-success-900/60 dark:text-brand-300">
                   Yotoqxona
                 </span>
               </div>
@@ -477,12 +475,12 @@ const ListingDetailPage: React.FC = () => {
               className="mb-6"
             >
               <div className="mb-4">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-surface-900 dark:text-white">
                   {listing.title}
                 </h1>
               </div>
 
-              <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300 mb-4">
+              <div className="flex items-center gap-4 text-surface-600 dark:text-surface-300 mb-4">
                 <div className="flex items-center gap-1">
                   <MapPin className="w-5 h-5" />
                   <span>{listing.location}</span>
@@ -499,9 +497,9 @@ const ListingDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <div className="text-3xl font-bold text-surface-900 dark:text-white mb-2">
                 {formatPrice(listing.price)}
-                <span className="text-lg font-normal text-gray-600 dark:text-gray-300 ml-2">
+                <span className="text-lg font-normal text-surface-600 dark:text-surface-300 ml-2">
                   /oyiga
                 </span>
               </div>
@@ -512,12 +510,12 @@ const ListingDetailPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-6"
             >
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
                 Tavsif
               </h2>
-              <div className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <div className="text-surface-600 dark:text-surface-300 leading-relaxed">
                 {listing.description && listing.description.length > 200 ? (
                   <>
                     <p>
@@ -529,7 +527,7 @@ const ListingDetailPage: React.FC = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="mt-3 text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300 font-medium transition-colors duration-200 flex items-center gap-1"
+                      className="mt-3 text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 font-medium transition-colors duration-150 flex items-center gap-1"
                     >
                       {showFullDescription ? "Kamroq ko'rish" : "Ko'proq ko'rish"}
                       <span className="text-lg">{showFullDescription ? "↑" : "↓"}</span>
@@ -546,9 +544,9 @@ const ListingDetailPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-6"
             >
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
                 Qulayliklar
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -559,10 +557,10 @@ const ListingDetailPage: React.FC = () => {
                     const icon = getAmenityIcon(amenityName);
                     return (
                       <div key={index} className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                        <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
                           {icon}
                         </div>
-                        <span className="text-gray-700 dark:text-gray-300">
+                        <span className="text-surface-700 dark:text-surface-300">
                           {amenityName}
                         </span>
                       </div>
@@ -573,30 +571,30 @@ const ListingDetailPage: React.FC = () => {
                   <>
                     {listing.features.wifi && (
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center">
-                          <Wifi className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                        <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+                          <Wifi className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                         </div>
-                        <span className="text-gray-700 dark:text-gray-300">
+                        <span className="text-surface-700 dark:text-surface-300">
                           WiFi
                         </span>
                       </div>
                     )}
                     {listing.features.parking && (
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                          <Car className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <div className="w-10 h-10 bg-success-100 dark:bg-success-900/30 rounded-xl flex items-center justify-center">
+                          <Car className="w-5 h-5 text-success-600 dark:text-success-400" />
                         </div>
-                        <span className="text-gray-700 dark:text-gray-300">
+                        <span className="text-surface-700 dark:text-surface-300">
                           Parking
                         </span>
                       </div>
                     )}
                     {listing.features.security && (
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                          <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                        <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+                          <Shield className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                         </div>
-                        <span className="text-gray-700 dark:text-gray-300">
+                        <span className="text-surface-700 dark:text-surface-300">
                           Xavfsizlik
                         </span>
                       </div>
@@ -611,25 +609,25 @@ const ListingDetailPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6"
             >
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
                 Qoidalar
               </h2>
               <ul className="space-y-2">
                 {listing.rules && listing.rules.length > 0 ? (
                   listing.rules.map((rule, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-teal-600 rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-gray-600 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-brand-600 rounded-full mt-2 flex-shrink-0" />
+                      <span className="text-surface-600 dark:text-surface-300">
                         {typeof rule === "string" ? rule : "Qoida"}
                       </span>
                     </li>
                   ))
                 ) : (
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-gray-500 dark:text-gray-400">
+                    <div className="w-2 h-2 bg-surface-400 rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-surface-500 dark:text-surface-400">
                       Qoidalar haqida ma'lumot yo'q
                     </span>
                   </li>
@@ -645,20 +643,20 @@ const ListingDetailPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-6"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                 Yotoqxona Ma'muriyati
               </h3>
               <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                <div className="flex items-center gap-3 text-surface-600 dark:text-surface-300">
                   <Phone className="w-4 h-4" />
                   <span className="text-sm">
                     {formatPhoneNumber(listing.admin?.phone || "998889563848")}
                   </span>
                 </div>
                 {listing.admin?.email && (
-                  <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
+                  <div className="flex items-center gap-3 text-surface-600 dark:text-surface-300">
                     <Mail className="w-4 h-4" />
                     <span className="text-sm">{listing.admin.email}</span>
                   </div>
@@ -671,7 +669,7 @@ const ListingDetailPage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => onApplicationStart(listing)}
-                    className="w-full bg-gradient-to-r from-teal-600 to-green-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
                   >
                     <Calendar className="w-5 h-5" />
                     Ariza Yuborish
@@ -681,7 +679,7 @@ const ListingDetailPage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate("/login")}
-                    className="w-full bg-gradient-to-r from-teal-600 to-green-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-150"
                   >
                     Ariza Yuborish Uchun Kiring
                   </motion.button>
@@ -694,9 +692,9 @@ const ListingDetailPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                 Joylashuv
               </h3>
               <div className="rounded-xl overflow-hidden">
@@ -709,7 +707,7 @@ const ListingDetailPage: React.FC = () => {
                   phone_number={listing.admin?.phone || "998889563848"}
                 />
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mt-3 text-sm">
+              <p className="text-surface-600 dark:text-surface-300 mt-3 text-sm">
                 {listing.location} • {listing.university}
               </p>
             </motion.div>
@@ -720,34 +718,34 @@ const ListingDetailPage: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6"
+                className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6"
               >
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                   Bo'sh joylar statistikasi
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                  <div className="p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-800">
                     <div className="flex items-center gap-2 mb-1">
-                      <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Erkaklar</span>
+                      <Users className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                      <span className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Erkaklar</span>
                     </div>
-                    <p className="text-2xl font-black text-blue-900 dark:text-blue-100">
+                    <p className="text-2xl font-black text-brand-900 dark:text-brand-100">
                       {listing.room_statistics.male.free} <span className="text-xs font-medium opacity-70">joy</span>
                     </p>
                   </div>
-                  <div className="p-4 bg-pink-50 dark:bg-pink-900/20 rounded-xl border border-pink-100 dark:border-pink-800">
+                  <div className="p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-800">
                     <div className="flex items-center gap-2 mb-1">
-                      <Users className="w-4 h-4 text-pink-600 dark:text-pink-400" />
-                      <span className="text-xs font-bold text-pink-600 dark:text-pink-400 uppercase tracking-wider">Ayollar</span>
+                      <Users className="w-4 h-4 text-brand-600 dark:text-brand-400" />
+                      <span className="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Ayollar</span>
                     </div>
-                    <p className="text-2xl font-black text-pink-900 dark:text-pink-100">
+                    <p className="text-2xl font-black text-brand-900 dark:text-brand-100">
                       {listing.room_statistics.female.free} <span className="text-xs font-medium opacity-70">joy</span>
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800 flex justify-between items-center">
-                  <span className="text-sm font-bold text-teal-800 dark:text-teal-200">Umumiy bo'sh joy:</span>
-                  <span className="text-xl font-black text-teal-900 dark:text-teal-100">
+                <div className="mt-4 p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-800 flex justify-between items-center">
+                  <span className="text-sm font-bold text-brand-800 dark:text-brand-200">Umumiy bo'sh joy:</span>
+                  <span className="text-xl font-black text-brand-900 dark:text-brand-100">
                     {listing.room_statistics.male.free + listing.room_statistics.female.free}
                   </span>
                 </div>

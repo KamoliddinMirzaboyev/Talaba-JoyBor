@@ -20,36 +20,36 @@ const ContactPage: React.FC = () => {
 			icon: Phone,
 			title: 'Telefon',
 			details: ['+998 88 956 38 48'],
-			color: 'from-green-500 to-green-600'
+			color: 'from-success-500 to-success-600'
 		},
 		{
 			icon: MessageCircle,
 			title: 'Telegram Bot',
 			details: ['@Joyboronlinebot'],
-			color: 'from-blue-500 to-blue-600'
+			color: 'from-brand-500 to-brand-600'
 		},
 		{
 			icon: MapPin,
 			title: 'Manzil',
 			details: ["Toshkent sh., O'zbekiston"],
-			color: 'from-purple-500 to-purple-600'
+			color: 'from-info-500 to-info-600'
 		},
 		{
 			icon: Clock,
 			title: 'Ish vaqti',
 			details: ['24/7 Onlayn Xizmat'],
-			color: 'from-orange-500 to-orange-600'
+			color: 'from-warning-500 to-warning-600'
 		}
 	];
 
 	const socialLinks = [
-		{ icon: MessageCircle, label: 'Telegram Bot', url: 'https://t.me/Joyboronlinebot', color: 'text-blue-500' },
-		{ icon: Instagram, label: 'Instagram', url: 'https://instagram.com/joybor', color: 'text-pink-500' },
-		{ icon: Facebook, label: 'Facebook', url: 'https://facebook.com/joybor', color: 'text-blue-600' }
+		{ icon: MessageCircle, label: 'Telegram Bot', url: 'https://t.me/Joyboronlinebot', color: 'text-brand-500' },
+		{ icon: Instagram, label: 'Instagram', url: 'https://instagram.com/joybor', color: 'text-brand-500' },
+		{ icon: Facebook, label: 'Facebook', url: 'https://facebook.com/joybor', color: 'text-brand-600' }
 	];
 
 	return (
-		<div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+		<div className="min-h-screen bg-surface-50 dark:bg-surface-900">
 			<Header />
 			
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -60,13 +60,13 @@ const ContactPage: React.FC = () => {
 					transition={{ duration: 0.6 }}
 					className="text-center mb-16"
 				>
-					<div className="w-16 h-16 bg-gradient-to-r from-teal-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+					<div className="w-16 h-16 bg-gradient-to-r from-brand-600 to-success-600 rounded-full flex items-center justify-center mx-auto mb-6">
 						<MessageCircle className="w-8 h-8 text-white" />
 					</div>
-					<h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+					<h1 className="text-4xl font-bold text-surface-900 dark:text-white mb-4">
 						Biz Bilan Bog'laning
 					</h1>
-					<p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+					<p className="text-xl text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
 						Savollaringiz bormi? Yordam kerakmi? Biz sizga yordam berishga tayyormiz!
 					</p>
 				</motion.div>
@@ -84,17 +84,17 @@ const ContactPage: React.FC = () => {
 							initial={{ opacity: 0, y: 30 }}
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-							className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
+							className="bg-white dark:bg-surface-900 rounded-2xl p-6 shadow-sm border border-surface-200 dark:border-surface-800 hover:shadow-md transition-shadow duration-150"
 						>
 							<div className={`w-12 h-12 bg-gradient-to-r ${info.color} rounded-xl flex items-center justify-center mb-4`}>
 								<info.icon className="w-6 h-6 text-white" />
 							</div>
-							<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+							<h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-3">
 								{info.title}
 							</h3>
 							<div className="space-y-1">
 								{info.details.map((detail, idx) => (
-									<p key={idx} className="text-gray-600 dark:text-gray-300 text-sm">
+									<p key={idx} className="text-surface-600 dark:text-surface-300 text-sm">
 										{detail}
 									</p>
 								))}
@@ -121,29 +121,29 @@ const ContactPage: React.FC = () => {
 						className="space-y-8"
 					>
 						{/* FAQ Link */}
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+						<div className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-8">
+							<h3 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
 								Tez-tez So'raladigan Savollar
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 mb-6">
+							<p className="text-surface-600 dark:text-surface-300 mb-6">
 								Ehtimol, sizning savolingizga javob allaqachon mavjud bo'lishi mumkin.
 							</p>
 							<motion.button
 								whileHover={{ scale: 1.02 }}
 								whileTap={{ scale: 0.98 }}
 								onClick={() => navigate('/help')}
-								className="bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors duration-200"
+								className="bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-700 transition-colors duration-150"
 							>
 								FAQ Bo'limiga O'tish
 							</motion.button>
 						</div>
 
 						{/* Social Media */}
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+						<div className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-8">
+							<h3 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
 								Ijtimoiy Tarmoqlarda Kuzating
 							</h3>
-							<p className="text-gray-600 dark:text-gray-300 mb-6">
+							<p className="text-surface-600 dark:text-surface-300 mb-6">
 								Yangiliklar va foydali ma'lumotlar uchun bizni kuzatib boring.
 							</p>
 							<div className="flex gap-4">
@@ -155,7 +155,7 @@ const ContactPage: React.FC = () => {
 										href={social.url}
 										target="_blank"
 										rel="noopener noreferrer"
-										className={`w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 ${social.color}`}
+										className={`w-12 h-12 bg-surface-100 dark:bg-surface-700 rounded-xl flex items-center justify-center hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors duration-150 ${social.color}`}
 									>
 										<social.icon className="w-6 h-6" />
 									</motion.a>
@@ -164,25 +164,25 @@ const ContactPage: React.FC = () => {
 						</div>
 
 						{/* Emergency Contact */}
-						<div className="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-8 text-white">
+						<div className="bg-gradient-to-r from-danger-500 to-danger-600 rounded-2xl p-8 text-white">
 							<h3 className="text-xl font-semibold mb-4">
 								Shoshilinch Yordam
 							</h3>
-							<p className="text-red-100 mb-4">
+							<p className="text-danger-100 mb-4">
 								Agar sizda shoshilinch muammo bo'lsa, quyidagi raqamga qo'ng'iroq qiling:
 							</p>
 							<div className="flex items-center gap-3">
 								<Phone className="w-5 h-5" />
 								<span className="text-xl font-semibold">+998 71 123 45 67</span>
 							</div>
-							<p className="text-red-100 text-sm mt-2">
+							<p className="text-danger-100 text-sm mt-2">
 								24/7 mavjud
 							</p>
 						</div>
 
 						{/* Map */}
-						<div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
-							<h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+						<div className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-8">
+							<h3 className="text-xl font-semibold text-surface-900 dark:text-white mb-4">
 								Bizning Joylashuvimiz
 							</h3>
 							<div className="rounded-xl overflow-hidden">
@@ -201,7 +201,7 @@ const ContactPage: React.FC = () => {
 									zoom={15}
 								/>
 							</div>
-							<p className="text-gray-600 dark:text-gray-300 mt-4 text-sm">
+							<p className="text-surface-600 dark:text-surface-300 mt-4 text-sm">
 								Toshkent sh., Chilonzor t., Bunyodkor ko'chasi, 12-uy
 							</p>
 						</div>

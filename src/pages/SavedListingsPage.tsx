@@ -5,6 +5,7 @@ import { Heart, Search, Grid, List, Trash2, Share2, Eye } from 'lucide-react';
 import { Listing } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
+import EmptyState from '../components/EmptyState';
 import { shareOrCopy } from '../utils/share';
 import ListingCard from '../components/ListingCard';
 import { useTheme } from '../contexts/ThemeContext';
@@ -29,14 +30,14 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
             Tizimga kirish talab etiladi
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-150"
           >
             Tizimga kirish
           </button>
@@ -68,7 +69,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -80,14 +81,14 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-danger-500 to-danger-600 rounded-xl flex items-center justify-center">
               <Heart className="w-6 h-6 text-white fill-current" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-surface-900 dark:text-white">
                 Saqlangan Elonlar
               </h1>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-surface-600 dark:text-surface-300">
                 Sizga yoqqan yashash joylarini bu yerda topasiz
               </p>
             </div>
@@ -99,21 +100,21 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
+          className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-8"
         >
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Saqlangan elonlarni qidiring..."
-                className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-150 ${
                   theme === 'dark' 
-                    ? 'border-gray-600 bg-gray-700 text-white' 
-                    : 'border-gray-300 bg-white text-gray-900'
+                    ? 'border-surface-600 bg-surface-700 text-white' 
+                    : 'border-surface-300 bg-white text-surface-900'
                 }`}
               />
             </div>
@@ -123,10 +124,10 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value as 'all' | 'dormitory' | 'rental')}
-                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-150 ${
                   theme === 'dark' 
-                    ? 'border-gray-600 bg-gray-700 text-white' 
-                    : 'border-gray-300 bg-white text-gray-900'
+                    ? 'border-surface-600 bg-surface-700 text-white' 
+                    : 'border-surface-300 bg-white text-surface-900'
                 }`}
               >
                 <option value="all">Barcha turlar</option>
@@ -138,10 +139,10 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-150 ${
                   theme === 'dark' 
-                    ? 'border-gray-600 bg-gray-700 text-white' 
-                    : 'border-gray-300 bg-white text-gray-900'
+                    ? 'border-surface-600 bg-surface-700 text-white' 
+                    : 'border-surface-300 bg-white text-surface-900'
                 }`}
               >
                 <option value="newest">Yangi saqlangan</option>
@@ -152,23 +153,23 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
               </select>
 
               {/* View Mode */}
-              <div className="flex bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
+              <div className="flex bg-surface-100 dark:bg-surface-700 rounded-xl p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  className={`px-3 py-2 rounded-xl transition-colors duration-150 ${
                     viewMode === 'grid' 
-                      ? 'bg-white dark:bg-gray-600 text-teal-600 shadow-sm' 
-                      : 'text-gray-600 dark:text-gray-300'
+                      ? 'bg-white dark:bg-surface-600 text-brand-600 shadow-sm' 
+                      : 'text-surface-600 dark:text-surface-300'
                   }`}
                 >
                   <Grid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  className={`px-3 py-2 rounded-xl transition-colors duration-150 ${
                     viewMode === 'list' 
-                      ? 'bg-white dark:bg-gray-600 text-teal-600 shadow-sm' 
-                      : 'text-gray-600 dark:text-gray-300'
+                      ? 'bg-white dark:bg-surface-600 text-brand-600 shadow-sm' 
+                      : 'text-surface-600 dark:text-surface-300'
                   }`}
                 >
                   <List className="w-4 h-4" />
@@ -180,40 +181,23 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
 
         {/* Results Count */}
         <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-surface-600 dark:text-surface-300">
             {filteredListings.length} ta saqlangan elon
           </p>
         </div>
 
         {/* Listings */}
         {filteredListings.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center py-16"
-          >
-            <div className="w-24 h-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Heart className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-              {searchQuery || filterType !== 'all' ? 'Hech narsa topilmadi' : 'Hali saqlangan elonlar yo\'q'}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
-              {searchQuery || filterType !== 'all' 
+          <EmptyState
+            icon={Heart}
+            title={searchQuery || filterType !== 'all' ? 'Hech narsa topilmadi' : 'Hali saqlangan elonlar yo\'q'}
+            description={
+              searchQuery || filterType !== 'all'
                 ? 'Qidiruv shartlaringizni o\'zgartirib ko\'ring'
                 : 'Yoqqan elonlarni saqlash uchun yurak belgisini bosing'
-              }
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/')}
-              className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300"
-            >
-              Elonlarni Ko'rish
-            </motion.button>
-          </motion.div>
+            }
+            action={{ label: "Elonlarni Ko'rish", onClick: () => navigate('/') }}
+          />
         ) : (
           <>
             {viewMode === 'grid' ? (
@@ -238,7 +222,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => handleShare(listing)}
-                        className="w-8 h-8 bg-white/90 text-gray-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 shadow-lg"
+                        className="w-8 h-8 bg-white/90 text-surface-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-150 shadow-sm"
                       >
                         <Share2 className="w-4 h-4" />
                       </motion.button>
@@ -246,7 +230,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => handleRemoveFromSaved(listing.id)}
-                        className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors duration-200 shadow-lg"
+                        className="w-8 h-8 bg-danger-500 text-white rounded-full flex items-center justify-center hover:bg-danger-600 transition-colors duration-150 shadow-sm"
                       >
                         <Trash2 className="w-4 h-4" />
                       </motion.button>
@@ -262,7 +246,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl transition-shadow duration-300"
+                    className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 hover:shadow-md transition-shadow duration-150"
                   >
                     <div className="flex items-center gap-6">
                       <div className="w-32 h-24 rounded-xl overflow-hidden flex-shrink-0">
@@ -275,33 +259,33 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                       
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          <h3 className="text-lg font-semibold text-surface-900 dark:text-white">
                             {listing.title}
                           </h3>
                           <div className="flex items-center gap-2">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               listing.type === 'dormitory' 
-                                ? 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300'
-                                : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                ? 'bg-brand-100 text-brand-800 dark:bg-brand-900/30 dark:text-brand-300'
+                                : 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-300'
                             }`}>
                               {listing.type === 'dormitory' ? 'Yotoqxona' : 'Ijara'}
                             </span>
                             {!listing.available && (
-                              <span className="px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 rounded-full text-xs font-medium">
+                              <span className="px-2 py-1 bg-danger-100 text-danger-800 dark:bg-danger-900/30 dark:text-danger-300 rounded-full text-xs font-medium">
                                 Band
                               </span>
                             )}
                           </div>
                         </div>
                         
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                        <p className="text-surface-600 dark:text-surface-300 text-sm mb-2">
                           {listing.location} • {listing.university}
                         </p>
                         
                         <div className="flex items-center justify-between">
-                          <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                          <div className="text-2xl font-bold text-surface-900 dark:text-white">
                             {new Intl.NumberFormat('uz-UZ').format(listing.price)} so'm
-                            <span className="text-sm font-normal text-gray-600 dark:text-gray-300 ml-1">
+                            <span className="text-sm font-normal text-surface-600 dark:text-surface-300 ml-1">
                               /oyiga
                             </span>
                           </div>
@@ -311,7 +295,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => onListingSelect(listing)}
-                              className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-200 flex items-center gap-2"
+                              className="px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-150 flex items-center gap-2"
                             >
                               <Eye className="w-4 h-4" />
                               Ko'rish
@@ -321,7 +305,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handleShare(listing)}
-                              className="p-2 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                              className="p-2 border border-surface-300 dark:border-surface-600 text-surface-600 dark:text-surface-300 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-150"
                             >
                               <Share2 className="w-4 h-4" />
                             </motion.button>
@@ -330,7 +314,7 @@ const SavedListingsPage: React.FC<SavedListingsPageProps> = ({ onListingSelect }
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               onClick={() => handleRemoveFromSaved(listing.id)}
-                              className="p-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200"
+                              className="p-2 border border-danger-300 text-danger-600 rounded-xl hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-colors duration-150"
                             >
                               <Trash2 className="w-4 h-4" />
                             </motion.button>

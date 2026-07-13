@@ -93,7 +93,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       onClick={onSelect}
-      className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group flex flex-col h-full cursor-pointer"
+      className="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-sm overflow-hidden hover:shadow-md transition-all duration-150 group flex flex-col h-full cursor-pointer"
     >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
@@ -139,7 +139,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleShare}
-          className="absolute top-2 left-2 z-10 w-8 h-8 bg-white/90 text-gray-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-200 backdrop-blur-sm shadow-lg"
+          className="absolute top-2 left-2 z-10 w-8 h-8 bg-white/90 text-surface-600 rounded-full flex items-center justify-center hover:bg-white transition-colors duration-150 backdrop-blur-sm shadow-lg"
         >
           <Share2 className="w-4 h-4" />
         </motion.button>
@@ -149,17 +149,17 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={handleLike}
-          className={`absolute top-2 left-12 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-sm shadow-lg ${
+          className={`absolute top-2 left-12 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-150 backdrop-blur-sm shadow-lg ${
             isLiked(id.toString()) 
-              ? 'bg-red-500 text-white' 
-              : 'bg-white/90 text-gray-600 hover:bg-white'
+              ? 'bg-danger-500 text-white' 
+              : 'bg-white/90 text-surface-600 hover:bg-white'
           }`}
         >
           <Heart className={`w-4 h-4 ${isLiked(id.toString()) ? 'fill-current' : ''}`} />
         </motion.button>
 
         {/* Price Badge */}
-        <div className="absolute bottom-2 right-2 z-10 bg-gradient-to-r from-teal-600 to-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
+        <div className="absolute bottom-2 right-2 z-10 bg-gradient-to-r from-brand-600 to-success-600 text-white px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
           {formatPrice(month_price)}/oy
         </div>
       </div>
@@ -169,15 +169,15 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Header */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-1">
+            <h3 className="text-lg font-bold text-surface-900 dark:text-white line-clamp-1">
               {name}
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-teal-600 mb-2">
+          <div className="flex items-center gap-2 text-brand-600 mb-2">
             <Building2 className="w-4 h-4" />
             <span className="text-sm font-medium line-clamp-1">{universityName}</span>
           </div>
-          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+          <div className="flex items-center gap-2 text-surface-600 dark:text-surface-300">
             <MapPin className="w-4 h-4" />
             <span className="text-sm line-clamp-1">{address}</span>
           </div>
@@ -186,14 +186,14 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-teal-600" />
-            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+            <Users className="w-4 h-4 text-brand-600" />
+            <span className="text-sm text-surface-700 dark:text-surface-300 font-medium">
               Bo'sh joy: {totalFreeSpaces}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-blue-600" />
-            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+            <Building2 className="w-4 h-4 text-brand-600" />
+            <span className="text-sm text-surface-700 dark:text-surface-300 font-medium">
               Xonalar: {room_statistics ? room_statistics.total.rooms : '?'}
             </span>
           </div>
@@ -202,14 +202,14 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Rules Summary */}
         {rules && rules.length > 0 && (
           <div className="mb-4 space-y-1">
-            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-1">
+            <div className="flex items-center gap-2 text-surface-500 dark:text-surface-400 mb-1">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span className="text-[10px] font-bold uppercase tracking-wider">Asosiy Qoidalar</span>
             </div>
             <div className="flex flex-col gap-1">
               {rules.map((rule, idx) => (
-                <p key={rule.id || idx} className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1 flex items-center gap-1">
-                  <span className="w-1 h-1 bg-teal-500 rounded-full flex-shrink-0"></span>
+                <p key={rule.id || idx} className="text-xs text-surface-600 dark:text-surface-400 line-clamp-1 flex items-center gap-1">
+                  <span className="w-1 h-1 bg-brand-500 rounded-full flex-shrink-0"></span>
                   {rule.rule}
                 </p>
               ))}
@@ -220,13 +220,13 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Amenities */}
         <div className="flex flex-wrap gap-2 mb-4">
           {amenities.slice(0, 3).map((amenity, idx) => (
-            <div key={idx} className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
-              <CheckCircle className="w-3 h-3 text-green-500" />
-              <span className="text-xs text-gray-700 dark:text-gray-300">{amenity}</span>
+            <div key={idx} className="flex items-center gap-1 bg-surface-100 dark:bg-surface-700 px-2 py-1 rounded-full">
+              <CheckCircle className="w-3 h-3 text-success-500" />
+              <span className="text-xs text-surface-700 dark:text-surface-300">{amenity}</span>
             </div>
           ))}
           {amenities.length > 3 && (
-            <span className="text-xs text-gray-500 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
+            <span className="text-xs text-surface-500 bg-surface-100 dark:bg-surface-700 px-2 py-1 rounded-full">
               +{amenities.length - 3}
             </span>
           )}
@@ -235,7 +235,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Description */}
         {description && (
           <div className="flex-1 mb-4">
-            <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-3">
+            <p className="text-surface-600 dark:text-surface-300 text-sm line-clamp-3">
               {description}
             </p>
           </div>
@@ -247,7 +247,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onSelect}
-            className="flex-1 bg-gradient-to-r from-teal-600 to-green-600 text-white py-2.5 px-4 rounded-lg font-medium hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
+            className="flex-1 bg-gradient-to-r from-brand-600 to-success-600 text-white py-2.5 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
           >
             Ko'rish
           </motion.button>
@@ -257,7 +257,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={(e) => { e.stopPropagation(); onApplicationStart(); }}
-              className="px-4 py-2.5 border-2 border-teal-600 text-teal-600 rounded-lg font-medium hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all duration-300 whitespace-nowrap"
+              className="px-4 py-2.5 border-2 border-brand-600 text-brand-600 rounded-xl font-medium hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all duration-150 whitespace-nowrap"
             >
               Ariza
             </motion.button>

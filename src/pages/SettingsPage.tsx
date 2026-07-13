@@ -42,14 +42,14 @@ const SettingsPage: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
             Tizimga kirish talab etiladi
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors duration-200"
           >
             Tizimga kirish
           </button>
@@ -97,7 +97,7 @@ const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
       <Header />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -109,14 +109,14 @@ const SettingsPage: React.FC = () => {
           className="mb-8"
         >
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-gray-600 to-gray-700 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-r from-surface-600 to-surface-700 rounded-xl flex items-center justify-center">
               <Settings className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-surface-900 dark:text-white">
                 Sozlamalar
               </h1>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-surface-600 dark:text-surface-300">
                 Hisobingiz va ilovangiz sozlamalarini boshqaring
               </p>
             </div>
@@ -130,7 +130,7 @@ const SettingsPage: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm p-6"
             >
               <nav className="space-y-2">
                 {tabs.map((tab) => (
@@ -141,8 +141,8 @@ const SettingsPage: React.FC = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400'
+                        : 'text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700'
                     }`}
                   >
                     <tab.icon className="w-5 h-5" />
@@ -159,27 +159,27 @@ const SettingsPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm p-8"
             >
               {/* General Settings */}
               {activeTab === 'general' && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
                     Umumiy Sozlamalar
                   </h2>
                   
                   <div className="space-y-6">
                     {/* Theme Toggle */}
-                    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <div className="flex items-center justify-between p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${theme === 'dark' ? 'bg-gray-800 text-yellow-400' : 'bg-yellow-100 text-yellow-600'}`}>
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${theme === 'dark' ? 'bg-surface-800 text-warning-400' : 'bg-warning-100 text-warning-600'}`}>
                           {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
+                          <h3 className="font-medium text-surface-900 dark:text-white">
                             {theme === 'dark' ? "Qorong'u rejim" : "Kunduzgi rejim"}
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                          <p className="text-sm text-surface-600 dark:text-surface-300">
                             {theme === 'dark' ? "Ko'zlaringizni himoya qilish uchun qorong'u mavzuni yoqing" : "Yorqin va qulay kunduzgi mavzuni yoqing"}
                           </p>
                         </div>
@@ -187,7 +187,7 @@ const SettingsPage: React.FC = () => {
                       <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={toggleTheme}
-                        className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${theme === 'dark' ? 'bg-teal-600' : 'bg-gray-300'}`}
+                        className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${theme === 'dark' ? 'bg-brand-600' : 'bg-surface-300'}`}
                       >
                         <motion.div
                           animate={{ x: theme === 'dark' ? 24 : 0 }}
@@ -198,16 +198,16 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     {/* Language */}
-                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <div className="p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                          <Globe className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                        <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+                          <Globe className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
+                          <h3 className="font-medium text-surface-900 dark:text-white">
                             Til
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                          <p className="text-sm text-surface-600 dark:text-surface-300">
                             Ilova tilini tanlang
                           </p>
                         </div>
@@ -215,10 +215,10 @@ const SettingsPage: React.FC = () => {
                       <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                        className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                           theme === 'dark' 
-                            ? 'border-gray-600 bg-gray-700 text-white' 
-                            : 'border-gray-300 bg-white text-gray-900'
+                            ? 'border-surface-600 bg-surface-700 text-white' 
+                            : 'border-surface-300 bg-white text-surface-900'
                         }`}
                       >
                         <option value="uz">O'zbek tili</option>
@@ -228,25 +228,25 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     {/* Mobile App */}
-                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <div className="p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                       <div className="flex items-center gap-3 mb-4">
-                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
-                          <Smartphone className="w-5 h-5 text-green-600 dark:text-green-400" />
+                        <div className="w-10 h-10 bg-success-100 dark:bg-success-900/30 rounded-xl flex items-center justify-center">
+                          <Smartphone className="w-5 h-5 text-success-600 dark:text-success-400" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
+                          <h3 className="font-medium text-surface-900 dark:text-white">
                             Mobil ilova
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                          <p className="text-sm text-surface-600 dark:text-surface-300">
                             JoyBor mobil ilovasini yuklab oling
                           </p>
                         </div>
                       </div>
                       <div className="flex gap-3">
-                        <button className="flex-1 bg-black text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-colors duration-200">
+                        <button className="flex-1 bg-black text-white py-3 px-4 rounded-xl font-medium hover:bg-surface-800 transition-colors duration-200">
                           App Store
                         </button>
-                        <button className="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-green-700 transition-colors duration-200">
+                        <button className="flex-1 bg-success-600 text-white py-3 px-4 rounded-xl font-medium hover:bg-success-700 transition-colors duration-200">
                           Google Play
                         </button>
                       </div>
@@ -258,23 +258,23 @@ const SettingsPage: React.FC = () => {
               {/* Notifications Settings */}
               {activeTab === 'notifications' && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
                     Bildirishnoma Sozlamalari
                   </h2>
                   
                   <div className="space-y-6">
                     {/* Email Notifications */}
-                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <div className="p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center">
-                            <Mail className="w-5 h-5 text-red-600 dark:text-red-400" />
+                          <div className="w-10 h-10 bg-danger-100 dark:bg-danger-900/30 rounded-xl flex items-center justify-center">
+                            <Mail className="w-5 h-5 text-danger-600 dark:text-danger-400" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">
+                            <h3 className="font-medium text-surface-900 dark:text-white">
                               Email bildirishnomalar
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-surface-600 dark:text-surface-300">
                               Muhim yangiliklar haqida email orqali xabar oling
                             </p>
                           </div>
@@ -283,7 +283,7 @@ const SettingsPage: React.FC = () => {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleNotificationChange('email', !notifications.email)}
                           className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                            notifications.email ? 'bg-teal-600' : 'bg-gray-300'
+                            notifications.email ? 'bg-brand-600' : 'bg-surface-300'
                           }`}
                         >
                           <motion.div
@@ -296,17 +296,17 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     {/* Push Notifications */}
-                    <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                    <div className="p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
-                            <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+                            <Bell className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900 dark:text-white">
+                            <h3 className="font-medium text-surface-900 dark:text-white">
                               Push bildirishnomalar
                             </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-surface-600 dark:text-surface-300">
                               Brauzer orqali tezkor bildirishnomalar oling
                             </p>
                           </div>
@@ -315,7 +315,7 @@ const SettingsPage: React.FC = () => {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleNotificationChange('push', !notifications.push)}
                           className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                            notifications.push ? 'bg-teal-600' : 'bg-gray-300'
+                            notifications.push ? 'bg-brand-600' : 'bg-surface-300'
                           }`}
                         >
                           <motion.div
@@ -329,7 +329,7 @@ const SettingsPage: React.FC = () => {
 
                     {/* Specific Notifications */}
                     <div className="space-y-4">
-                      <h3 className="font-medium text-gray-900 dark:text-white">
+                      <h3 className="font-medium text-surface-900 dark:text-white">
                         Maxsus bildirishnomalar
                       </h3>
                       
@@ -338,12 +338,12 @@ const SettingsPage: React.FC = () => {
                         { key: 'messages', label: 'Yangi xabarlar', desc: 'Yangi xabarlar kelganda bildirishnoma oling' },
                         { key: 'marketing', label: 'Marketing xabarlari', desc: 'Maxsus takliflar va yangiliklar haqida' }
                       ].map((item) => (
-                        <div key={item.key} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div key={item.key} className="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-700 rounded-lg">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
+                            <p className="font-medium text-surface-900 dark:text-white">
                               {item.label}
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-surface-600 dark:text-surface-300">
                               {item.desc}
                             </p>
                           </div>
@@ -351,7 +351,7 @@ const SettingsPage: React.FC = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleNotificationChange(item.key, !notifications[item.key as keyof typeof notifications])}
                             className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
-                              notifications[item.key as keyof typeof notifications] ? 'bg-teal-600' : 'bg-gray-300'
+                              notifications[item.key as keyof typeof notifications] ? 'bg-brand-600' : 'bg-surface-300'
                             }`}
                           >
                             <motion.div
@@ -370,7 +370,7 @@ const SettingsPage: React.FC = () => {
               {/* Privacy Settings */}
               {activeTab === 'privacy' && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
                     Maxfiylik Sozlamalari
                   </h2>
                   
@@ -381,12 +381,12 @@ const SettingsPage: React.FC = () => {
                       { key: 'showPhone', label: 'Telefon ko\'rsatish', desc: 'Telefon raqamingiz profilida ko\'rinadimi' },
                       { key: 'allowMessages', label: 'Xabar yuborishga ruxsat', desc: 'Boshqalar sizga xabar yubora oladimi' }
                     ].map((item) => (
-                      <div key={item.key} className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+                      <div key={item.key} className="flex items-center justify-between p-4 border border-surface-200 dark:border-surface-700 rounded-xl">
                         <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
+                          <h3 className="font-medium text-surface-900 dark:text-white">
                             {item.label}
                           </h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                          <p className="text-sm text-surface-600 dark:text-surface-300">
                             {item.desc}
                           </p>
                         </div>
@@ -394,7 +394,7 @@ const SettingsPage: React.FC = () => {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handlePrivacyChange(item.key, !privacy[item.key as keyof typeof privacy])}
                           className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                            privacy[item.key as keyof typeof privacy] ? 'bg-teal-600' : 'bg-gray-300'
+                            privacy[item.key as keyof typeof privacy] ? 'bg-brand-600' : 'bg-surface-300'
                           }`}
                         >
                           <motion.div
@@ -412,20 +412,20 @@ const SettingsPage: React.FC = () => {
               {/* Security Settings */}
               {activeTab === 'security' && (
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+                  <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
                     Xavfsizlik Sozlamalari
                   </h2>
                   
                   <div className="space-y-6">
                     {/* Change Password */}
-                    <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    <div className="p-6 border border-surface-200 dark:border-surface-700 rounded-xl">
+                      <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                         Parolni O'zgartirish
                       </h3>
                       
                       <div className="space-y-4">
                         <div>
-                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                             Joriy parol
                           </label>
                           <div className="relative">
@@ -433,16 +433,16 @@ const SettingsPage: React.FC = () => {
                               type={showCurrentPassword ? 'text' : 'password'}
                               value={passwordData.current}
                               onChange={(e) => handlePasswordChange('current', e.target.value)}
-                              className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                              className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                                 theme === 'dark' 
-                                  ? 'border-gray-600 bg-gray-700 text-white' 
-                                  : 'border-gray-300 bg-white text-gray-900'
+                                  ? 'border-surface-600 bg-surface-700 text-white' 
+                                  : 'border-surface-300 bg-white text-surface-900'
                               }`}
                             />
                             <button
                               type="button"
                               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-surface-400 hover:text-surface-600 transition-colors duration-200"
                             >
                               {showCurrentPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
@@ -450,7 +450,7 @@ const SettingsPage: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                             Yangi parol
                           </label>
                           <div className="relative">
@@ -458,16 +458,16 @@ const SettingsPage: React.FC = () => {
                               type={showNewPassword ? 'text' : 'password'}
                               value={passwordData.new}
                               onChange={(e) => handlePasswordChange('new', e.target.value)}
-                              className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                              className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                                 theme === 'dark' 
-                                  ? 'border-gray-600 bg-gray-700 text-white' 
-                                  : 'border-gray-300 bg-white text-gray-900'
+                                  ? 'border-surface-600 bg-surface-700 text-white' 
+                                  : 'border-surface-300 bg-white text-surface-900'
                               }`}
                             />
                             <button
                               type="button"
                               onClick={() => setShowNewPassword(!showNewPassword)}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-surface-400 hover:text-surface-600 transition-colors duration-200"
                             >
                               {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
@@ -475,17 +475,17 @@ const SettingsPage: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                             Parolni tasdiqlang
                           </label>
                           <input
                             type="password"
                             value={passwordData.confirm}
                             onChange={(e) => handlePasswordChange('confirm', e.target.value)}
-                            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 ${
+                            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
                               theme === 'dark' 
-                                ? 'border-gray-600 bg-gray-700 text-white' 
-                                : 'border-gray-300 bg-white text-gray-900'
+                                ? 'border-surface-600 bg-surface-700 text-white' 
+                                : 'border-surface-300 bg-white text-surface-900'
                             }`}
                           />
                         </div>
@@ -494,7 +494,7 @@ const SettingsPage: React.FC = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={handleChangePassword}
-                          className="bg-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors duration-200 flex items-center gap-2"
+                          className="bg-brand-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-700 transition-colors duration-200 flex items-center gap-2"
                         >
                           <Lock className="w-4 h-4" />
                           Parolni Yangilash
@@ -503,36 +503,36 @@ const SettingsPage: React.FC = () => {
                     </div>
 
                     {/* Account Security */}
-                    <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-xl">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    <div className="p-6 border border-surface-200 dark:border-surface-700 rounded-xl">
+                      <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                         Hisob Xavfsizligi
                       </h3>
                       
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
+                            <p className="font-medium text-surface-900 dark:text-white">
                               Ikki bosqichli tasdiqlash
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-surface-600 dark:text-surface-300">
                               Hisobingizni qo'shimcha himoya qiling
                             </p>
                           </div>
-                          <button className="px-4 py-2 border border-teal-600 text-teal-600 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors duration-200">
+                          <button className="px-4 py-2 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors duration-200">
                             Yoqish
                           </button>
                         </div>
 
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
+                            <p className="font-medium text-surface-900 dark:text-white">
                               Faol seanslar
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-surface-600 dark:text-surface-300">
                               Barcha qurilmalardagi faol seanslarni ko'ring
                             </p>
                           </div>
-                          <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                          <button className="px-4 py-2 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-200">
                             Ko'rish
                           </button>
                         </div>
@@ -543,12 +543,12 @@ const SettingsPage: React.FC = () => {
               )}
 
               {/* Save Button */}
-              <div className="flex justify-end mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex justify-end mt-8 pt-6 border-t border-surface-200 dark:border-surface-700">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSaveSettings}
-                  className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  className="bg-gradient-to-r from-brand-600 to-success-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-md transition-all duration-300 flex items-center gap-2"
                 >
                   <Save className="w-5 h-5" />
                   Sozlamalarni Saqlash

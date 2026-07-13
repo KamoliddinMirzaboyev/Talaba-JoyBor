@@ -5,6 +5,8 @@ import { Search, Users, Shield, Home, Building2, ChevronRight, MessageCircle } f
 import { Listing } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 import DormitoryCard from '../components/DormitoryCard';
 import DormitoryMap from '../components/DormitoryMap';
 import { authAPI } from '../services/api';
@@ -161,25 +163,25 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       icon: Home, 
       label: 'Yotoqxonalar', 
       value: `${statistics.dormitories_count}`, 
-      color: 'text-teal-600' 
+      color: 'text-brand-600' 
     },
     { 
       icon: Users, 
       label: 'Talabalar', 
       value: `${statistics.users_count}`, 
-      color: 'text-indigo-600' 
+      color: 'text-info-600' 
     },
     { 
       icon: Building2, 
       label: 'Universitetlar', 
       value: `${statistics.universities_count || 0}`, 
-      color: 'text-green-600' 
+      color: 'text-success-600' 
     },
     { 
       icon: Shield, 
       label: 'Arizalar', 
       value: `${statistics.applications_count || 0}`, 
-      color: 'text-purple-600' 
+      color: 'text-warning-600' 
     }
   ];
 
@@ -189,26 +191,26 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       title: 'Qidiring',
       description: 'O\'zingizga mos yotoqxona toping',
       icon: Search,
-      color: 'bg-teal-100 text-teal-600',
+      color: 'bg-brand-100 text-brand-600',
     },
     {
       step: 2,
       title: 'Ariza Yuboring',
       description: 'Tanlagan joyingizga onlayn ariza yuboring',
       icon: MessageCircle,
-      color: 'bg-green-100 text-green-600',
+      color: 'bg-success-100 text-success-600',
     },
     {
       step: 3,
       title: 'Ko\'chib O\'ting',
       description: 'Tasdiqlangandan so\'ng yangi uyingizga ko\'chib o\'ting',
       icon: Home,
-      color: 'bg-indigo-100 text-indigo-600',
+      color: 'bg-info-100 text-info-600',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
       <Header />
 
       {/* Hero Section */}
@@ -220,14 +222,14 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              <span className="bg-gradient-to-r from-teal-600 to-green-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-bold text-surface-900 dark:text-white mb-6">
+              <span className="bg-gradient-to-r from-brand-600 to-brand-700 bg-clip-text text-transparent">
                 O'zingiz uchun qulay
               </span>
               <br />
               Turar Joy Toping
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-surface-600 dark:text-surface-300 mb-8 max-w-3xl mx-auto">
               O'zbekistondagi eng yaxshi yotoqxonalarni bir joyda.
               Tez, oson va ishonchli.
             </p>
@@ -237,7 +239,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/dormitories')}
-                className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-brand-600 to-brand-700 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-colors duration-150"
               >
                 <Home className="w-5 h-5" />
                 Yotoqxonalarni Ko'rish
@@ -248,7 +250,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-surface-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -259,13 +261,13 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 mb-4`}>
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full bg-surface-100 dark:bg-surface-700 mb-4`}>
                   <stat.icon className={`w-8 h-8 ${stat.color}`} />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <div className="text-3xl font-bold text-surface-900 dark:text-white mb-2">
                   {stat.value}
                 </div>
-                <div className="text-gray-600 dark:text-gray-300">
+                <div className="text-surface-600 dark:text-surface-300">
                   {stat.label}
                 </div>
               </motion.div>
@@ -275,7 +277,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       </section>
 
       {/* Featured Listings */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-surface-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -283,33 +285,24 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-surface-900 dark:text-white mb-4">
               Mashhur Elonlar
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
               Talabalar orasida eng mashhur va yuqori baholangan yashash joylari
             </p>
           </motion.div>
 
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Yotoqxonalar yuklanmoqda...
-                </p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Skeleton className="h-72 w-full rounded-2xl" count={3} />
             </div>
           ) : featuredListings.length === 0 ? (
-            <div className="text-center py-12">
-              <Building2 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Yotoqxonalar topilmadi
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Hozircha yotoqxonalar mavjud emas
-              </p>
-            </div>
+            <EmptyState
+              icon={Building2}
+              title="Yotoqxonalar topilmadi"
+              description="Hozircha yotoqxonalar mavjud emas"
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredListings.map((listing, index) => (
@@ -348,7 +341,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/dormitories')}
-              className="bg-gradient-to-r from-teal-600 to-green-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2"
+              className="bg-gradient-to-r from-brand-600 to-brand-700 text-white px-8 py-3 rounded-xl font-semibold shadow-sm hover:shadow-md transition-colors duration-150 inline-flex items-center gap-2"
             >
               Barcha Yotoqxonalarni Ko'rish
               <ChevronRight className="w-5 h-5" />
@@ -358,7 +351,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       </section>
 
       {/* Map Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-16 bg-white dark:bg-surface-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -367,10 +360,10 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
             className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4"
           >
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl font-bold text-surface-900 dark:text-white mb-4">
                 Xaritada ko'rish
               </h2>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p className="text-surface-600 dark:text-surface-300">
                 Yotoqxonalar joylashuvini interaktiv xarita orqali osonroq toping
               </p>
             </div>
@@ -378,7 +371,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate('/dormitories', { state: { viewMode: 'map' } })}
-              className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-2 hover:gap-3 transition-all"
+              className="text-brand-600 dark:text-brand-400 font-bold flex items-center gap-2 hover:gap-3 transition-all"
             >
               To'liq xaritani ochish
               <ChevronRight className="w-5 h-5" />
@@ -388,16 +381,16 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
           <DormitoryMap 
             height="500px"
             dormitories={featuredListings
-              .filter(l => (l as any).coordinates?.lat && (l as any).coordinates?.lng)
+              .filter(l => l.coordinates?.lat && l.coordinates?.lng)
               .map(listing => ({
                 id: listing.id,
                 name: listing.title,
                 address: listing.location,
                 price: `${listing.price.toLocaleString()} so'm / oy`,
-                phone: String((listing as any).landlord?.phone || (listing as any).phone_number || "+998 90 123 45 67"),
-                latitude: (listing as any).coordinates.lat,
-                longitude: (listing as any).coordinates.lng,
-                availableSpots: (listing as any).available_capacity,
+                phone: String(listing.landlord?.phone || listing.phone_number || "+998 90 123 45 67"),
+                latitude: listing.coordinates.lat,
+                longitude: listing.coordinates.lng,
+                availableSpots: listing.available_capacity,
                 university: listing.university
               }))}
           />
@@ -405,7 +398,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-900">
+      <section className="py-16 bg-surface-50 dark:bg-surface-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -413,10 +406,10 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
             transition={{ duration: 0.6 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-surface-900 dark:text-white mb-4">
               Qanday Ishlaydi?
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
               Uch oddiy qadamda o'zingizga mos yashash joyini toping
             </p>
           </motion.div>
@@ -431,15 +424,15 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
                 className="text-center relative"
               >
                 {index < howItWorks.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-teal-200 to-green-200 dark:from-teal-800 dark:to-green-800 transform translate-x-1/2" />
+                  <div className="hidden md:block absolute top-12 left-1/2 w-full h-0.5 bg-gradient-to-r from-brand-200 to-brand-400 dark:from-brand-800 dark:to-brand-600 transform translate-x-1/2" />
                 )}
                 <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full ${step.color} mb-6 relative z-10`}>
                   <step.icon className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-xl font-semibold text-surface-900 dark:text-white mb-3">
                   {step.step}. {step.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-surface-600 dark:text-surface-300">
                   {step.description}
                 </p>
               </motion.div>
@@ -449,7 +442,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-teal-600 to-green-600">
+      <section className="py-16 bg-gradient-to-r from-brand-600 to-brand-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -459,7 +452,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
             <h2 className="text-3xl font-bold text-white mb-4">
               Bugun O'z Uyingizni Toping!
             </h2>
-            <p className="text-teal-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-brand-100 mb-8 max-w-2xl mx-auto">
               Minglab talabalar bizning platformamiz orqali o'zlariga mos yashash joyini topdilar. Endi sizning navbatingiz!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -467,7 +460,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate(user ? '/dashboard' : '/register')}
-                className="bg-white text-teal-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors duration-300"
+                className="bg-white text-brand-600 px-8 py-3 rounded-xl font-semibold hover:bg-surface-50 transition-colors duration-150"
               >
                 {user ? 'Dashboard' : 'Ro\'yhatdan O\'tish'}
               </motion.button>
@@ -475,7 +468,7 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/about')}
-                className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-teal-600 transition-all duration-300"
+                className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-brand-600 transition-colors duration-150"
               >
                 Batafsil Ma'lumot
               </motion.button>

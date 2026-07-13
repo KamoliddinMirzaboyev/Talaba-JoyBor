@@ -1,6 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'cv11';
+}
+
+/* Standart fokus halqasi — brend rangida, migratsiya qilinmagan joylarda ham ishlaydi */
+:focus-visible {
+  outline: 2px solid theme('colors.brand.500');
+  outline-offset: 2px;
+}
 
 /* Swiper Custom Styles */
 .swiper-pagination-bullet {
@@ -28,144 +41,22 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #cbd5e1; /* slate-300 */
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-track {
-  background: #374151;
+  background: #94a3b8; /* slate-400 */
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #6b7280;
+  background: #475569; /* slate-600 */
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-:root {
-  /* Default to light theme variables */
-  --primary-color: #0d9488;
-  --primary-hover: #0f766e;
-  --secondary-color: #14b8a6;
-  --text-color: #111827; /* dark text for light mode */
-  --background-color: #ffffff; /* light background */
-  --card-background: #ffffff;
-  --border-color: #e5e7eb;
-  --success-color: #10b981;
-  --error-color: #ef4444;
-  --warning-color: #f59e0b;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
-/* Dark mode default styles */
-.dark-mode {
-  --primary-color: #0d9488;
-  --primary-hover: #0f766e;
-  --secondary-color: #14b8a6;
-  --text-color: #f3f4f6;
-  --background-color: #111827;
-  --card-background: #1f2937;
-  --border-color: #374151;
-  --success-color: #10b981;
-  --error-color: #ef4444;
-  --warning-color: #f59e0b;
-}
-
-/* Custom button styles for dark mode */
-.btn-primary {
-  @apply bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300;
-}
-
-.btn-secondary {
-  @apply bg-gray-700 border border-gray-600 hover:border-teal-500 hover:text-teal-400 text-gray-300 px-4 py-2 rounded-lg font-medium transition-all duration-300;
-}
-
-/* Card styles for dark mode */
-.card {
-  @apply bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden;
-}
-
-/* Form input styles for dark mode */
-.form-input {
-  @apply w-full px-4 py-2 border border-gray-600 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all duration-200;
-}
-
-/* Badge styles for dark mode */
-.badge {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-}
-
-.badge-teal {
-  @apply bg-teal-900/30 text-teal-300;
-}
-
-.badge-green {
-  @apply bg-green-900/30 text-green-300;
-}
-
-.badge-red {
-  @apply bg-red-900/30 text-red-300;
-}
-
-.badge-yellow {
-  @apply bg-yellow-900/30 text-yellow-300;
-}
-
-/* Dark mode text styles */
-.text-primary {
-  @apply text-teal-400;
-}
-
-.bg-primary {
-  @apply bg-teal-600;
-}
-
-.border-primary {
-  @apply border-teal-500;
-}
-
-/* Dark mode hover effects */
-.hover-primary:hover {
-  @apply text-teal-400;
-}
-
-.hover-bg-primary:hover {
-  @apply bg-teal-600;
-}
-
-/* Line clamp utilities */
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  background: #64748b; /* slate-500 */
 }

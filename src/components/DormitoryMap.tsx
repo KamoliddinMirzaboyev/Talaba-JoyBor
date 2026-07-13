@@ -57,7 +57,7 @@ const DormitoryMap: React.FC<DormitoryMapProps> = ({
   zoom = 12,
 }) => {
   return (
-    <div style={{ height, width: '100%', borderRadius: '12px', overflow: 'hidden' }} className="shadow-md border border-gray-200 dark:border-gray-700">
+    <div style={{ height, width: '100%', borderRadius: '12px', overflow: 'hidden' }} className="shadow-md border border-surface-200 dark:border-surface-700">
       <MapContainer center={center} zoom={zoom} scrollWheelZoom={true} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -71,23 +71,23 @@ const DormitoryMap: React.FC<DormitoryMapProps> = ({
           >
             <Popup>
               <div className="p-1 min-w-[150px]">
-                <h3 className="font-bold text-gray-900 mb-1 text-sm">{dorm.name}</h3>
-                <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
+                <h3 className="font-bold text-surface-900 mb-1 text-sm">{dorm.name}</h3>
+                <div className="flex items-center gap-1.5 text-xs text-surface-600 mb-1">
                   <MapPin size={12} />
                   <span>{dorm.address}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
-                  <span className="font-semibold text-teal-600">{dorm.price}</span>
+                <div className="flex items-center gap-1.5 text-xs text-surface-600 mb-1">
+                  <span className="font-semibold text-brand-600">{dorm.price}</span>
                 </div>
                 {dorm.availableSpots !== undefined && (
-                  <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1">
+                  <div className="flex items-center gap-1.5 text-xs text-surface-600 mb-1">
                     <Users size={12} />
                     <span>Bo'sh joylar: {dorm.availableSpots}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 text-xs text-gray-600">
+                <div className="flex items-center gap-1.5 text-xs text-surface-600">
                   <Phone size={12} />
-                  <a href={`tel:${dorm.phone}`} className="text-blue-500 hover:underline">{dorm.phone}</a>
+                  <a href={`tel:${dorm.phone}`} className="text-brand-500 hover:underline">{dorm.phone}</a>
                 </div>
               </div>
             </Popup>

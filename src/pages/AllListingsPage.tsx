@@ -6,6 +6,36 @@ import Header from '../components/Header';
 import { Listing } from '../types';
 import { authAPI } from '../services/api';
 import DormitoryCard from '../components/DormitoryCard';
+import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
+
+interface DormitoryApiItem {
+  id: number;
+  name: string;
+  month_price: number;
+  address: string;
+  university_name: string;
+  images: Array<string | { image: string }>;
+  amenities_list: Array<{ name: string }>;
+  description: string;
+  total_capacity?: number;
+  available_capacity?: number;
+  rating?: number;
+  rules?: Array<{ rule: string } | string>;
+  latitude?: number;
+  longitude?: number;
+  room_statistics?: {
+    total: {
+      rooms: number;
+      capacity: number;
+      occupied: number;
+      free: number;
+      occupancy_rate: number;
+    };
+    male: { free: number };
+    female: { free: number };
+  };
+}
 
 const AllListingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,33 +56,7 @@ const AllListingsPage: React.FC = () => {
         const dormitoriesResponse = await authAPI.getDormitories().catch(() => ({ results: [] }));
         const dormitoriesData = dormitoriesResponse.results || dormitoriesResponse;
 
-        const convertedDormitories: Listing[] = (dormitoriesData as any[] || []).map((dormitory: {
-          id: number;
-          name: string;
-          month_price: number;
-          address: string;
-          university_name: string;
-          images: Array<string | { image: string }>;
-          amenities_list: Array<{ name: string }>;
-          description: string;
-          total_capacity?: number;
-          available_capacity?: number;
-          rating?: number;
-          rules?: Array<{ rule: string } | string>;
-          latitude?: number;
-          longitude?: number;
-          room_statistics?: {
-            total: {
-              rooms: number;
-              capacity: number;
-              occupied: number;
-              free: number;
-              occupancy_rate: number;
-            };
-            male: { free: number };
-            female: { free: number };
-          };
-        }) => {
+        const convertedDormitories: Listing[] = ((dormitoriesData as DormitoryApiItem[]) || []).map((dormitory) => {
           const images = Array.isArray(dormitory.images) && dormitory.images.length > 0
             ? dormitory.images.map((img: string | { image: string }) => typeof img === 'string' ? img : img?.image || '')
             : ['/placeholder-dormitory.svg'];
@@ -107,38 +111,32 @@ const AllListingsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Barcha Yotoqxonalar</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-surface-900 dark:text-white">Barcha Yotoqxonalar</h1>
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => navigate('/dormitories')}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-teal-600 to-green-600 text-white hover:shadow-lg"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-success-600 text-white hover:shadow-lg"
           >
             <Home className="w-4 h-4" /> Yotoqxonalar
           </motion.button>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-300">E'lonlar yuklanmoqda...</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Skeleton className="h-80 w-full rounded-2xl" count={6} />
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <Search className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <p className="text-red-500 dark:text-red-400">{error}</p>
+            <Search className="w-16 h-16 text-danger-400 mx-auto mb-4" />
+            <p className="text-danger-500 dark:text-danger-400">{error}</p>
           </div>
         ) : listings.length === 0 ? (
-          <div className="text-center py-12">
-            <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-300">E'lonlar topilmadi</p>
-          </div>
+          <EmptyState icon={Search} title="E'lonlar topilmadi" />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {listings.map((listing) => (

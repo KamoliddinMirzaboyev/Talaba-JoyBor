@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { HelpCircle, Search, ChevronRight, MessageCircle, Phone, Mail, Book, Video, FileText } from 'lucide-react';
 import Header from '../components/Header';
 import ContactForm from '../components/ContactForm';
+import EmptyState from '../components/EmptyState';
 
 const HelpPage: React.FC = () => {
 
@@ -136,21 +137,21 @@ const HelpPage: React.FC = () => {
       description: 'Tezkor yordam olish uchun',
       icon: MessageCircle,
       action: () => window.open('https://t.me/Joyboronlinebot', '_blank'),
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-brand-500 to-brand-600'
     },
     {
       title: 'Telefon qo\'ng\'irog\'i',
       description: '+998 88 956 38 48',
       icon: Phone,
       action: () => window.open('tel:+998889563848'),
-      color: 'from-green-500 to-green-600'
+      color: 'from-success-500 to-success-600'
     },
     {
       title: 'Email yuborish',
       description: 'support@joybor.uz',
       icon: Mail,
       action: () => window.open('mailto:support@joybor.uz'),
-      color: 'from-purple-500 to-purple-600'
+      color: 'from-info-500 to-info-600'
     }
   ];
 
@@ -160,7 +161,7 @@ const HelpPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -171,13 +172,13 @@ const HelpPage: React.FC = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-gradient-to-r from-brand-500 to-info-500 rounded-full flex items-center justify-center mx-auto mb-6">
             <HelpCircle className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold text-surface-900 dark:text-white mb-4">
             Yordam Markazi
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
             JoyBor platformasidan foydalanish bo'yicha barcha savollaringizga javob toping
           </p>
         </motion.div>
@@ -190,13 +191,13 @@ const HelpPage: React.FC = () => {
           className="max-w-2xl mx-auto mb-12"
         >
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-surface-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Savolingizni yozing..."
-              className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 shadow-lg"
+              className="w-full pl-12 pr-4 py-4 text-lg border border-surface-300 dark:border-surface-600 rounded-2xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-800 dark:text-white dark:placeholder-surface-400 shadow-sm"
             />
           </div>
         </motion.div>
@@ -214,7 +215,7 @@ const HelpPage: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={option.action}
-              className={`p-6 bg-gradient-to-r ${option.color} text-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300`}
+              className={`p-6 bg-gradient-to-r ${option.color} text-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-150`}
             >
               <option.icon className="w-8 h-8 mb-4" />
               <h3 className="text-lg font-semibold mb-2">{option.title}</h3>
@@ -230,9 +231,9 @@ const HelpPage: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sticky top-8"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 sticky top-8"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
                 Kategoriyalar
               </h3>
               <nav className="space-y-2">
@@ -242,10 +243,10 @@ const HelpPage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveCategory(category.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-150 ${
                       activeCategory === category.id
-                        ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                        ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400'
+                        : 'text-surface-600 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-700'
                     }`}
                   >
                     <category.icon className="w-5 h-5" />
@@ -262,22 +263,18 @@ const HelpPage: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8"
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-8"
             >
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
                 {categories.find(c => c.id === activeCategory)?.label}
               </h2>
 
               {filteredFaqs.length === 0 ? (
-                <div className="text-center py-12">
-                  <Search className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                    Hech narsa topilmadi
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Qidiruv so'zingizni o'zgartirib ko'ring yoki boshqa kategoriyani tanlang
-                  </p>
-                </div>
+                <EmptyState
+                  icon={Search}
+                  title="Hech narsa topilmadi"
+                  description="Qidiruv so'zingizni o'zgartirib ko'ring yoki boshqa kategoriyani tanlang"
+                />
               ) : (
                 <div className="space-y-4">
                   {filteredFaqs.map((faq, index) => (
@@ -286,21 +283,21 @@ const HelpPage: React.FC = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: index * 0.1 }}
-                      className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
+                      className="border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden"
                     >
                       <motion.button
                         whileHover={{ backgroundColor: 'rgba(0,0,0,0.02)' }}
                         onClick={() => setExpandedFaq(expandedFaq === faq.id ? null : faq.id)}
-                        className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                        className="w-full flex items-center justify-between p-6 text-left hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-150"
                       >
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-white pr-4">
+                        <h3 className="text-lg font-medium text-surface-900 dark:text-white pr-4">
                           {faq.question}
                         </h3>
                         <motion.div
                           animate={{ rotate: expandedFaq === faq.id ? 90 : 0 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                          <ChevronRight className="w-5 h-5 text-surface-400 flex-shrink-0" />
                         </motion.div>
                       </motion.button>
                       
@@ -313,7 +310,7 @@ const HelpPage: React.FC = () => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-6 text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <div className="px-6 pb-6 text-surface-600 dark:text-surface-300 leading-relaxed">
                           {faq.answer}
                         </div>
                       </motion.div>

@@ -34,26 +34,26 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
-            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-400" />
+        <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white dark:bg-surface-800 rounded-2xl shadow-sm p-8 text-center">
+            <div className="w-16 h-16 bg-danger-100 dark:bg-danger-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle className="w-8 h-8 text-danger-600 dark:text-danger-400" />
             </div>
             
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
               Xatolik yuz berdi
             </h2>
             
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-surface-600 dark:text-surface-300 mb-6">
               Sahifani yuklashda muammo yuz berdi. Iltimos, qaytadan urinib ko'ring.
             </p>
 
             {this.state.error && (
               <details className="mb-6 text-left">
-                <summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 mb-2">
+                <summary className="cursor-pointer text-sm text-surface-500 dark:text-surface-400 mb-2">
                   Texnik ma'lumotlar
                 </summary>
-                <pre className="text-xs bg-gray-100 dark:bg-gray-700 p-3 rounded-lg overflow-auto text-red-600 dark:text-red-400">
+                <pre className="text-xs bg-surface-100 dark:bg-surface-700 p-3 rounded-xl overflow-auto text-danger-600 dark:text-danger-400">
                   {this.state.error.message}
                 </pre>
               </details>
@@ -62,7 +62,7 @@ class ErrorBoundary extends Component<Props, State> {
             <div className="flex gap-3">
               <button
                 onClick={this.handleReset}
-                className="flex-1 bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                className="flex-1 bg-brand-600 text-white px-4 py-2 rounded-xl hover:bg-brand-700 transition-colors duration-150 flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 Qaytadan urinish
@@ -70,7 +70,7 @@ class ErrorBoundary extends Component<Props, State> {
               
               <button
                 onClick={this.handleReload}
-                className="flex-1 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                className="flex-1 bg-surface-600 text-white px-4 py-2 rounded-xl hover:bg-surface-700 transition-colors duration-150"
               >
                 Sahifani yangilash
               </button>

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Application, StudentDashboard } from '../types';
+import { sessionStore } from './sessionStore';
 
 // API base URL
 export const API_BASE_URL = 'https://api.joyboronline.uz/api';
@@ -14,7 +15,7 @@ const api: AxiosInstance = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const accessToken = sessionStorage.getItem('access') || sessionStorage.getItem('access_token');
+    const accessToken = sessionStore.getAccess();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -47,14 +48,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = sessionStorage.getItem('refresh') || sessionStorage.getItem('refresh_token');
+        const refreshToken = sessionStore.getRefresh();
         if (refreshToken) {
           const response = await axios.post(apiUrl('/token/refresh/'), {
             refresh: refreshToken,
           });
 
           const { access } = response.data;
-          sessionStorage.setItem('access', access);
+          sessionStore.setAccess(access);
 
           // Retry the original request with new token
           originalRequest.headers.Authorization = `Bearer ${access}`;
@@ -62,9 +63,7 @@ api.interceptors.response.use(
         }
       } catch {
         // Refresh token failed, logout user
-        sessionStorage.removeItem('access');
-        sessionStorage.removeItem('refresh');
-        sessionStorage.removeItem('user');
+        sessionStore.clear();
         window.location.reload();
       }
     }
@@ -159,18 +158,9 @@ export const authAPI = {
     try {
       await api.post('/logout/');
     } catch {
-      // Even if logout fails, clear local storage
+      // Even if logout fails, clear the session
     }
-    sessionStorage.removeItem('access');
-    sessionStorage.removeItem('refresh');
-    sessionStorage.removeItem('access_token');
-    sessionStorage.removeItem('refresh_token');
-    sessionStorage.removeItem('user');
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+    sessionStore.clear();
   },
 
   // Get provinces/cities list

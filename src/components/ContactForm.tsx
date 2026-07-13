@@ -74,75 +74,75 @@ const ContactForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
-      <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
+    <div className="bg-white dark:bg-surface-800 rounded-2xl shadow-sm p-8">
+      <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
         Xabar Yuborish
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Ism Familiya *
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
+                errors.name ? 'border-danger-500' : 'border-surface-300'
               }`}
               placeholder="Aziz Karimov"
             />
             {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              <p className="text-danger-500 text-sm mt-1">{errors.name}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Email Manzil *
             </label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
+                errors.email ? 'border-danger-500' : 'border-surface-300'
               }`}
               placeholder="aziz@example.com"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              <p className="text-danger-500 text-sm mt-1">{errors.email}</p>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Telefon Raqam *
             </label>
             <input
               type="tel"
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                errors.phone ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
+                errors.phone ? 'border-danger-500' : 'border-surface-300'
               }`}
               placeholder="+998901234567"
             />
             {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              <p className="text-danger-500 text-sm mt-1">{errors.phone}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Mavzu *
             </label>
             <select
               value={formData.subject}
               onChange={(e) => handleInputChange('subject', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                errors.subject ? 'border-red-500' : 'border-gray-300'
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
+                errors.subject ? 'border-danger-500' : 'border-surface-300'
               }`}
             >
               <option value="">Mavzuni tanlang</option>
@@ -151,26 +151,26 @@ const ContactForm: React.FC = () => {
               ))}
             </select>
             {errors.subject && (
-              <p className="text-red-500 text-sm mt-1">{errors.subject}</p>
+              <p className="text-danger-500 text-sm mt-1">{errors.subject}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
             Xabar Matni *
           </label>
           <textarea
             value={formData.message}
             onChange={(e) => handleInputChange('message', e.target.value)}
             rows={6}
-            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white resize-none ${
-              errors.message ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white resize-none ${
+              errors.message ? 'border-danger-500' : 'border-surface-300'
             }`}
             placeholder="Xabaringizni bu yerga yozing..."
           />
           {errors.message && (
-            <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+            <p className="text-danger-500 text-sm mt-1">{errors.message}</p>
           )}
         </div>
 
@@ -179,7 +179,7 @@ const ContactForm: React.FC = () => {
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gradient-to-r from-teal-600 to-green-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-4 rounded-xl font-semibold hover:shadow-md transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
             <>
