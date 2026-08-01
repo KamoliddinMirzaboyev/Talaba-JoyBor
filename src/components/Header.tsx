@@ -16,6 +16,7 @@ import {
   Users,
   Phone,
   FileText,
+  Handshake,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNotifications } from "../contexts/NotificationContext";
@@ -41,6 +42,7 @@ const Header: React.FC = () => {
     { label: "Yordam", path: "/help", icon: HelpCircle },
     { label: "Biz Haqimizda", path: "/about", icon: Users },
     { label: "Aloqa", path: "/contact", icon: Phone },
+    { label: "Hamkorlik", path: "/hamkorlik", icon: Handshake },
   ];
 
   const profileMenuItems = [
@@ -115,21 +117,23 @@ const Header: React.FC = () => {
             </span>
           </motion.button>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => navigate("/dormitories")}
-              className={`${isActive("/dormitories") ? "text-brand-600 dark:text-brand-400 font-semibold after:w-full" : "text-surface-700 dark:text-surface-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-brand-500 after:rounded-full after:transition-all after:duration-300 hover:text-brand-600 dark:hover:text-brand-400 hover:after:w-full`}
-            >
-              Yotoqxonalar
-            </button>
-
-            <button
-              onClick={() => navigate("/help")}
-              className={`${isActive("/help") ? "text-brand-600 dark:text-brand-400 font-semibold after:w-full" : "text-surface-700 dark:text-surface-300 after:w-0"} relative pb-1 after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-brand-500 after:rounded-full after:transition-all after:duration-300 hover:text-brand-600 dark:hover:text-brand-400 hover:after:w-full`}
-            >
-              Yordam
-            </button>
+          {/* Desktop Navigation — public sahifalar (Bosh sahifa = logo) */}
+          <nav className="hidden md:flex items-center gap-5 lg:gap-7">
+            {menuItems
+              .filter((item) => item.path !== "/")
+              .map((item) => (
+                <button
+                  key={item.path}
+                  onClick={() => navigate(item.path)}
+                  className={`${
+                    isActive(item.path)
+                      ? "text-brand-600 dark:text-brand-400 font-semibold after:w-full"
+                      : "text-surface-700 dark:text-surface-300 after:w-0"
+                  } relative pb-1 text-sm lg:text-base whitespace-nowrap after:content-[''] after:absolute after:left-0 after:-bottom-1 after:h-[3px] after:bg-brand-500 after:rounded-full after:transition-all after:duration-300 hover:text-brand-600 dark:hover:text-brand-400 hover:after:w-full`}
+                >
+                  {item.label}
+                </button>
+              ))}
           </nav>
 
           {/* User Actions */}

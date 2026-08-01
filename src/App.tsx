@@ -24,6 +24,7 @@ import SettingsPage from './pages/SettingsPage';
 import HelpPage from './pages/HelpPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PartnershipPage from './pages/PartnershipPage';
 import AllListingsPage from './pages/AllListingsPage';
 import { Listing } from './types';
 
@@ -146,6 +147,7 @@ function AppContent() {
         <Route path="/dormitories" element={<DormitoriesPage onListingSelect={handleListingSelect} onApplicationStart={handleApplicationStart} />} />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/hamkorlik" element={<PartnershipPage />} />
         <Route path="/contact" element={<ContactPage />} />
         
         {/* Auth Routes - redirect to dashboard if already logged in */}
