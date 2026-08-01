@@ -2,10 +2,19 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { Application, StudentDashboard } from '../types';
 import { sessionStore } from './sessionStore';
 
-// API base URL
-export const API_BASE_URL = 'https://api.joyboronline.uz/api';
-export const API_ORIGIN = new URL(API_BASE_URL).origin;
+// API base URL — production JoyBor Django API
+export const API_BASE_URL = 'https://api.joy-bor.uz/api';
+export const API_ORIGIN = 'https://api.joy-bor.uz';
 export const apiUrl = (path: string) => `${API_BASE_URL}/${path.replace(/^\/+/, '')}`;
+
+/** API ba'zan http media URL qaytaradi */
+export function mediaUrl(url?: string | null): string {
+  if (!url) return '';
+  if (url.startsWith('//')) return `https:${url}`;
+  if (url.startsWith('http://api.joy-bor.uz')) return url.replace('http://', 'https://');
+  if (url.startsWith('/')) return `${API_ORIGIN}${url}`;
+  return url;
+}
 
 // Create axios instance
 const api: AxiosInstance = axios.create({
@@ -153,13 +162,8 @@ export const authAPI = {
     return response.data;
   },
 
-  // Logout (optional - can be handled client-side)
+  // Logout — client-side only (API da /logout/ yo'q; JWT blacklist yo'q)
   logout: async (): Promise<void> => {
-    try {
-      await api.post('/logout/');
-    } catch {
-      // Even if logout fails, clear the session
-    }
     sessionStore.clear();
   },
 
@@ -220,24 +224,22 @@ export const authAPI = {
       // Create FormData for file uploads
       const formData = new FormData();
       
-      // MAJBURIY MAYDONLAR (required=true)
-      // 1. user (integer, required)
-      formData.append('user', applicationData.user.toString());
-      
-      // 2. dormitory (integer, required)
+      // API swagger: majburiy formData = gender, name, dormitory
+      // user JWT dan bog'lanadi; yuborilsa ham xato bermasligi uchun saqlanadi
+      if (applicationData.user) {
+        formData.append('user', applicationData.user.toString());
+      }
       formData.append('dormitory', applicationData.dormitory.toString());
-      
-      // 3. name (string, maxLength: 128, required)
       formData.append('name', applicationData.name.trim());
-      
-      // 4. province (integer, required)
-      formData.append('province', applicationData.province.toString());
-      
-      // 5. district (integer, required)
-      formData.append('district', applicationData.district.toString());
-      
-      // 6. course (string, required)
-      formData.append('course', applicationData.course.trim());
+      if (applicationData.province) {
+        formData.append('province', applicationData.province.toString());
+      }
+      if (applicationData.district) {
+        formData.append('district', applicationData.district.toString());
+      }
+      if (applicationData.course?.trim()) {
+        formData.append('course', applicationData.course.trim());
+      }
       
       // 7. gender (string, required)
       formData.append('gender', applicationData.gender.trim());
@@ -278,9 +280,9 @@ export const authAPI = {
         formData.append('passport', applicationData.passport.trim());
       }
       
-      // pinfl (string, maxLength: 14, nullable)
+      // jshshir (API field; UI da pinfl deb yuritiladi)
       if (applicationData.pinfl && applicationData.pinfl.trim()) {
-        formData.append('pinfl', applicationData.pinfl.trim());
+        formData.append('jshshir', applicationData.pinfl.trim());
       }
       
       // comment (string, nullable)
@@ -432,30 +434,71 @@ export const authAPI = {
 
   // Mark notification as read
   markNotificationAsRead: async (notificationId: number): Promise<unknown> => {
-    try {
-      const response = await api.patch(`/notifications/${notificationId}/`, {
-        read: true
-      });
-      return response.data;
-    } catch (error: unknown) {
-      // Fallback if PATCH not supported, try POST to common mark-read endpoint
-      try {
-        const response = await api.post(`/notifications/${notificationId}/mark-read/`);
-        return response.data;
-      } catch {
-        throw error;
-      }
-    }
+    const response = await api.post('/notifications/mark-read/', { id: notificationId });
+    return response.data;
   },
 
   // Mark all notifications as read
   markAllNotificationsAsRead: async (): Promise<unknown> => {
-    try {
-      const response = await api.post('/notifications/mark-all-read/');
-      return response.data;
-    } catch (error: unknown) {
-      throw error;
-    }
+    const response = await api.post('/notifications/mark-all-read/', {});
+    return response.data;
+  },
+
+  getUnreadCount: async (): Promise<{ count?: number; unread?: number } | number> => {
+    const response = await api.get('/notifications/unread-count/');
+    return response.data;
+  },
+
+  // Student-specific resources
+  getStudentPayments: async (): Promise<unknown[]> => {
+    const response = await api.get('/student/payments/');
+    return response.data?.results || response.data || [];
+  },
+
+  getStudentAttendance: async (): Promise<unknown[]> => {
+    const response = await api.get('/student/attendance/');
+    return response.data?.results || response.data || [];
+  },
+
+  getStudentCollections: async (): Promise<unknown[]> => {
+    const response = await api.get('/student/collections/');
+    return response.data?.results || response.data || [];
+  },
+
+  getStudentRoommates: async (): Promise<unknown[]> => {
+    const response = await api.get('/student/roommates/');
+    return response.data?.results || response.data || [];
+  },
+
+  // Complaints (shikoyat)
+  getComplaints: async (params?: { status?: string; category?: string; page?: number }): Promise<unknown[]> => {
+    const response = await api.get('/complaints/', { params });
+    return response.data?.results || response.data || [];
+  },
+
+  createComplaint: async (data: {
+    title: string;
+    description: string;
+    category?: 'room' | 'food' | 'staff' | 'noise' | 'other';
+  }): Promise<unknown> => {
+    const response = await api.post('/complaints/', data);
+    return response.data;
+  },
+
+  getComplaint: async (id: number | string): Promise<unknown> => {
+    const response = await api.get(`/complaints/${id}/`);
+    return response.data;
+  },
+
+  // Single dormitory
+  getDormitory: async (id: number | string): Promise<unknown> => {
+    const response = await api.get(`/dormitories/${id}/`);
+    return response.data;
+  },
+
+  getApartment: async (id: number | string): Promise<unknown> => {
+    const response = await api.get(`/apartments/${id}/`);
+    return response.data;
   },
 
 };

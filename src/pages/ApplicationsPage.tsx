@@ -93,7 +93,7 @@ const ApplicationsPage: React.FC = () => {
           </h2>
           <button
             onClick={() => navigate("/login")}
-            className="bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-200"
           >
             Tizimga kirish
           </button>
@@ -338,7 +338,7 @@ const ApplicationsPage: React.FC = () => {
 
                   {application.comment && (
                     <div className="mt-4 ml-8">
-                      <p className={`text-sm p-3 rounded-lg border-l-4 border-brand-500 ${
+                      <p className={`text-sm p-3 rounded-xl border-l-4 border-brand-500 ${
                         theme === "dark"
                           ? "text-surface-300 bg-surface-700"
                           : "text-surface-700 bg-surface-50"

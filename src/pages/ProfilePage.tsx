@@ -263,7 +263,7 @@ const ProfilePage: React.FC = () => {
             <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition-colors duration-200"
+              className="bg-brand-600 text-white px-4 py-2 rounded-xl hover:bg-brand-700 transition-colors duration-200"
             >
               Qaytadan urinish
             </button>
@@ -399,7 +399,7 @@ const ProfilePage: React.FC = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200"
+                        className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200"
                         type="button"
                       >
                         <Edit3 className="w-4 h-4" />
@@ -410,7 +410,7 @@ const ProfilePage: React.FC = () => {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="flex items-center gap-2 px-4 py-2 bg-success-600 text-white rounded-lg hover:bg-success-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 bg-success-600 text-white rounded-xl hover:bg-success-700 transition-colors duration-200"
                           type="submit"
                           disabled={saving}
                         >
@@ -421,7 +421,7 @@ const ProfilePage: React.FC = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={handleCancel}
-                          className="flex items-center gap-2 px-4 py-2 border border-surface-600 text-surface-300 rounded-lg hover:bg-surface-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 border border-surface-600 text-surface-300 rounded-xl hover:bg-surface-700 transition-colors duration-200"
                           type="button"
                           disabled={saving}
                         >
@@ -662,7 +662,7 @@ const ProfilePage: React.FC = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={fetchApplications}
-                      className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200"
+                      className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200"
                       type="button"
                       disabled={applicationsLoading}
                     >
@@ -767,7 +767,7 @@ const ProfilePage: React.FC = () => {
                               <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Sizning izohingiz:</strong>
                               </p>
-                              <p className={`text-sm p-3 rounded-lg ${
+                              <p className={`text-sm p-3 rounded-xl ${
                                 theme === 'dark' 
                                   ? 'text-surface-200 bg-surface-600' 
                                   : 'text-surface-700 bg-surface-100'
@@ -782,7 +782,7 @@ const ProfilePage: React.FC = () => {
                               <p className={`text-sm mb-1 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
                                 <strong>Admin izohi:</strong>
                               </p>
-                              <p className={`text-sm p-3 rounded-lg ${
+                              <p className={`text-sm p-3 rounded-xl ${
                                 theme === 'dark' 
                                   ? 'text-brand-200 bg-brand-900/30 border border-brand-800' 
                                   : 'text-brand-700 bg-brand-50 border border-brand-200'
@@ -803,7 +803,7 @@ const ProfilePage: React.FC = () => {
                                   href={application.document}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
+                                  className={`flex items-center gap-2 p-3 rounded-xl border transition-colors duration-200 ${
                                     theme === 'dark' 
                                       ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-brand-400' 
                                       : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-brand-600'
@@ -819,7 +819,7 @@ const ProfilePage: React.FC = () => {
                                   href={application.passport_image_first}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
+                                  className={`flex items-center gap-2 p-3 rounded-xl border transition-colors duration-200 ${
                                     theme === 'dark' 
                                       ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-success-400' 
                                       : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-success-600'
@@ -835,7 +835,7 @@ const ProfilePage: React.FC = () => {
                                   href={application.passport_image_second}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
+                                  className={`flex items-center gap-2 p-3 rounded-xl border transition-colors duration-200 ${
                                     theme === 'dark' 
                                       ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-success-400' 
                                       : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-success-600'
@@ -851,7 +851,7 @@ const ProfilePage: React.FC = () => {
                                   href={application.user_image}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`flex items-center gap-2 p-3 rounded-lg border transition-colors duration-200 ${
+                                  className={`flex items-center gap-2 p-3 rounded-xl border transition-colors duration-200 ${
                                     theme === 'dark' 
                                       ? 'bg-surface-600 border-surface-500 hover:bg-surface-500 text-brand-400' 
                                       : 'bg-surface-50 border-surface-200 hover:bg-surface-100 text-brand-600'

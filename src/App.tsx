@@ -75,10 +75,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-900">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Yuklanmoqda...</p>
+          <div className="w-12 h-12 border-4 border-brand-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-surface-600 dark:text-surface-300">Yuklanmoqda...</p>
         </div>
       </div>
     );
@@ -97,10 +97,10 @@ function AuthRedirect({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-surface-900">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-teal-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-300">Yuklanmoqda...</p>
+          <div className="w-8 h-8 border-4 border-brand-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-surface-300">Yuklanmoqda...</p>
         </div>
       </div>
     );
@@ -138,7 +138,7 @@ function AppContent() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${theme === 'dark' ? 'bg-surface-900' : 'bg-surface-50'}`}>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage onListingSelect={handleListingSelect} onApplicationStart={handleApplicationStart} />} />

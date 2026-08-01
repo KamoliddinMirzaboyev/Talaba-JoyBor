@@ -33,8 +33,9 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ text = "Google or
         } else {
           setError('Google ma\'lumotlari olinmadi');
         }
-      } catch (err: any) {
-        setError(err.response?.data?.error || 'Google orqali kirishda xatolik yuz berdi');
+      } catch (err: unknown) {
+        const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+        setError(msg || 'Google orqali kirishda xatolik yuz berdi');
       } finally {
         setIsLoading(false);
       }

@@ -32,7 +32,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Header from "../components/Header";
 import Skeleton from "../components/Skeleton";
 import EmptyState from "../components/EmptyState";
-import { API_ORIGIN, authAPI } from "../services/api";
+import { mediaUrl, authAPI } from "../services/api";
 import { formatDate, formatDateTime } from "../utils/format";
 
 
@@ -209,8 +209,7 @@ const DashboardPage: React.FC = () => {
 
   // Student Dashboard mavjud bo'lsa (yotoqxonaga qabul qilingan talaba)
   if (studentDashboard) {
-    const baseUrl = API_ORIGIN;
-    const userImage = studentDashboard.picture ? (studentDashboard.picture.startsWith('http') ? studentDashboard.picture : `${baseUrl}${studentDashboard.picture}`) : null;
+    const userImage = studentDashboard.picture ? mediaUrl(studentDashboard.picture) : null;
 
     const totalPaid = studentDashboard.recent_payments?.reduce((sum, p) => sum + p.amount, 0) || 0;
     const annualPrice = studentDashboard.dormitory_info?.year_price || 1;
@@ -291,7 +290,7 @@ const DashboardPage: React.FC = () => {
                 >
                   <div className="flex justify-between items-center mb-4">
                     <p className="text-[10px] font-bold text-surface-400 dark:text-surface-500 uppercase tracking-widest">To'lovlar Holati</p>
-                    <span className="text-xs font-black text-brand-600 bg-brand-50 dark:bg-brand-900/20 px-2 py-1 rounded-lg">
+                    <span className="text-xs font-black text-brand-600 bg-brand-50 dark:bg-brand-900/20 px-2 py-1 rounded-xl">
                       {paymentPercentage}%
                     </span>
                   </div>
@@ -338,7 +337,7 @@ const DashboardPage: React.FC = () => {
                     </h2>
                   </div>
                 </div>
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-surface-50 dark:bg-surface-800 rounded-lg text-[11px] font-bold text-surface-500 max-w-[200px]">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-surface-50 dark:bg-surface-800 rounded-xl text-[11px] font-bold text-surface-500 max-w-[200px]">
                   <MapPin className="w-3.5 h-3.5 text-danger-500 flex-shrink-0" />
                   <span className="truncate">{studentDashboard.dormitory_info?.address}</span>
                 </div>
@@ -440,7 +439,7 @@ const DashboardPage: React.FC = () => {
                       { label: "Kurs / Guruh", value: `${studentDashboard.course}-kurs • ${studentDashboard.group}-guruh`, icon: Clock, color: "text-brand-500" },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-transparent hover:border-surface-200 dark:hover:border-surface-700 transition-all duration-150">
-                        <div className={`w-10 h-10 bg-white dark:bg-surface-900 rounded-lg flex items-center justify-center ${item.color} shadow-sm`}>
+                        <div className={`w-10 h-10 bg-white dark:bg-surface-900 rounded-xl flex items-center justify-center ${item.color} shadow-sm`}>
                           <item.icon className="w-5 h-5" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -462,7 +461,7 @@ const DashboardPage: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center text-brand-600">
+                      <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center text-brand-600">
                         <User className="w-4 h-4" />
                       </div>
                       <span className="text-xs font-bold text-surface-700 dark:text-surface-300">Passport</span>
@@ -471,7 +470,7 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <div className="flex items-center justify-between p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-success-100 dark:bg-success-900/30 rounded-lg flex items-center justify-center text-success-600">
+                      <div className="w-8 h-8 bg-success-100 dark:bg-success-900/30 rounded-xl flex items-center justify-center text-success-600">
                         <ShieldCheck className="w-4 h-4" />
                       </div>
                       <span className="text-xs font-bold text-surface-700 dark:text-surface-300">Imtiyoz</span>

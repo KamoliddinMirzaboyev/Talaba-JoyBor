@@ -116,7 +116,7 @@ const NotificationsPage: React.FC = () => {
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-200"
           >
             Tizimga kirish
           </button>
@@ -231,7 +231,7 @@ const NotificationsPage: React.FC = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
                     <Bell className="w-6 h-6 text-brand-600 dark:text-brand-400" />
                   </div>
                   {unreadCount > 0 && (
@@ -255,7 +255,7 @@ const NotificationsPage: React.FC = () => {
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200 text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200 text-sm font-medium"
                   >
                     <CheckCircle className="w-4 h-4" />
                     <span className="hidden sm:inline">Barchasini o'qilgan</span>
@@ -264,7 +264,7 @@ const NotificationsPage: React.FC = () => {
                 )}
                 <button
                   onClick={() => window.location.reload()}
-                  className="flex items-center gap-2 px-4 py-2 bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-300 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors duration-200 text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2 bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors duration-200 text-sm font-medium"
                 >
                   <RefreshCw className="w-4 h-4" />
                   Yangilash
@@ -290,7 +290,7 @@ const NotificationsPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Bildirishnomalarni qidiring..."
-                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
+                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
                     ? 'border-surface-600 bg-surface-700 text-white placeholder-surface-400'
                     : 'border-surface-300 bg-white text-surface-900 placeholder-surface-500'
                   }`}
@@ -303,7 +303,7 @@ const NotificationsPage: React.FC = () => {
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as 'all' | 'unread' | 'application' | 'message' | 'system')}
-                className={`px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
+                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
                     ? 'border-surface-600 bg-surface-700 text-white'
                     : 'border-surface-300 bg-white text-surface-900'
                   }`}
@@ -350,7 +350,7 @@ const NotificationsPage: React.FC = () => {
                   <div className="flex items-start gap-3 sm:gap-4">
                     {/* Clean icon */}
                     <div className="relative flex-shrink-0">
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${getNotificationColor(notification.type)}`}>
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${getNotificationColor(notification.type)}`}>
                         {getNotificationIcon(notification.type)}
                       </div>
                       {!notification.read && (
@@ -360,7 +360,7 @@ const NotificationsPage: React.FC = () => {
 
                     {/* Image if available */}
                     {notification.image && (
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden flex-shrink-0 border border-surface-200 dark:border-surface-700">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-surface-200 dark:border-surface-700">
                         <img
                           src={notification.image}
                           alt="Notification"
@@ -426,14 +426,14 @@ const NotificationsPage: React.FC = () => {
                                 e.stopPropagation();
                                 handleMarkAsRead(notification.id);
                               }}
-                              className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-colors duration-200 text-xs sm:text-sm"
+                              className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200 text-xs sm:text-sm"
                               title="O'qilgan deb belgilash"
                             >
                               <Check className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span className="hidden sm:inline">O'qilgan</span>
                             </button>
                           ) : (
-                            <div className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400 rounded-lg text-xs sm:text-sm">
+                            <div className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400 rounded-xl text-xs sm:text-sm">
                               <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span className="hidden sm:inline">O'qilgan</span>
                             </div>
@@ -459,7 +459,7 @@ const NotificationsPage: React.FC = () => {
             <button
               onClick={handleLoadMore}
               disabled={loadingMore}
-              className="px-6 py-3 bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+              className="px-6 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
             >
               {loadingMore ? 'Yuklanmoqda...' : 'Ko\'proq yuklash'}
             </button>

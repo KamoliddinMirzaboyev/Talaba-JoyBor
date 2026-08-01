@@ -49,7 +49,7 @@ const SettingsPage: React.FC = () => {
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-brand-600 text-white px-6 py-3 rounded-lg hover:bg-brand-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-200"
           >
             Tizimga kirish
           </button>
@@ -338,7 +338,7 @@ const SettingsPage: React.FC = () => {
                         { key: 'messages', label: 'Yangi xabarlar', desc: 'Yangi xabarlar kelganda bildirishnoma oling' },
                         { key: 'marketing', label: 'Marketing xabarlari', desc: 'Maxsus takliflar va yangiliklar haqida' }
                       ].map((item) => (
-                        <div key={item.key} className="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-700 rounded-lg">
+                        <div key={item.key} className="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-700 rounded-xl">
                           <div>
                             <p className="font-medium text-surface-900 dark:text-white">
                               {item.label}
@@ -518,7 +518,7 @@ const SettingsPage: React.FC = () => {
                               Hisobingizni qo'shimcha himoya qiling
                             </p>
                           </div>
-                          <button className="px-4 py-2 border border-brand-600 text-brand-600 rounded-lg hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors duration-200">
+                          <button className="px-4 py-2 border border-brand-600 text-brand-600 rounded-xl hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors duration-200">
                             Yoqish
                           </button>
                         </div>
@@ -532,7 +532,7 @@ const SettingsPage: React.FC = () => {
                               Barcha qurilmalardagi faol seanslarni ko'ring
                             </p>
                           </div>
-                          <button className="px-4 py-2 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 rounded-lg hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-200">
+                          <button className="px-4 py-2 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-200">
                             Ko'rish
                           </button>
                         </div>

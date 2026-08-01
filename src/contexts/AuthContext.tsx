@@ -4,6 +4,16 @@ import { User } from '../types';
 import { authAPI } from '../services/api';
 import { sessionStore } from '../services/sessionStore';
 
+interface JwtPayload {
+  exp: number;
+  user_id: number;
+  username?: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  phone?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -42,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (token) {
         try {
-          const decoded: any = jwtDecode(token);
+          const decoded = jwtDecode<JwtPayload>(token);
 
           // Token muddati tugaganmi tekshirish
           if (decoded.exp * 1000 < Date.now()) {
@@ -58,8 +68,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const profileData = await authAPI.getProfile();
             setUser({ ...profileData, id: decoded.user_id });
             setIsAuthenticated(true);
-          } catch (error: any) {
-            if (error.response?.status === 401) {
+          } catch (error: unknown) {
+            const status = (error as { response?: { status?: number } })?.response?.status;
+            if (status === 401) {
                 sessionStore.clear();
                 setUser(null);
                 setIsAuthenticated(false);
@@ -76,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setIsAuthenticated(true);
             }
           }
-        } catch (error) {
+        } catch {
           sessionStore.clear();
           setUser(null);
           setIsAuthenticated(false);
@@ -96,11 +107,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
     try {
-      const decoded: any = jwtDecode(access);
+      const decoded = jwtDecode<JwtPayload>(access);
       try {
         const profileData = await authAPI.getProfile();
         setUser({ ...profileData, id: decoded.user_id });
-      } catch (error) {
+      } catch {
         // Fallback to decoded token data
         setUser({
           id: decoded.user_id,
@@ -112,7 +123,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         });
       }
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
     }
