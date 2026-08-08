@@ -111,7 +111,7 @@ const Header: React.FC = () => {
             onClick={() => navigate("/")}
             className="flex items-center gap-2"
           >
-            <img src="/logo.svg" alt="JoyBor" className="w-10 h-10" />
+            <img loading="lazy" src="/logo.svg" alt="JoyBor" className="w-10 h-10" />
             <span className="text-xl font-bold text-surface-900 dark:text-white">
               JoyBor
             </span>
@@ -170,7 +170,7 @@ const Header: React.FC = () => {
                     className="flex items-center gap-2 p-2 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-150"
                   >
                     {avatarUrl ? (
-                      <img
+                      <img loading="lazy"
                         src={avatarUrl}
                         alt={displayName}
                         className="w-8 h-8 rounded-full object-cover border-2 border-brand-500"

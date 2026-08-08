@@ -368,7 +368,7 @@ const DashboardPage: React.FC = () => {
                     >
                       <div className="w-16 h-16 rounded-xl overflow-hidden bg-surface-50 dark:bg-surface-800 flex-shrink-0 shadow-inner">
                         {mate.picture ? (
-                          <img src={`${baseUrl}${mate.picture}`} alt={mate.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img loading="lazy" src={`${baseUrl}${mate.picture}`} alt={mate.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-surface-300 font-black text-xl">
                             {mate.name?.charAt(0)}
@@ -415,7 +415,7 @@ const DashboardPage: React.FC = () => {
                   <div className="flex justify-center mb-5">
                     <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white dark:border-surface-900 bg-white dark:bg-surface-800 shadow-sm">
                       {userImage ? (
-                        <img src={userImage} alt="Profile" className="w-full h-full object-cover" />
+                        <img loading="lazy" src={userImage} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-brand-600 font-black text-3xl bg-brand-50 dark:bg-brand-900/20">
                           {studentDashboard.name?.charAt(0)}
@@ -592,7 +592,7 @@ const DashboardPage: React.FC = () => {
                 <div className="relative bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-[1.4rem] border border-white/10 flex flex-col md:flex-row items-center gap-8 text-white">
                   <div className="w-24 h-24 rounded-2xl overflow-hidden border-4 border-white/20 bg-white/10 flex-shrink-0 flex items-center justify-center">
                     {approvedApplication.user_image ? (
-                      <img src={approvedApplication.user_image} alt="User" className="w-full h-full object-cover" />
+                      <img loading="lazy" src={approvedApplication.user_image} alt="User" className="w-full h-full object-cover" />
                     ) : (
                       <CheckCircle className="w-12 h-12 text-white" />
                     )}

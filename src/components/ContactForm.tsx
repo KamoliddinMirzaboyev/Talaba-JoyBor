@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import { formatPhoneInput, normalizePhoneForApi } from '../utils/format';
+import { authAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface FormState {
   name: string;
@@ -17,27 +20,30 @@ const subjects = [
   'Ariza haqida',
   "To'lov masalalari",
   'Takliflar',
-  'Shikoyat'
+  'Shikoyat',
 ];
 
 const ContactForm: React.FC = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormState>({
     name: '',
     email: '',
     phone: '',
     subject: '',
-    message: ''
+    message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState('');
 
   const handleInputChange = (field: keyof FormState, value: string) => {
     if (field === 'phone') {
       value = formatPhoneInput(value);
     }
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -60,138 +66,142 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess('');
     if (!validateForm()) return;
-    setIsSubmitting(true);
 
-    // TODO: Replace with real API when backend endpoint is available
-    setTimeout(() => {
-      setIsSubmitting(false);
-      // Example of normalized phone ready for API
-      normalizePhoneForApi(formData.phone);
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const phone = normalizePhoneForApi(formData.phone);
+      await authAPI.createComplaint({
+        title: formData.subject,
+        description: [
+          `Ism: ${formData.name}`,
+          `Email: ${formData.email}`,
+          `Tel: ${phone}`,
+          '',
+          formData.message,
+        ].join('\n'),
+        category: formData.subject === 'Shikoyat' ? 'other' : 'other',
+      });
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-      alert('Xabaringiz muvaffaqiyatli yuborildi! Tez orada javob beramiz.');
-    }, 1500);
+      setSuccess('Xabaringiz shikoyat/so‘rov sifatida yuborildi (`POST /complaints/`).');
+    } catch (err) {
+      setErrors({
+        form:
+          err instanceof Error
+            ? err.message
+            : 'Yuborib bo‘lmadi. Tizimga kirganingizni tekshiring.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="bg-white dark:bg-surface-800 rounded-2xl shadow-sm p-8">
-      <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6">
-        Xabar Yuborish
+      <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-2">
+        Xabar yuborish
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Ism Familiya *
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
-                errors.name ? 'border-danger-500' : 'border-surface-300'
-              }`}
-              placeholder="Aziz Karimov"
-            />
-            {errors.name && (
-              <p className="text-danger-500 text-sm mt-1">{errors.name}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Email Manzil *
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
-                errors.email ? 'border-danger-500' : 'border-surface-300'
-              }`}
-              placeholder="aziz@example.com"
-            />
-            {errors.email && (
-              <p className="text-danger-500 text-sm mt-1">{errors.email}</p>
-            )}
-          </div>
-        </div>
+      <p className="text-sm text-surface-500 mb-6">
+        {user
+          ? 'Xabar `POST /complaints/` orqali yuboriladi'
+          : 'Yuborish uchun tizimga kiring'}
+      </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Telefon Raqam *
-            </label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
-                errors.phone ? 'border-danger-500' : 'border-surface-300'
-              }`}
-              placeholder="+998901234567"
-            />
-            {errors.phone && (
-              <p className="text-danger-500 text-sm mt-1">{errors.phone}</p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Mavzu *
-            </label>
-            <select
-              value={formData.subject}
-              onChange={(e) => handleInputChange('subject', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 dark:bg-surface-700 dark:border-surface-600 dark:text-white ${
-                errors.subject ? 'border-danger-500' : 'border-surface-300'
-              }`}
-            >
-              <option value="">Mavzuni tanlang</option>
-              {subjects.map((subject) => (
-                <option key={subject} value={subject}>{subject}</option>
-              ))}
-            </select>
-            {errors.subject && (
-              <p className="text-danger-500 text-sm mt-1">{errors.subject}</p>
-            )}
-          </div>
+      {success && (
+        <div className="mb-4 p-3 rounded-xl bg-success-50 text-success-800 text-sm">
+          {success}
         </div>
+      )}
+      {errors.form && (
+        <div className="mb-4 p-3 rounded-xl bg-danger-50 text-danger-700 text-sm">
+          {errors.form}
+        </div>
+      )}
 
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-            Xabar Matni *
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+            Ism
+          </label>
+          <input
+            value={formData.name}
+            onChange={(e) => handleInputChange('name', e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-900"
+          />
+          {errors.name && <p className="text-xs text-danger-600 mt-1">{errors.name}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+            Email
+          </label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-900"
+          />
+          {errors.email && <p className="text-xs text-danger-600 mt-1">{errors.email}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+            Telefon
+          </label>
+          <input
+            value={formData.phone}
+            onChange={(e) => handleInputChange('phone', e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-900"
+            placeholder="+998 ..."
+          />
+          {errors.phone && <p className="text-xs text-danger-600 mt-1">{errors.phone}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+            Mavzu
+          </label>
+          <select
+            value={formData.subject}
+            onChange={(e) => handleInputChange('subject', e.target.value)}
+            className="w-full px-3 py-2.5 rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-900"
+          >
+            <option value="">Tanlang</option>
+            {subjects.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          {errors.subject && (
+            <p className="text-xs text-danger-600 mt-1">{errors.subject}</p>
+          )}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1">
+            Xabar
           </label>
           <textarea
+            rows={4}
             value={formData.message}
             onChange={(e) => handleInputChange('message', e.target.value)}
-            rows={6}
-            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-150 bg-white text-surface-900 placeholder-surface-500 dark:bg-surface-700 dark:border-surface-600 dark:text-white resize-none ${
-              errors.message ? 'border-danger-500' : 'border-surface-300'
-            }`}
-            placeholder="Xabaringizni bu yerga yozing..."
+            className="w-full px-3 py-2.5 rounded-xl border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-900"
           />
           {errors.message && (
-            <p className="text-danger-500 text-sm mt-1">{errors.message}</p>
+            <p className="text-xs text-danger-600 mt-1">{errors.message}</p>
           )}
         </div>
-
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-4 rounded-xl font-semibold hover:shadow-md transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          whileTap={{ scale: 0.98 }}
+          className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-medium disabled:opacity-50"
         >
-          {isSubmitting ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Yuborilmoqda...
-            </>
-          ) : (
-            <>
-              <Send className="w-5 h-5" />
-              Xabar Yuborish
-            </>
-          )}
+          <Send className="w-4 h-4" />
+          {isSubmitting ? 'Yuborilmoqda...' : user ? 'Yuborish' : 'Kirish va yuborish'}
         </motion.button>
       </form>
     </div>
@@ -199,5 +209,3 @@ const ContactForm: React.FC = () => {
 };
 
 export default ContactForm;
-
-

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { Search, SlidersHorizontal, Building2, Map as MapIcon, LayoutGrid } from 'lucide-react';
@@ -9,8 +9,8 @@ import { Dormitory as MapDormitory } from '../components/DormitoryMap';
 import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
-import { authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useDormitories } from '../hooks/useDormitories';
 
 interface DormitoriesPageProps {
   onListingSelect: (listing: Listing) => void;
@@ -20,10 +20,8 @@ interface DormitoriesPageProps {
 const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onApplicationStart }) => {
   const { user } = useAuth();
   const location = useLocation();
+  const { data: dormitories = [], isLoading: loading } = useDormitories();
   const [searchQuery, setSearchQuery] = useState('');
-  const [dormitories, setDormitories] = useState<DormitoryType[]>([]);
-  const [filteredDormitories, setFilteredDormitories] = useState<DormitoryType[]>([]);
-  const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>(location.state?.viewMode || 'grid');
   const [selectedFilters, setSelectedFilters] = useState({
     location: '',
@@ -68,32 +66,8 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
     { label: '1,000,000+', value: '1000000' }
   ];
 
-
-
-  // API dan yotoqxonalar yuklash
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await authAPI.getDormitories();
-        
-        // API returns { count, next, previous, results }
-        const dormitoriesData = (response.results || response) as DormitoryType[];
-        
-        setDormitories(dormitoriesData);
-        setFilteredDormitories(dormitoriesData);
-      } catch (error) {
-        // Handle error silently
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Qidiruv va filtrlash
-  useEffect(() => {
+  // Qidiruv va filtrlash (memo)
+  const filteredDormitories = useMemo(() => {
     let filtered = [...dormitories];
 
     // Qidiruv bo'yicha filtrlash
@@ -147,7 +121,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
       }
     });
 
-    setFilteredDormitories(filtered);
+    return filtered;
   }, [dormitories, searchQuery, selectedFilters, sortBy]);
 
   // Yotoqxonani Listing formatiga o'tkazish

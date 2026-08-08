@@ -375,7 +375,7 @@ const PartnershipPage: React.FC = () => {
           role="dialog"
           aria-modal="true"
         >
-          <img
+          <img loading="lazy"
             src={lightbox}
             alt=""
             className="max-w-full max-h-[90vh] rounded-xl object-contain"

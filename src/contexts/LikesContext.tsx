@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from 'react';
+import { sessionStore } from '../services/sessionStore';
 
 interface LikesContextType {
   likedItems: Set<string>;
@@ -8,24 +16,51 @@ interface LikesContextType {
 
 const LikesContext = createContext<LikesContextType | undefined>(undefined);
 
+const STORAGE_PREFIX = 'joybor_liked_ids_';
+
+function storageKey(): string {
+  // user-specific if token mavjud
+  const token = sessionStore.getAccess() || 'guest';
+  const suffix = token.slice(-12);
+  return `${STORAGE_PREFIX}${suffix}`;
+}
+
+function loadIds(): Set<string> {
+  try {
+    const raw = sessionStorage.getItem(storageKey());
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw) as string[];
+    return new Set(Array.isArray(arr) ? arr.map(String) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveIds(ids: Set<string>) {
+  sessionStorage.setItem(storageKey(), JSON.stringify(Array.from(ids)));
+}
+
 export const LikesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [likedItems, setLikedItems] = useState<Set<string>>(new Set());
+  const [likedItems, setLikedItems] = useState<Set<string>>(() => loadIds());
 
-  const toggleLike = (itemId: string) => {
-    setLikedItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-      } else {
-        newSet.add(itemId);
-      }
-      return newSet;
+  useEffect(() => {
+    setLikedItems(loadIds());
+  }, []);
+
+  const toggleLike = useCallback((itemId: string) => {
+    setLikedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) next.delete(itemId);
+      else next.add(itemId);
+      saveIds(next);
+      return next;
     });
-  };
+  }, []);
 
-  const isLiked = (itemId: string) => {
-    return likedItems.has(itemId);
-  };
+  const isLiked = useCallback(
+    (itemId: string) => likedItems.has(itemId),
+    [likedItems]
+  );
 
   return (
     <LikesContext.Provider value={{ likedItems, toggleLike, isLiked }}>

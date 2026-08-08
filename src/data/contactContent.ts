@@ -1,4 +1,6 @@
-/** Aloqa / bot / social — Superadmin mock bilan bir xil schema. */
+/** Aloqa — real yotoqxonalar API dan (CMS localStorage olib tashlandi). */
+
+import { API_BASE_URL } from '../services/api';
 
 export interface ContactContent {
   phone: string;
@@ -19,27 +21,6 @@ export interface ContactContent {
   updatedAt: string;
 }
 
-export const STORAGE_KEY = 'joybor_contact_content_v1';
-
-export const DEFAULT_CONTACT: ContactContent = {
-  phone: '+998 88 956 38 48',
-  email: 'support@joybor.uz',
-  telegramBot: '@Joyboronlinebot',
-  telegramUrl: 'https://t.me/Joyboronlinebot',
-  address: "Toshkent sh., O'zbekiston",
-  workHours: '09:00 – 20:00 (onlayn 24/7)',
-  emergencyPhone: '+998 88 956 38 48',
-  emergencyNote: 'Shoshilinch holatlar uchun 24/7',
-  mapLat: 41.2778,
-  mapLng: 69.2028,
-  mapLabel: "Toshkent sh., Chilonzor t., Bunyodkor ko'chasi, 12-uy",
-  instagramUrl: 'https://instagram.com/joybor',
-  facebookUrl: 'https://facebook.com/joybor',
-  heroTitle: "Biz bilan bog'laning",
-  heroSubtitle: 'Savollaringiz bormi? Yordam kerakmi? Biz sizga yordam berishga tayyormiz!',
-  updatedAt: new Date().toISOString(),
-};
-
 export function phoneToTel(phone: string): string {
   const digits = phone.replace(/[^\d+]/g, '');
   if (digits.startsWith('+')) return `tel:${digits}`;
@@ -47,20 +28,71 @@ export function phoneToTel(phone: string): string {
   return `tel:+${digits}`;
 }
 
+function emptyContact(): ContactContent {
+  return {
+    phone: '',
+    email: '',
+    telegramBot: '',
+    telegramUrl: '',
+    address: '',
+    workHours: '',
+    emergencyPhone: '',
+    emergencyNote: '',
+    mapLat: 41.3111,
+    mapLng: 69.2797,
+    mapLabel: '',
+    instagramUrl: '',
+    facebookUrl: '',
+    heroTitle: "Biz bilan bog'laning",
+    heroSubtitle: 'Yotoqxona ma’lumotlari API dan yuklanadi',
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+/** Avval public CMS (agar backend qo‘shsa), so‘ng dormitories list. */
 export async function loadContactContent(): Promise<ContactContent> {
+  const base = emptyContact();
+
   try {
-    const res = await fetch('/contact.json', { cache: 'no-store' });
-    if (res.ok) {
-      return { ...structuredClone(DEFAULT_CONTACT), ...(await res.json()) };
+    const cms = await fetch(`${API_BASE_URL}/public/contact/`, { cache: 'no-store' });
+    if (cms.ok) {
+      const data = (await cms.json()) as Partial<ContactContent>;
+      return { ...base, ...data, updatedAt: data.updatedAt || new Date().toISOString() };
     }
   } catch {
-    /* fallback */
+    /* CMS yo‘q — davom */
   }
+
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return { ...structuredClone(DEFAULT_CONTACT), ...JSON.parse(raw) };
+    const res = await fetch(`${API_BASE_URL}/dormitories/`, { cache: 'no-store' });
+    if (!res.ok) return base;
+    const payload = (await res.json()) as {
+      results?: Array<Record<string, unknown>>;
+    } | Array<Record<string, unknown>>;
+    const list = Array.isArray(payload) ? payload : payload.results || [];
+    const active = list.find((d) => d.is_active !== false) || list[0];
+    if (!active) return base;
+
+    const phone = String(active.phone_numer || active.phone || '');
+    const address = String(active.address || '');
+    const lat = Number(active.latitude);
+    const lng = Number(active.longitude);
+
+    return {
+      ...base,
+      phone,
+      emergencyPhone: phone,
+      address,
+      mapLabel: address,
+      mapLat: Number.isFinite(lat) ? lat : base.mapLat,
+      mapLng: Number.isFinite(lng) ? lng : base.mapLng,
+      heroTitle: String(active.name || base.heroTitle),
+      heroSubtitle: String(active.description || active.university_name || base.heroSubtitle),
+      telegramUrl: String(active.link || ''),
+      telegramBot: active.link ? String(active.link).replace(/^https?:\/\/t\.me\//, '@') : '',
+      updatedAt: new Date().toISOString(),
+    };
   } catch {
-    /* fallback */
+    return base;
   }
-  return structuredClone(DEFAULT_CONTACT);
 }

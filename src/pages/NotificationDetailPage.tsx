@@ -263,7 +263,7 @@ const NotificationDetailPage: React.FC = () => {
             {/* Image if available */}
             {notification.image && (
               <div className="mb-6">
-                <img
+                <img loading="lazy"
                   src={notification.image}
                   alt="Notification"
                   className="w-full max-w-2xl mx-auto rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-shadow duration-150"
@@ -315,7 +315,7 @@ const NotificationDetailPage: React.FC = () => {
               >
                 <X className="w-8 h-8" />
               </button>
-              <img
+              <img loading="lazy"
                 src={notification.image}
                 alt="Notification"
                 className="max-w-full max-h-full object-contain rounded-xl"

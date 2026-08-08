@@ -315,13 +315,13 @@ const ProfilePage: React.FC = () => {
               <div className="text-center mb-6">
                 <div className="relative inline-block">
                   {editedProfile.image && !imageFile ? (
-                    <img
+                    <img loading="lazy"
                       src={editedProfile.image}
                       alt="Profile"
                       className="w-24 h-24 rounded-full object-cover border-4 border-brand-500 mx-auto"
                     />
                   ) : imageFile ? (
-                    <img
+                    <img loading="lazy"
                       src={URL.createObjectURL(imageFile)}
                       alt="Profile preview"
                       className="w-24 h-24 rounded-full object-cover border-4 border-brand-500 mx-auto"

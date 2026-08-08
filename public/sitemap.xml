@@ -6,7 +6,7 @@
 
   <!-- Asosiy sahifa -->
   <url>
-    <loc>https://joyboronline.uz/</loc>
+    <loc>https://joy-bor.uz/</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -14,7 +14,7 @@
 
   <!-- Yotoqxonalar sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/dormitories</loc>
+    <loc>https://joy-bor.uz/dormitories</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -22,7 +22,7 @@
 
   <!-- Ijara sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/rentals</loc>
+    <loc>https://joy-bor.uz/rentals</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -30,7 +30,7 @@
 
   <!-- Haqida sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/about</loc>
+    <loc>https://joy-bor.uz/about</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -38,7 +38,7 @@
 
   <!-- Aloqa sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/contact</loc>
+    <loc>https://joy-bor.uz/contact</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -46,7 +46,7 @@
 
   <!-- Yordam sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/help</loc>
+    <loc>https://joy-bor.uz/help</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -54,7 +54,7 @@
 
   <!-- Login sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/login</loc>
+    <loc>https://joy-bor.uz/login</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -62,7 +62,7 @@
 
   <!-- Ro'yxatdan o'tish sahifasi -->
   <url>
-    <loc>https://joyboronline.uz/register</loc>
+    <loc>https://joy-bor.uz/register</loc>
     <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

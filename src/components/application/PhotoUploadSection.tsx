@@ -32,7 +32,7 @@ const PhotoUploadSection: React.FC<PhotoUploadSectionProps> = ({
             }`}
           >
             {userImage ? (
-              <img src={URL.createObjectURL(userImage)} alt="Preview" className="w-full h-full object-cover" />
+              <img loading="lazy" src={URL.createObjectURL(userImage)} alt="Preview" className="w-full h-full object-cover" />
             ) : (
               <User className="w-10 h-10 text-surface-300" />
             )}

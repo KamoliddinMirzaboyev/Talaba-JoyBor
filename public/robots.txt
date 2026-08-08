@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap joylashuvi
-Sitemap: https://joyboronline.uz/sitemap.xml
+Sitemap: https://joy-bor.uz/sitemap.xml
 
 # Asosiy sahifalarni indekslashga ruxsat berish
 Allow: /

@@ -348,24 +348,10 @@ export const authAPI = {
 
   // Get universities list
   getUniversities: async (): Promise<{ id: number; name: string }[]> => {
-    try {
-      const response = await api.get('/universities/');
-      return response.data;
-    } catch (error: unknown) {
-      // Fallback universitetlar ro'yxati
-      return [
-        { id: 1, name: 'Toshkent Davlat Universiteti' },
-        { id: 2, name: 'Samarqand Davlat Universiteti' },
-        { id: 3, name: 'Buxoro Davlat Universiteti' },
-        { id: 4, name: 'Andijon Davlat Universiteti' },
-        { id: 5, name: 'Namangan Davlat Universiteti' },
-        { id: 6, name: 'Farg\'ona Davlat Universiteti' },
-        { id: 7, name: 'Toshkent Axborot Texnologiyalari Universiteti' },
-        { id: 8, name: 'Toshkent Moliya Instituti' },
-        { id: 9, name: 'O\'zbekiston Milliy Universiteti' },
-        { id: 10, name: 'Toshkent Tibbiyot Akademiyasi' }
-      ];
-    }
+    const response = await api.get('/universities/');
+    const data = response.data;
+    if (Array.isArray(data)) return data;
+    return data?.results || [];
   },
 
   // Get platform statistics
@@ -379,46 +365,18 @@ export const authAPI = {
     rooms_occupied?: number;
     rooms_free?: number;
   }> => {
-    try {
-      // Real statistikalar: /api/stats/ endpointidan
-      const response = await api.get('/stats/');
-      const data = response.data || {};
-      
-      return {
-        dormitories_count: Number(data.dormitories?.total) || 0,
-        apartments_count: Number(data.apartments?.total) || 0,
-        users_count: Number(data.users?.active) || 0, // users.active ishlatiladi
-        applications_count: Number(data.applications?.total) || 0,
-        universities_count: Number(data.universities?.total) || 0,
-        rooms_total: Number(data.rooms?.total) || 0,
-        rooms_occupied: Number(data.rooms?.occupied) || 0,
-        rooms_free: Number(data.rooms?.free) || 0,
-      };
-    } catch (error: unknown) {
-      // Fallback: eski usul orqali taxminiy qiymatlar
-      try {
-        const [dormitories, apartments] = await Promise.all([
-          api.get('/dormitories/'),
-          api.get('/apartments/')
-        ]);
-        return {
-          dormitories_count: dormitories.data.length || 0,
-          apartments_count: apartments.data.length || 0,
-          users_count: 5, // Taxminiy qiymat
-          applications_count: 1, // Taxminiy qiymat
-          universities_count: 1,
-        };
-      } catch {
-        // Eng oxirgi fallback - statik qiymatlar
-        return {
-          dormitories_count: 2,
-          apartments_count: 0,
-          users_count: 5,
-          applications_count: 1,
-          universities_count: 1,
-        };
-      }
-    }
+    const response = await api.get('/stats/');
+    const data = response.data || {};
+    return {
+      dormitories_count: Number(data.dormitories?.total) || 0,
+      apartments_count: Number(data.apartments?.total) || 0,
+      users_count: Number(data.users?.active) || Number(data.users?.total) || 0,
+      applications_count: Number(data.applications?.total) || 0,
+      universities_count: Number(data.universities?.total) || 0,
+      rooms_total: Number(data.rooms?.total) || 0,
+      rooms_occupied: Number(data.rooms?.occupied) || 0,
+      rooms_free: Number(data.rooms?.free) || 0,
+    };
   },
 
   // Get notifications

@@ -147,7 +147,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing, onSelect, user }) =>
             ))}
           </Swiper>
         ) : (
-          <img
+          <img loading="lazy"
             src="/placeholder-room.svg"
             alt={listing.title}
             className="w-full h-full object-cover"

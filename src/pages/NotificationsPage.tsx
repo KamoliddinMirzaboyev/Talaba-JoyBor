@@ -361,7 +361,7 @@ const NotificationsPage: React.FC = () => {
                     {/* Image if available */}
                     {notification.image && (
                       <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-surface-200 dark:border-surface-700">
-                        <img
+                        <img loading="lazy"
                           src={notification.image}
                           alt="Notification"
                           className="w-full h-full object-cover"
