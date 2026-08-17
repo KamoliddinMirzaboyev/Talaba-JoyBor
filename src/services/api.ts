@@ -45,6 +45,24 @@ api.interceptors.request.use(
   }
 );
 
+let refreshInFlight: Promise<string | null> | null = null;
+
+function refreshAccessToken(): Promise<string | null> {
+  if (refreshInFlight) return refreshInFlight;
+  refreshInFlight = (async () => {
+    const refreshToken = sessionStore.getRefresh();
+    if (!refreshToken) return null;
+    const response = await axios.post(apiUrl('/token/refresh/'), { refresh: refreshToken });
+    const access = response.data?.access as string | undefined;
+    if (!access) return null;
+    sessionStore.setAccess(access);
+    return access;
+  })().finally(() => {
+    refreshInFlight = null;
+  });
+  return refreshInFlight;
+}
+
 // Response interceptor to handle token refresh
 api.interceptors.response.use(
   (response: AxiosResponse) => {
@@ -55,25 +73,22 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
       try {
-        const refreshToken = sessionStore.getRefresh();
-        if (refreshToken) {
-          const response = await axios.post(apiUrl('/token/refresh/'), {
-            refresh: refreshToken,
-          });
-
-          const { access } = response.data;
-          sessionStore.setAccess(access);
-
-          // Retry the original request with new token
+        const access = await refreshAccessToken();
+        if (access) {
           originalRequest.headers.Authorization = `Bearer ${access}`;
           return api(originalRequest);
         }
       } catch {
-        // Refresh token failed, logout user
         sessionStore.clear();
-        window.location.reload();
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+      sessionStore.clear();
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
       }
     }
 
@@ -141,6 +156,11 @@ export const authAPI = {
   // Google Sign-In / Register
   googleAuth: async (token: string): Promise<LoginResponse> => {
     const response = await api.post('/auth/google/', { token });
+    return response.data;
+  },
+
+  telegramWebAppAuth: async (initData: string): Promise<LoginResponse> => {
+    const response = await api.post('/auth/telegram/webapp/', { init_data: initData });
     return response.data;
   },
 
@@ -327,10 +347,11 @@ export const authAPI = {
     try {
       const response = await api.get('/student/application/');
       // Agar javob bitta obyekt bo'lsa, uni massivga o'raymiz
-      if (response.data && !Array.isArray(response.data)) {
-        return [response.data];
-      }
-      return response.data || [];
+      const payload = response.data;
+      if (Array.isArray(payload)) return payload;
+      if (payload && Array.isArray(payload.results)) return payload.results;
+      if (payload && typeof payload === 'object' && payload.id != null) return [payload];
+      return [];
     } catch (error: unknown) {
       throw error;
     }

@@ -42,12 +42,6 @@ const DashboardPage: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [studentDashboard, setStudentDashboard] = useState<StudentDashboard | null>(null);
   const [loading, setLoading] = useState(true);
-  const [platformStats, setPlatformStats] = useState({
-    activeUsers: 0,
-    totalDormitories: 0,
-    totalRooms: 0,
-    freeRooms: 0
-  });
 
   // Sahifa yuklanganda yuqoriga scroll qilish
   useEffect(() => {
@@ -59,19 +53,6 @@ const DashboardPage: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        
-        // Platform statistikalarini yuklash
-        try {
-          const stats = await authAPI.getStatistics();
-          setPlatformStats({
-            activeUsers: stats.users_count || 0,
-            totalDormitories: stats.dormitories_count || 0,
-            totalRooms: stats.rooms_total || 0,
-            freeRooms: stats.rooms_free || 0
-          });
-        } catch (error) {
-          // Handle error silently
-        }
         
         // Try to get student dashboard first
         try {
@@ -110,8 +91,8 @@ const DashboardPage: React.FC = () => {
     const safeApplications = Array.isArray(applications) ? applications : [];
     return [
       {
-        label: "Faol Talabalar",
-        value: String(platformStats.activeUsers || 0),
+        label: "Mening arizalarim",
+        value: String(safeApplications.length || 0),
         icon: Users,
         color: "text-brand-600",
         bg: "bg-brand-100 dark:bg-brand-900/30",
@@ -138,7 +119,7 @@ const DashboardPage: React.FC = () => {
         bg: "bg-danger-100 dark:bg-danger-900/30",
       },
     ];
-  }, [applications, platformStats]);
+  }, [applications]);
 
   const quickActions = [
     {
@@ -158,7 +139,7 @@ const DashboardPage: React.FC = () => {
     {
       label: "To'lovlar",
       icon: CreditCard,
-      path: "/payments",
+      path: "/dashboard",
       color: "text-brand-600",
       bg: "bg-brand-50 dark:bg-brand-900/20",
     },
@@ -368,7 +349,7 @@ const DashboardPage: React.FC = () => {
                     >
                       <div className="w-16 h-16 rounded-xl overflow-hidden bg-surface-50 dark:bg-surface-800 flex-shrink-0 shadow-inner">
                         {mate.picture ? (
-                          <img loading="lazy" src={`${baseUrl}${mate.picture}`} alt={mate.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img loading="lazy" src={mediaUrl(mate.picture)} alt={mate.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-surface-300 font-black text-xl">
                             {mate.name?.charAt(0)}
@@ -482,7 +463,7 @@ const DashboardPage: React.FC = () => {
                 </div>
                 
                 <button 
-                  onClick={() => window.open(`${baseUrl}${studentDashboard.document}`, '_blank')}
+                  onClick={() => window.open(mediaUrl(studentDashboard.document), '_blank')}
                   className="mt-6 w-full flex items-center justify-center gap-2 py-4 bg-surface-900 dark:bg-white text-white dark:text-surface-900 rounded-2xl font-black text-sm hover:opacity-90 transition-all duration-150 shadow-sm"
                 >
                   <FileText className="w-4 h-4" />

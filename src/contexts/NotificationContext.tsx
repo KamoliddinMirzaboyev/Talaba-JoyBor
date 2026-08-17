@@ -32,12 +32,25 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     }
 
     try {
+      const data = await authAPI.getUnreadCount();
+      if (typeof data === 'number') {
+        setUnreadCount(data);
+        return;
+      }
+      const count = data.count ?? data.unread;
+      if (typeof count === 'number') {
+        setUnreadCount(count);
+        return;
+      }
       const notifications = await authAPI.getNotifications();
-      // Calculate unread count based on 'read' or 'is_read' property
-      const count = notifications.filter(n => !(n as any).read && !(n as any).is_read).length;
-      setUnreadCount(count);
-    } catch (error) {
-      // Handle error silently
+      setUnreadCount(
+        notifications.filter((n) => {
+          const row = n as { read?: boolean; is_read?: boolean };
+          return !row.read && !row.is_read;
+        }).length
+      );
+    } catch {
+      // keep previous count
     }
   }, [isAuthenticated, user]);
 
@@ -47,11 +60,17 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   useEffect(() => {
     fetchUnreadCount();
-    
-    // Refresh every 60 seconds (increased from 30 to reduce API load)
-    const interval = setInterval(fetchUnreadCount, 60000);
-    
-    return () => clearInterval(interval);
+
+    const tick = () => {
+      if (document.visibilityState === 'visible') fetchUnreadCount();
+    };
+    const interval = setInterval(tick, 60000);
+    document.addEventListener('visibilitychange', tick);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', tick);
+    };
   }, [fetchUnreadCount]);
 
   const value = {

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 3000 --host",
     "build": "vite build",
+    "typecheck": "tsc -b --noEmit",
     "test:api": "node scripts/api-contract.test.mjs",
     "lint": "eslint .",
     "preview": "vite preview"

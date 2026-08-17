@@ -39,7 +39,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
             </div>
             <input
               type="tel"
-              value={formData.phone.startsWith('998') ? formData.phone.substring(3) : formData.phone}
+              value={formData.phone.replace(/^\+?998/, '').replace(/\D/g, '').slice(0, 9)}
               onChange={(e) => {
                 let value = e.target.value.replace(/\D/g, '');
                 if (value.length > 9) value = value.substring(0, 9);

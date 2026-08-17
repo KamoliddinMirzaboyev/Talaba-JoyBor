@@ -116,7 +116,8 @@ const ProfilePage: React.FC = () => {
     }
     try {
       // API faqat JSON qabul qiladi, FormData emas
-      const updateData: Partial<UserProfile> = {
+      const updateData: Partial<UserProfile> & { username?: string; password?: string } = {
+        username: editedProfile.username,
         email: editedProfile.email,
         first_name: editedProfile.first_name || '',
         last_name: editedProfile.last_name || '',
@@ -126,6 +127,14 @@ const ProfilePage: React.FC = () => {
         address: editedProfile.address || '',
         telegram: editedProfile.telegram || '',
       };
+      if (password.trim()) {
+        if (password.trim().length < 6) {
+          setFieldErrors((prev) => ({ ...prev, password: 'Parol kamida 6 ta belgi' }));
+          setSaving(false);
+          return;
+        }
+        updateData.password = password.trim();
+      }
       
       const data = await authAPI.updateProfile(updateData);
       

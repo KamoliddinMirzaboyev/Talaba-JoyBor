@@ -18,7 +18,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (access: string, refresh: string) => void;
+  login: (access: string, refresh: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
   updateUserProfile: (profileData: User) => void;
@@ -48,6 +48,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     sessionStore.migrateFromLocalStorage();
 
     const initializeAuth = async () => {
+      const telegram = (window as Window & {
+        Telegram?: { WebApp?: { initData?: string; ready?: () => void } };
+      }).Telegram?.WebApp;
+      if (telegram?.initData && !sessionStore.getAccess()) {
+        try {
+          telegram.ready?.();
+          const tokens = await authAPI.telegramWebAppAuth(telegram.initData);
+          sessionStore.setTokens(tokens.access, tokens.refresh);
+        } catch {
+          // Backend TMA endpoint yo'q yoki initData yaroqsiz — oddiy login qoladi
+        }
+      }
+
       const token = sessionStore.getAccess();
 
       if (token) {

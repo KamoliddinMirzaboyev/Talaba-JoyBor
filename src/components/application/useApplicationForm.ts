@@ -113,15 +113,19 @@ export function useApplicationForm() {
       setDistricts([]);
       return;
     }
+    let cancelled = false;
     const fetchDistricts = async () => {
       try {
         const data = await authAPI.getDistricts(selectedProvinceId);
-        setDistricts(data);
+        if (!cancelled) setDistricts(data);
       } catch {
-        setDistricts([]);
+        if (!cancelled) setDistricts([]);
       }
     };
-    fetchDistricts();
+    void fetchDistricts();
+    return () => {
+      cancelled = true;
+    };
   }, [selectedProvinceId]);
 
   const handlePassportChange = (value: string) => {

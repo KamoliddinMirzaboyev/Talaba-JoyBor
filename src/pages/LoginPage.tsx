@@ -205,6 +205,13 @@ const LoginPage: React.FC = () => {
             <div className="text-right">
               <button
                 type="button"
+                onClick={() =>
+                  setErrors((prev) => ({
+                    ...prev,
+                    password:
+                      "Parolni tiklash API da yo'q. Telegram bot yoki admin orqali tiklang.",
+                  }))
+                }
                 className="text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white text-sm font-medium transition-colors duration-150"
               >
                 Parolni unutdingizmi?

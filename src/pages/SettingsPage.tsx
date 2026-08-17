@@ -78,10 +78,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const handleSaveSettings = async () => {
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSaving(false);
+    alert("Sozlamalar hozircha faqat brauzerda (mavzu) saqlanadi. Backend sozlama endpointi yo'q.");
   };
 
   const handleChangePassword = async () => {
@@ -89,11 +86,7 @@ const SettingsPage: React.FC = () => {
       alert('Yangi parollar mos kelmaydi');
       return;
     }
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    setPasswordData({ current: '', new: '', confirm: '' });
+    alert("Parol o'zgartirish API da mavjud emas. Telegram bot yoki admin orqali tiklang.");
   };
 
   return (

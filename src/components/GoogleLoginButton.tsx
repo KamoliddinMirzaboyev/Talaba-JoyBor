@@ -28,7 +28,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ text = "Google or
           const data = await authAPI.googleAuth(tokenResponse.access_token);
           
           // Login muvaffaqiyatli bo'lsa
-          login(data.access, data.refresh);
+          await login(data.access, data.refresh);
           navigate(from, { replace: true });
         } else {
           setError('Google ma\'lumotlari olinmadi');

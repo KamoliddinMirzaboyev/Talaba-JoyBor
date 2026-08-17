@@ -42,17 +42,18 @@ const RegisterPage: React.FC = () => {
 
   // Username mavjudligini tekshirish
   useEffect(() => {
-    const checkUsernameAvailability = async () => {
-      const username = formData.username.trim();
+    const username = formData.username.trim();
+    if (username.length < 3) {
+      setUsernameAvailability(null);
+      return;
+    }
 
-      if (username.length < 3) {
-        setUsernameAvailability(null);
-        return;
-      }
-
+    const controller = new AbortController();
+    const timeoutId = setTimeout(async () => {
       setIsCheckingUsername(true);
       try {
         const result = await authAPI.checkUsername(username);
+        if (controller.signal.aborted) return;
         setUsernameAvailability({
           available: result.available,
           message: result.message
@@ -67,18 +68,17 @@ const RegisterPage: React.FC = () => {
             return newErrors;
           });
         }
-      } catch (error) {
-        // Silent error
+      } catch {
+        // ignore aborted / network
       } finally {
-        setIsCheckingUsername(false);
+        if (!controller.signal.aborted) setIsCheckingUsername(false);
       }
-    };
-
-    const timeoutId = setTimeout(() => {
-      checkUsernameAvailability();
     }, 500);
 
-    return () => clearTimeout(timeoutId);
+    return () => {
+      controller.abort();
+      clearTimeout(timeoutId);
+    };
   }, [formData.username]);
 
 
@@ -162,9 +162,7 @@ const RegisterPage: React.FC = () => {
 
         // Login funksiyasini chaqirish - bu user ma'lumotlarini yuklaydi
         // AuthContext already handles sessionStorage inside login, but we can pass it directly
-        login(loginData.access, loginData.refresh);
-
-        // Dashboard ga yo'naltirish
+        await login(loginData.access, loginData.refresh);
         navigate(from, { replace: true });
       } catch (loginError) {
         setGeneralError('Ro\'yxatdan o\'tish muvaffaqiyatli, lekin tizimga kirishda xatolik yuz berdi. Iltimos, login sahifasidan kiring.');
@@ -244,11 +242,9 @@ const RegisterPage: React.FC = () => {
 
   const handleInputChange = (field: string, value: string) => {
     if (field === 'phone') {
-      // Faqat raqamlar va bo'shliqlarni qoldirish
-      let val = value;
-      if (!val.startsWith('+998')) {
-        val = '+998 ' + val.replace(/\D/g, '');
-      }
+      let digits = value.replace(/\D/g, '');
+      if (digits.startsWith('998')) digits = digits.slice(3);
+      const val = '+998 ' + digits;
 
       const numbers = val.replace(/\D/g, '');
 

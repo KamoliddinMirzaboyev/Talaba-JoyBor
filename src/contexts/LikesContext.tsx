@@ -19,10 +19,15 @@ const LikesContext = createContext<LikesContextType | undefined>(undefined);
 const STORAGE_PREFIX = 'joybor_liked_ids_';
 
 function storageKey(): string {
-  // user-specific if token mavjud
-  const token = sessionStore.getAccess() || 'guest';
-  const suffix = token.slice(-12);
-  return `${STORAGE_PREFIX}${suffix}`;
+  const token = sessionStore.getAccess();
+  if (!token) return `${STORAGE_PREFIX}guest`;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1] || '')) as { user_id?: number };
+    if (payload.user_id != null) return `${STORAGE_PREFIX}${payload.user_id}`;
+  } catch {
+    // fall through
+  }
+  return `${STORAGE_PREFIX}guest`;
 }
 
 function loadIds(): Set<string> {
