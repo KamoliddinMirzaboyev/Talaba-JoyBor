@@ -5,10 +5,8 @@ import { Pagination, Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { MapPin, Users, Building2, Clock, CheckCircle, Share2, Heart, ShieldCheck } from 'lucide-react';
-import { formatCapacityBucket } from '../utils/format';
+import { MapPin, Users, Building2, CheckCircle, Share2, ShieldCheck } from 'lucide-react';
 import { shareOrCopy } from '../utils/share';
-import { useLikes } from '../contexts/LikesContext';
 
 interface DormitoryCardProps {
   id: number | string;
@@ -51,7 +49,6 @@ interface DormitoryCardProps {
 const formatPrice = (price: number) => new Intl.NumberFormat('uz-UZ').format(price) + " so'm";
 
 const DormitoryCard: React.FC<DormitoryCardProps> = ({
-  id,
   name,
   month_price,
   address,
@@ -59,7 +56,6 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
   images,
   amenities,
   available_capacity,
-  distance_to_university,
   description,
   room_statistics,
   rules,
@@ -67,16 +63,9 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
   onApplicationStart,
   canApply,
 }) => {
-  const { toggleLike, isLiked } = useLikes();
-
   const totalFreeSpaces = room_statistics 
     ? (room_statistics.male.free + room_statistics.female.free)
     : available_capacity;
-
-  const handleLike = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    toggleLike(id.toString());
-  };
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -144,22 +133,8 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
           <Share2 className="w-4 h-4" />
         </motion.button>
 
-        {/* Like Button */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleLike}
-          className={`absolute top-2 left-12 z-10 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-150 backdrop-blur-sm shadow-lg ${
-            isLiked(id.toString()) 
-              ? 'bg-danger-500 text-white' 
-              : 'bg-white/90 text-surface-600 hover:bg-white'
-          }`}
-        >
-          <Heart className={`w-4 h-4 ${isLiked(id.toString()) ? 'fill-current' : ''}`} />
-        </motion.button>
-
         {/* Price Badge */}
-        <div className="absolute bottom-2 right-2 z-10 bg-gradient-to-r from-brand-600 to-success-600 text-white px-3 py-1 rounded-full text-sm font-semibold backdrop-blur-sm">
+        <div className="absolute bottom-2 right-2 z-10 bg-brand-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
           {formatPrice(month_price)}/oy
         </div>
       </div>
@@ -247,7 +222,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onSelect}
-            className="flex-1 bg-gradient-to-r from-brand-600 to-success-600 text-white py-2.5 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
+            className="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
           >
             Ko'rish
           </motion.button>

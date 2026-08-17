@@ -284,7 +284,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing, onSelect, user }) =>
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onSelect}
-            className="flex-1 bg-gradient-to-r from-brand-600 to-success-600 text-white py-2 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
+            className="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
           >
             <Eye className="w-4 h-4" />
             Ko'rish
@@ -306,7 +306,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing, onSelect, user }) =>
         {listing.type === 'rental' && listing.landlord && (
           <div className="mt-3 pt-3 border-t border-surface-200 dark:border-surface-700">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-gradient-to-r from-brand-600 to-success-600 rounded-full flex items-center justify-center">
+              <div className="w-6 h-6 bg-brand-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-xs font-semibold">
                   {listing.landlord.name.charAt(0)}
                 </span>
