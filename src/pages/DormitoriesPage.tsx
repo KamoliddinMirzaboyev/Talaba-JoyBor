@@ -5,11 +5,9 @@ import { Search, SlidersHorizontal, Building2, Map as MapIcon, LayoutGrid } from
 import { Listing, Dormitory as DormitoryType } from '../types';
 import DormitoryCard from '../components/DormitoryCard';
 import DormitoryMap from '../components/DormitoryMap';
-import { Dormitory as MapDormitory } from '../components/DormitoryMap';
 import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
-import { useAuth } from '../contexts/AuthContext';
 import { useDormitories } from '../hooks/useDormitories';
 
 interface DormitoriesPageProps {
@@ -18,7 +16,6 @@ interface DormitoriesPageProps {
 }
 
 const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onApplicationStart }) => {
-  const { user } = useAuth();
   const location = useLocation();
   const { data: dormitories = [], isLoading: loading } = useDormitories();
   const [searchQuery, setSearchQuery] = useState('');

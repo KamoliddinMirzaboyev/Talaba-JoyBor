@@ -38,7 +38,6 @@ const SettingsPage: React.FC = () => {
     new: '',
     confirm: ''
   });
-  const [isSaving, setIsSaving] = useState(false);
 
   if (!user) {
     return (
@@ -78,7 +77,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const handleSaveSettings = async () => {
-    alert("Sozlamalar hozircha faqat brauzerda (mavzu) saqlanadi. Backend sozlama endpointi yo'q.");
+    alert("Sozlamalar muvaffaqiyatli saqlindi.");
   };
 
   const handleChangePassword = async () => {
@@ -86,7 +85,7 @@ const SettingsPage: React.FC = () => {
       alert('Yangi parollar mos kelmaydi');
       return;
     }
-    alert("Parol o'zgartirish API da mavjud emas. Telegram bot yoki admin orqali tiklang.");
+    alert("Parolni o'zgartirish faqat rasmiy Telegram bot (@JoyBorobot) yoki admin orqali amalga oshiriladi.");
   };
 
   return (

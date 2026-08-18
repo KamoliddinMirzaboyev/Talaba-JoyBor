@@ -7,8 +7,7 @@ import { LikesProvider } from './contexts/LikesContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import TelegramAuthPage from './pages/TelegramAuthPage';
 import DormitoriesPage from './pages/DormitoriesPage';
 import ListingDetailPage from './pages/ListingDetailPage';
 import ApplicationPage from './pages/ApplicationPage';
@@ -150,9 +149,9 @@ function AppContent() {
         <Route path="/hamkorlik" element={<PartnershipPage />} />
         <Route path="/contact" element={<ContactPage />} />
         
-        {/* Auth Routes - redirect to dashboard if already logged in */}
-        <Route path="/login" element={<AuthRedirect><LoginPage /></AuthRedirect>} />
-        <Route path="/register" element={<AuthRedirect><RegisterPage /></AuthRedirect>} />
+        {/* Auth Routes - Telegram Bot / TMA Auth */}
+        <Route path="/login" element={<AuthRedirect><TelegramAuthPage /></AuthRedirect>} />
+        <Route path="/register" element={<AuthRedirect><TelegramAuthPage /></AuthRedirect>} />
         
         {/* Protected Routes */}
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />

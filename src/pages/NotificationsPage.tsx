@@ -47,7 +47,6 @@ const NotificationsPage: React.FC = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
-  const ITEMS_PER_PAGE = 20;
 
   // Load notifications from API
   const loadNotifications = async (pageNum: number = 1, append: boolean = false) => {

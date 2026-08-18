@@ -5,12 +5,10 @@ import {
   CalendarCheck,
   Home,
   MessageCircle,
-  Calendar,
   Users,
   MapPin,
   Clock,
   CheckCircle,
-  AlertCircle,
   XCircle,
   User,
   CreditCard,
@@ -33,7 +31,7 @@ import Header from "../components/Header";
 import Skeleton from "../components/Skeleton";
 import EmptyState from "../components/EmptyState";
 import { mediaUrl, authAPI } from "../services/api";
-import { formatDate, formatDateTime } from "../utils/format";
+import { formatDate } from "../utils/format";
 
 
 const DashboardPage: React.FC = () => {
@@ -151,22 +149,6 @@ const DashboardPage: React.FC = () => {
       bg: "bg-surface-50 dark:bg-surface-900/20",
     },
   ];
-
-  const getStatusIcon = (status: string) => {
-    switch (statusTone(status)) {
-      case "approved":
-      case "completed":
-        return <CheckCircle className="w-5 h-5 text-success-500" />;
-      case "pending":
-        return <Clock className="w-5 h-5 text-warning-500" />;
-      case "rejected":
-        return <XCircle className="w-5 h-5 text-danger-500" />;
-      case "interview":
-        return <AlertCircle className="w-5 h-5 text-brand-500" />;
-      default:
-        return <Clock className="w-5 h-5 text-surface-500" />;
-    }
-  };
 
   // Unknown statuses fall back to the raw string so nothing is hidden on the dashboard.
   const getStatusText = (status: string) =>
@@ -512,12 +494,12 @@ const DashboardPage: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            {/* <h1 className="text-3xl md:text-4xl font-black text-surface-900 dark:text-white mb-2 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-surface-900 dark:text-white mb-2 tracking-tight">
               Xush kelibsiz, {firstName}! 👋
             </h1>
             <p className="text-surface-500 dark:text-surface-400 text-base md:text-lg">
               Arizalaringiz holatini shu yerdan kuzatib boring
-            </p> */}
+            </p>
           </motion.div>
           
           <motion.div

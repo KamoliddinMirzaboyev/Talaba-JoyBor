@@ -459,10 +459,10 @@ const HomePage: React.FC<HomePageProps> = ({ onListingSelect }) => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate(user ? '/dashboard' : '/register')}
+                onClick={() => navigate(user ? '/dashboard' : '/login')}
                 className="bg-white text-brand-600 px-8 py-3 rounded-xl font-semibold hover:bg-surface-50 transition-colors duration-150"
               >
-                {user ? 'Dashboard' : 'Ro\'yhatdan O\'tish'}
+                {user ? 'Dashboard' : 'Kirish'}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}

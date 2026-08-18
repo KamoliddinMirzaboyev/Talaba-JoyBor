@@ -17,6 +17,7 @@ import {
   Phone,
   FileText,
   Handshake,
+  Send,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNotifications } from "../contexts/NotificationContext";
@@ -222,22 +223,12 @@ const Header: React.FC = () => {
               </div>
             ) : (
               <div className="hidden md:flex items-center gap-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <button
                   onClick={() => navigate("/login")}
-                  className="text-surface-700 dark:text-surface-300 hover:text-brand-600 dark:hover:text-brand-400 font-medium transition-colors duration-150"
+                  className="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl font-semibold shadow-sm transition-colors duration-150 text-sm"
                 >
                   Kirish
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/register")}
-                  className="bg-gradient-to-r from-brand-600 to-brand-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-colors duration-150"
-                >
-                  Ro'yhatdan O'tish
-                </motion.button>
+                </button>
               </div>
             )}
 
@@ -292,19 +283,9 @@ const Header: React.FC = () => {
                       navigate("/login");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 rounded-xl transition-colors duration-150"
+                    className="w-full inline-flex items-center justify-center bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl font-semibold shadow-sm transition-colors duration-150 text-sm"
                   >
-                    <User className="w-5 h-5" />
                     Kirish
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate("/register");
-                      setIsMenuOpen(false);
-                    }}
-                    className="w-full bg-gradient-to-r from-brand-600 to-brand-700 text-white px-3 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-colors duration-150"
-                  >
-                    Ro'yhatdan O'tish
                   </button>
                 </>
               )}
