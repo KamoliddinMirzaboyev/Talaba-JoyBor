@@ -121,6 +121,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   access: string;
   refresh: string;
+  user?: Partial<UserProfile> & { role?: string; id?: number };
 }
 
 export interface UserProfile {
@@ -160,7 +161,10 @@ export const authAPI = {
   },
 
   telegramWebAppAuth: async (initData: string): Promise<LoginResponse> => {
-    const response = await api.post('/auth/telegram/webapp/', { init_data: initData });
+    const response = await api.post('/auth/telegram/webapp/', {
+      init_data: initData,
+      initData: initData,
+    });
     return response.data;
   },
 

@@ -62,18 +62,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (tokens?.access) {
         sessionStore.setTokens(tokens.access, tokens.refresh || '');
         const decoded = jwtDecode<JwtPayload>(tokens.access);
-        try {
-          const profileData = await authAPI.getProfile();
-          setUser({ ...profileData, id: decoded.user_id });
-        } catch {
+
+        if (tokens.user) {
           setUser({
-            id: decoded.user_id,
-            username: decoded.username || '',
-            first_name: decoded.first_name || '',
-            last_name: decoded.last_name || '',
-            email: decoded.email || '',
-            phone: decoded.phone || '',
-          });
+            id: tokens.user.id || decoded.user_id,
+            username: tokens.user.username || decoded.username || '',
+            first_name: tokens.user.first_name || decoded.first_name || '',
+            last_name: tokens.user.last_name || decoded.last_name || '',
+            email: tokens.user.email || decoded.email || '',
+            phone: tokens.user.phone || decoded.phone || '',
+            role: tokens.user.role as any,
+          } as User);
+        } else {
+          try {
+            const profileData = await authAPI.getProfile();
+            setUser({ ...profileData, id: decoded.user_id });
+          } catch {
+            setUser({
+              id: decoded.user_id,
+              username: decoded.username || '',
+              first_name: decoded.first_name || '',
+              last_name: decoded.last_name || '',
+              email: decoded.email || '',
+              phone: decoded.phone || '',
+            });
+          }
         }
         setIsAuthenticated(true);
         setAuthError(null);
