@@ -90,6 +90,11 @@ const ListingDetailPage: React.FC = () => {
             month_price: number;
             address: string;
             university_name: string;
+            phone_number?: string;
+            phone?: string;
+            contact_phone?: string;
+            admin_phone?: string;
+            email?: string;
             images: Array<string | { image: string }>;
             amenities_list: Array<{ name: string }>;
             description?: string;
@@ -155,9 +160,9 @@ const ListingDetailPage: React.FC = () => {
                 rating: dorm.rating || 0,
                 reviews: 0,
                 admin: {
-                  name: dorm.admin_name || "Admin",
-                  phone: undefined,
-                  email: undefined,
+                  name: dorm.admin_name || "Yotoqxona Ma'muriyati",
+                  phone: dorm.phone_number || dorm.phone || dorm.contact_phone || dorm.admin_phone || undefined,
+                  email: dorm.email || undefined,
                 },
                 features: {
                   furnished: true,
@@ -642,47 +647,54 @@ const ListingDetailPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-6"
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6"
             >
-              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+              <h3 className="text-base font-bold text-surface-900 dark:text-white mb-3">
                 Yotoqxona Ma'muriyati
               </h3>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-3 text-surface-600 dark:text-surface-300">
-                  <Phone className="w-4 h-4" />
-                  <span className="text-sm">
-                    {formatPhoneNumber(listing.admin?.phone || "998889563848")}
-                  </span>
-                </div>
-                {listing.admin?.email && (
-                  <div className="flex items-center gap-3 text-surface-600 dark:text-surface-300">
-                    <Mail className="w-4 h-4" />
-                    <span className="text-sm">{listing.admin.email}</span>
+              <div className="space-y-2.5 mb-5">
+                {listing.admin?.phone ? (
+                  <a
+                    href={`tel:${listing.admin.phone}`}
+                    className="flex items-center gap-2.5 text-sm font-semibold text-surface-800 dark:text-surface-200 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                  >
+                    <Phone className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0" />
+                    <span>{formatPhoneNumber(listing.admin.phone)}</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-2.5 text-xs text-surface-500">
+                    <Phone className="w-4 h-4 text-surface-400 shrink-0" />
+                    <span>Aloqa raqami kiritilmagan</span>
                   </div>
+                )}
+                {listing.admin?.email && (
+                  <a
+                    href={`mailto:${listing.admin.email}`}
+                    className="flex items-center gap-2.5 text-xs text-surface-600 dark:text-surface-400 hover:text-brand-600 transition-colors"
+                  >
+                    <Mail className="w-4 h-4 text-surface-400 shrink-0" />
+                    <span>{listing.admin.email}</span>
+                  </a>
                 )}
               </div>
 
               <div className="space-y-3">
                 {user ? (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <button
                     onClick={() => onApplicationStart(listing)}
-                    className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
+                    className="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-4 rounded-xl font-semibold shadow-sm transition-colors duration-150 flex items-center justify-center gap-2 text-sm"
                   >
-                    <Calendar className="w-5 h-5" />
-                    Ariza Yuborish
-                  </motion.button>
+                    <Calendar className="w-4 h-4" />
+                    <span>Ariza Yuborish</span>
+                  </button>
                 ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <button
                     onClick={() => navigate("/login")}
-                    className="w-full bg-gradient-to-r from-brand-600 to-success-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-150"
+                    className="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 px-4 rounded-xl font-semibold shadow-sm transition-colors duration-150 text-sm"
                   >
                     Ariza Yuborish Uchun Kiring
-                  </motion.button>
+                  </button>
                 )}
               </div>
             </motion.div>
@@ -691,23 +703,23 @@ const ListingDetailPage: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
               className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6"
             >
-              <h3 className="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+              <h3 className="text-base font-bold text-surface-900 dark:text-white mb-3">
                 Joylashuv
               </h3>
-              <div className="rounded-xl overflow-hidden">
+              <div className="rounded-xl overflow-hidden border border-surface-100 dark:border-surface-800">
                 <DormitoryLocationMap
                   name={listing.title}
                   address={listing.location}
                   latitude={listing.coordinates?.lat || 0}
                   longitude={listing.coordinates?.lng || 0}
                   month_price={listing.price}
-                  phone_number={listing.admin?.phone || "998889563848"}
+                  phone_number={listing.admin?.phone || ""}
                 />
               </div>
-              <p className="text-surface-600 dark:text-surface-300 mt-3 text-sm">
+              <p className="text-surface-600 dark:text-surface-300 mt-3 text-xs sm:text-sm">
                 {listing.location} • {listing.university}
               </p>
             </motion.div>
