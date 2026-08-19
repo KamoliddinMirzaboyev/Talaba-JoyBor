@@ -28,7 +28,7 @@ interface ProfileData {
 }
 
 const ProfilePage: React.FC = () => {
-  const { updateUserProfile } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const { theme } = useTheme();
   const navigate = useNavigate();
 
@@ -44,6 +44,7 @@ const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [fetchError, setFetchError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -54,8 +55,8 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
-      setError('');
-      
+      setFetchError('');
+
       try {
         const data = await authAPI.getProfile();
         // Format phone for display
@@ -69,7 +70,23 @@ const ProfilePage: React.FC = () => {
             navigate('/login');
             return;
         }
-        setError('Tarmoq xatosi yoki server ishlamayapti.');
+        // /me/ ishlamay qolsa ham, Telegram orqali auth'da olingan ma'lumot
+        // (AuthContext.user) bo'lsa — foydalanuvchini bo'sh xato ekraniga
+        // qoldirmasdan o'shani ko'rsatamiz.
+        if (user) {
+          const hydrated: ProfileData = {
+            username: user.username || '',
+            first_name: user.first_name || '',
+            last_name: user.last_name || '',
+            email: user.email || '',
+            phone: user.phone ? formatPhoneNumber(user.phone) : '',
+            image: user.image,
+          };
+          setProfile(hydrated);
+          setEditedProfile(hydrated);
+        } else {
+          setFetchError('Tarmoq xatosi yoki server ishlamayapti.');
+        }
       } finally {
         setLoading(false);
       }
@@ -255,7 +272,7 @@ const ProfilePage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (fetchError) {
     return (
       <div className={`min-h-screen ${theme === 'dark' ? 'bg-surface-950' : 'bg-surface-50'}`}>
         <Header />
@@ -269,7 +286,7 @@ const ProfilePage: React.FC = () => {
             <h2 className={`text-xl font-semibold mb-2 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
               Xatolik yuz berdi
             </h2>
-            <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{error}</p>
+            <p className={`text-sm mb-4 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fetchError}</p>
             <button
               onClick={() => window.location.reload()}
               className="bg-brand-600 text-white px-4 py-2 rounded-xl hover:bg-brand-700 transition-colors duration-200"

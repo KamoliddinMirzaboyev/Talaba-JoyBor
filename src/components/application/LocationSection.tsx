@@ -1,7 +1,6 @@
 import React from 'react';
-import { MapPin } from 'lucide-react';
 import { ApplicationFormData, District, FieldRefSetter, Province } from './types';
-import { inputClass, FieldError } from './shared';
+import { selectClass, labelClass, FieldError } from './shared';
 
 interface LocationSectionProps {
   formData: Pick<ApplicationFormData, 'city' | 'village'>;
@@ -25,60 +24,50 @@ const LocationSection: React.FC<LocationSectionProps> = ({
   registerFieldRef,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-2.5">
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
+        <label className={labelClass}>
           Viloyat <span className="text-danger-500">*</span>
         </label>
-        <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
-          <select
-            value={formData.city}
-            onChange={(e) => onCityChange(e.target.value)}
-            ref={registerFieldRef('city')}
-            className={inputClass(!!errors.city)}
-          >
-            <option value="">Viloyatni tanlang</option>
-            {provinces.map((province) => (
-              <option key={province.id} value={province.name}>
-                {province.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={formData.city}
+          onChange={(e) => onCityChange(e.target.value)}
+          ref={registerFieldRef('city')}
+          className={selectClass(!!errors.city)}
+        >
+          <option value="">Tanlang</option>
+          {provinces.map((province) => (
+            <option key={province.id} value={province.name}>
+              {province.name}
+            </option>
+          ))}
+        </select>
         <FieldError message={errors.city} />
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-          Tuman/Shahar <span className="text-danger-500">*</span>
+        <label className={labelClass}>
+          Tuman <span className="text-danger-500">*</span>
         </label>
-        <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
-          <select
-            value={formData.village}
-            onChange={(e) => onVillageChange(e.target.value)}
-            disabled={!selectedProvinceId || districts.length === 0}
-            ref={registerFieldRef('village')}
-            className={inputClass(
-              !!errors.village,
-              !selectedProvinceId || districts.length === 0 ? 'opacity-60 cursor-not-allowed' : ''
-            )}
-          >
-            <option value="">
-              {!selectedProvinceId
-                ? 'Avval viloyatni tanlang'
-                : districts.length === 0
-                  ? 'Yuklanmoqda...'
-                  : 'Tumanni tanlang'}
+        <select
+          value={formData.village}
+          onChange={(e) => onVillageChange(e.target.value)}
+          disabled={!selectedProvinceId}
+          ref={registerFieldRef('village')}
+          className={selectClass(
+            !!errors.village,
+            !selectedProvinceId ? 'opacity-60 cursor-not-allowed' : ''
+          )}
+        >
+          <option value="">
+            {!selectedProvinceId ? 'Avval viloyat' : districts.length === 0 ? 'Yuklanmoqda...' : 'Tanlang'}
+          </option>
+          {districts.map((district) => (
+            <option key={district.id} value={district.name}>
+              {district.name}
             </option>
-            {districts.map((district) => (
-              <option key={district.id} value={district.name}>
-                {district.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          ))}
+        </select>
         <FieldError message={errors.village} />
       </div>
     </div>

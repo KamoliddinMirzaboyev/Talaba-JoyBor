@@ -21,13 +21,13 @@ const DocumentUploadsSection: React.FC<DocumentUploadsSectionProps> = ({
   onPassportSecondChange,
 }) => {
   return (
-    <div className="pt-4 border-t border-surface-100 dark:border-surface-700">
-      <h3 className="text-sm font-bold text-surface-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
-        <Upload className="w-4 h-4 text-brand-600" />
-        Hujjatlar (Ixtiyoriy)
+    <div className="pt-3 border-t border-surface-100 dark:border-surface-800">
+      <h3 className="text-xs font-semibold text-surface-800 dark:text-surface-200 mb-2.5 flex items-center gap-1.5">
+        <Upload className="w-3.5 h-3.5 text-brand-600" />
+        Hujjatlar
       </h3>
 
-      <div className="space-y-6">
+      <div className="space-y-3">
         <div className="bg-surface-50 dark:bg-surface-900/50 p-4 rounded-xl border border-surface-200 dark:border-surface-700">
           <div className="flex items-center justify-between mb-4">
             <div>

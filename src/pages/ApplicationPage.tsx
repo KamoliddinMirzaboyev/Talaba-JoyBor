@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, AlertCircle, Building, CheckCircle, User } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Building, CheckCircle } from 'lucide-react';
 import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
 import PersonalInfoSection from '../components/application/PersonalInfoSection';
@@ -52,19 +52,19 @@ const ApplicationPage: React.FC = () => {
 
   if (!isAuthenticated || !user || !user?.id) {
     return (
-      <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
-            Tizimga kirish talab etiladi
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-900 flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-2">
+            Tizimga kiring
           </h2>
-          <p className="text-surface-600 dark:text-surface-300 mb-6">
+          <p className="text-sm text-surface-500 dark:text-surface-400 mb-4">
             Ariza yuborish uchun avval tizimga kirishingiz kerak
           </p>
           <button
             onClick={() => navigate('/login')}
-            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-150"
+            className="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors duration-150"
           >
-            Tizimga kirish
+            Kirish
           </button>
         </div>
       </div>
@@ -85,14 +85,11 @@ const ApplicationPage: React.FC = () => {
             <div className="w-20 h-20 bg-success-100 dark:bg-success-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-10 h-10 text-success-600 dark:text-success-400" />
             </div>
-            <h2 className="text-3xl font-bold text-surface-900 dark:text-white mb-4">
-              Ariza Muvaffaqiyatli Yuborildi!
+            <h2 className="text-xl font-semibold text-surface-900 dark:text-white mb-2">
+              Ariza yuborildi
             </h2>
-            <p className="text-surface-600 dark:text-surface-300 mb-2">
-              Sizning arizangiz ko'rib chiqilmoqda.
-            </p>
-            <p className="text-surface-600 dark:text-surface-300 mb-8">
-              Tez orada javob oling va keyingi qadamlar haqida xabar oling.
+            <p className="text-sm text-surface-500 dark:text-surface-400 mb-6">
+              Arizangiz ko'rib chiqilmoqda. Tez orada javob olasiz.
             </p>
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -112,108 +109,63 @@ const ApplicationPage: React.FC = () => {
     <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.2 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6 pb-24 lg:pb-8">
+        <button
           onClick={() => navigate('/dormitories')}
-          className="flex items-center gap-2 text-brand-600 hover:text-brand-700 mb-6 transition-colors duration-150"
+          className="flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700 mb-3 transition-colors duration-150"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4" />
           Orqaga
-        </motion.button>
+        </button>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="mb-10"
-        >
-          <h1 className="text-3xl font-extrabold text-surface-900 dark:text-white mb-2">
-            Yashash Joyi Uchun Ariza Topshirish
-          </h1>
-          <p className="text-sm text-surface-500 dark:text-surface-400 font-medium uppercase tracking-widest">
-            Iltimos, barcha ma'lumotlarni rasmiy hujjatlaringiz asosida to'ldiring
-          </p>
-        </motion.div>
+        <div className="flex items-end justify-between gap-3 mb-3">
+          <div>
+            <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-surface-900 dark:text-white">
+              Ariza
+            </h1>
+            <p className="text-[11px] text-surface-500 mt-0.5">{progressPercent}% to'ldirilgan</p>
+          </div>
+          <div className="w-24 h-1 rounded-full bg-surface-200 dark:bg-surface-700 overflow-hidden">
+            <div
+              className="h-full bg-brand-500 transition-all duration-300"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2, delay: 0.05 }}
-              className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm p-8"
-            >
-              <h2 className="text-2xl font-semibold text-surface-900 dark:text-white mb-6 flex items-center gap-3">
-                <User className="w-6 h-6 text-brand-600" />
-                Ariza Ma'lumotlari
-              </h2>
-
+            <div className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-3.5 sm:p-6">
               {errors.general && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-xl"
-                >
-                  <div className="flex items-center gap-3">
-                    <AlertCircle className="w-5 h-5 text-danger-600 dark:text-danger-400" />
-                    <p className="text-danger-700 dark:text-danger-300">{errors.general}</p>
-                  </div>
-                </motion.div>
-              )}
-
-              <div className="space-y-6">
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-surface-600 dark:text-surface-300">
-                      Form to'ldirish jarayoni
-                    </span>
-                    <span className="text-sm font-bold text-brand-600">{progressPercent}%</span>
-                  </div>
-                  <div className="w-full bg-surface-200 dark:bg-surface-700 rounded-full h-3">
-                    <div
-                      className="bg-brand-500 h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${progressPercent}%` }}
-                    />
+                <div className="mb-3 p-2.5 bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-xl">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 text-danger-600 dark:text-danger-400 mt-0.5 shrink-0" />
+                    <p className="text-xs text-danger-700 dark:text-danger-300">{errors.general}</p>
                   </div>
                 </div>
+              )}
 
+              <div className="space-y-3.5">
                 {selectedListing ? (
-                  <div className="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-800 rounded-xl p-4">
-                    <div className="flex items-center gap-3">
-                      <Building className="w-6 h-6 text-brand-600" />
-                      <div>
-                        <h3 className="font-semibold text-brand-900 dark:text-brand-100">
-                          Ariza Yuborilayotgan Yotoqxona
-                        </h3>
-                        <p className="text-brand-700 dark:text-brand-300">{selectedListing.title}</p>
-                        {selectedListing.university && (
-                          <p className="text-sm text-brand-700 dark:text-brand-400">
-                            {selectedListing.university}
-                          </p>
-                        )}
-                        <p className="text-xs text-brand-600 dark:text-brand-400 mt-1">
-                          ✨ Bu yotoqxona uchun ariza yubormoqdasiz
+                  <div className="flex items-center gap-2 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50 dark:bg-brand-900/20 px-3 py-2">
+                    <Building className="w-4 h-4 text-brand-600 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-brand-900 dark:text-brand-100 truncate">
+                        {selectedListing.title}
+                      </p>
+                      {selectedListing.university && (
+                        <p className="text-[11px] text-brand-700 dark:text-brand-400 truncate">
+                          {selectedListing.university}
                         </p>
-                      </div>
+                      )}
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-danger-50 dark:bg-danger-900/20 border border-danger-200 dark:border-danger-800 rounded-xl p-4">
-                    <div className="flex items-center gap-3">
-                      <AlertCircle className="w-6 h-6 text-danger-600" />
-                      <div>
-                        <h3 className="font-semibold text-danger-900 dark:text-danger-100">Xatolik</h3>
-                        <p className="text-danger-700 dark:text-danger-300">
-                          Yotoqxona tanlanmagan. Iltimos, yotoqxona sahifasiga qayting va ariza
-                          yuborish tugmasini bosing.
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex items-start gap-2 rounded-xl border border-danger-200 dark:border-danger-800 bg-danger-50 dark:bg-danger-900/20 px-3 py-2">
+                    <AlertCircle className="w-4 h-4 text-danger-600 mt-0.5 shrink-0" />
+                    <p className="text-xs text-danger-700 dark:text-danger-300">
+                      Yotoqxona tanlanmagan. Ro'yxatdan ariza yuboring.
+                    </p>
                   </div>
                 )}
 
@@ -273,36 +225,31 @@ const ApplicationPage: React.FC = () => {
                   onChange={(value) => handleInputChange('comment', value)}
                 />
 
-                <div className="pt-6">
-                  <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
+                <div className="hidden lg:block pt-2">
+                  <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full bg-brand-600 text-white py-4 rounded-xl font-bold hover:bg-brand-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg shadow-sm"
+                    className="w-full bg-brand-600 text-white py-2.5 rounded-xl font-semibold hover:bg-brand-700 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-sm"
                   >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                        Yuborilmoqda...
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-6 h-6" />
-                        Arizani Tasdiqlash
-                      </>
-                    )}
-                  </motion.button>
-                  <p className="text-[10px] text-center text-surface-400 mt-4 uppercase tracking-widest">
-                    Tasdiqlash tugmasini bosish orqali ma'lumotlarning to'g'riligini tasdiqlaysiz
-                  </p>
+                    {isSubmitting ? 'Yuborilmoqda...' : 'Arizani yuborish'}
+                  </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           <ApplicationSidebar selectedListing={selectedListing} />
         </div>
+      </div>
+
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t border-surface-200 dark:border-surface-800 bg-white/95 dark:bg-surface-900/95 backdrop-blur-sm px-3 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]">
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting}
+          className="w-full bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-colors duration-150 disabled:opacity-50"
+        >
+          {isSubmitting ? 'Yuborilmoqda...' : 'Arizani yuborish'}
+        </button>
       </div>
     </div>
   );

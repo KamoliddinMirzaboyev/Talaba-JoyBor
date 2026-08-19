@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileText, Hash, Phone } from 'lucide-react';
 import { ApplicationFormData, FieldRefSetter } from './types';
-import { inputClass, FieldError } from './shared';
+import { inputClass, labelClass, sectionTitleClass, FieldError } from './shared';
 
 interface ContactInfoSectionProps {
   formData: Pick<ApplicationFormData, 'phone' | 'passport' | 'pinfl'>;
@@ -21,22 +21,19 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
   registerFieldRef,
 }) => {
   return (
-    <div className="pt-4 border-t border-surface-100 dark:border-surface-700">
-      <h3 className="text-sm font-bold text-surface-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
-        <Phone className="w-4 h-4 text-brand-600" />
-        Bog'lanish va Shaxsiy Ma'lumotlar
+    <div className="pt-3 border-t border-surface-100 dark:border-surface-800">
+      <h3 className={sectionTitleClass}>
+        <Phone className="w-3.5 h-3.5 text-brand-600" />
+        Aloqa
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-2.5">
         <div>
-          <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-            Telefon Raqam
-          </label>
+          <label className={labelClass}>Telefon</label>
           <div className="relative">
-            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
-            <div className="absolute left-10 top-1/2 transform -translate-y-1/2 text-surface-600 dark:text-surface-400 font-medium">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-surface-500">
               +998
-            </div>
+            </span>
             <input
               type="tel"
               value={formData.phone.replace(/^\+?998/, '').replace(/\D/g, '').slice(0, 9)}
@@ -46,7 +43,7 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
                 onPhoneChange('998' + value);
               }}
               ref={registerFieldRef('phone')}
-              className={inputClass(!!errors.phone, '', 'pl-20')}
+              className={inputClass(!!errors.phone, '', 'pl-12')}
               placeholder="901234567"
               maxLength={9}
             />
@@ -55,11 +52,9 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-            Pasport Raqami
-          </label>
+          <label className={labelClass}>Pasport</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+            <FileText className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
             <input
               type="text"
               value={formData.passport}
@@ -73,24 +68,19 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           <FieldError message={errors.passport} />
         </div>
 
-        <div className="md:col-span-2">
-          <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-            JSHSHIR (PINFL) <span className="text-danger-500">*</span>
-          </label>
+        <div className="col-span-2">
+          <label className={labelClass}>JSHSHIR</label>
           <div className="relative">
-            <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+            <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
             <input
               type="text"
               value={formData.pinfl}
               onChange={(e) => onPinflChange(e.target.value)}
               ref={registerFieldRef('pinfl')}
               className={inputClass(!!errors.pinfl)}
-              placeholder="14 ta raqamni kiriting"
+              placeholder="14 ta raqam"
               maxLength={14}
             />
-          </div>
-          <div className="text-[10px] text-surface-400 mt-1 uppercase tracking-tight">
-            Pasportingizdagi 14 xonali raqam (PINFL)
           </div>
           <FieldError message={errors.pinfl} />
         </div>

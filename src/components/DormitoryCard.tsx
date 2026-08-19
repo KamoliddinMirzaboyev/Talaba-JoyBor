@@ -85,7 +85,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
       className="bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 shadow-sm overflow-hidden hover:shadow-md transition-all duration-150 group flex flex-col h-full cursor-pointer"
     >
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-40 sm:h-48 overflow-hidden">
         {images && images.length > 0 ? (
           <Swiper
             modules={[Pagination, Autoplay, Navigation]}
@@ -134,41 +134,41 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         </motion.button>
 
         {/* Price Badge */}
-        <div className="absolute bottom-2 right-2 z-10 bg-brand-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-sm">
+        <div className="absolute bottom-2 right-2 z-10 bg-brand-600 text-white px-2.5 py-0.5 rounded-full text-[11px] font-semibold shadow-sm">
           {formatPrice(month_price)}/oy
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-3.5 sm:p-5 flex flex-col flex-1">
         {/* Header */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-bold text-surface-900 dark:text-white line-clamp-1">
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-1.5">
+            <h3 className="text-base font-semibold text-surface-900 dark:text-white line-clamp-1">
               {name}
             </h3>
           </div>
-          <div className="flex items-center gap-2 text-brand-600 mb-2">
-            <Building2 className="w-4 h-4" />
-            <span className="text-sm font-medium line-clamp-1">{universityName}</span>
+          <div className="flex items-center gap-1.5 text-brand-600 mb-1">
+            <Building2 className="w-3.5 h-3.5 shrink-0" />
+            <span className="text-xs font-medium line-clamp-1">{universityName}</span>
           </div>
-          <div className="flex items-center gap-2 text-surface-600 dark:text-surface-300">
-            <MapPin className="w-4 h-4" />
-            <span className="text-sm line-clamp-1">{address}</span>
+          <div className="flex items-center gap-1.5 text-surface-500 dark:text-surface-400">
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            <span className="text-xs line-clamp-1">{address}</span>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-brand-600" />
-            <span className="text-sm text-surface-700 dark:text-surface-300 font-medium">
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <div className="flex items-center gap-1.5">
+            <Users className="w-3.5 h-3.5 text-brand-600" />
+            <span className="text-xs text-surface-700 dark:text-surface-300 font-medium">
               Bo'sh joy: {totalFreeSpaces}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-brand-600" />
-            <span className="text-sm text-surface-700 dark:text-surface-300 font-medium">
+          <div className="flex items-center gap-1.5">
+            <Building2 className="w-3.5 h-3.5 text-brand-600" />
+            <span className="text-xs text-surface-700 dark:text-surface-300 font-medium">
               Xonalar: {room_statistics ? room_statistics.total.rooms : '?'}
             </span>
           </div>
@@ -210,7 +210,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
         {/* Description */}
         {description && (
           <div className="flex-1 mb-4">
-            <p className="text-surface-600 dark:text-surface-300 text-sm line-clamp-3">
+            <p className="text-surface-500 dark:text-surface-400 text-xs sm:text-sm line-clamp-2">
               {description}
             </p>
           </div>
@@ -222,7 +222,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onSelect}
-            className="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2.5 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-150 flex items-center justify-center gap-2"
+            className="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-2 px-3 rounded-xl text-sm font-medium shadow-sm transition-colors duration-150 flex items-center justify-center gap-2"
           >
             Ko'rish
           </motion.button>
@@ -232,7 +232,7 @@ const DormitoryCard: React.FC<DormitoryCardProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={(e) => { e.stopPropagation(); onApplicationStart(); }}
-              className="px-4 py-2.5 border-2 border-brand-600 text-brand-600 rounded-xl font-medium hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all duration-150 whitespace-nowrap"
+              className="px-3 py-2 border border-brand-600 text-brand-600 rounded-xl text-sm font-medium hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors duration-150 whitespace-nowrap"
             >
               Ariza
             </motion.button>

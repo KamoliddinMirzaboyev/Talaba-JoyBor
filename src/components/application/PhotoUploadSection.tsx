@@ -16,10 +16,10 @@ const PhotoUploadSection: React.FC<PhotoUploadSectionProps> = ({
   onFileChange,
 }) => {
   return (
-    <div className="pt-4 border-t border-surface-100 dark:border-surface-700">
-      <h3 className="text-sm font-bold text-surface-900 dark:text-white uppercase tracking-widest mb-6 flex items-center gap-2">
-        <User className="w-4 h-4 text-brand-600" />
-        Shaxsiy Fotosurat
+    <div className="pt-3 border-t border-surface-100 dark:border-surface-800">
+      <h3 className="text-xs font-semibold text-surface-800 dark:text-surface-200 mb-2.5 flex items-center gap-1.5">
+        <User className="w-3.5 h-3.5 text-brand-600" />
+        Foto
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">

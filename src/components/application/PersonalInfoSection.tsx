@@ -1,7 +1,7 @@
 import React from 'react';
-import { User, Users } from 'lucide-react';
+import { User } from 'lucide-react';
 import { ApplicationFormData, FieldRefSetter } from './types';
-import { inputClass, FieldError } from './shared';
+import { inputClass, selectClass, labelClass, FieldError } from './shared';
 
 type PersonalField = 'name' | 'familiya' | 'middle_name' | 'gender';
 
@@ -19,13 +19,13 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   registerFieldRef,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-2.5">
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
+        <label className={labelClass}>
           Ism <span className="text-danger-500">*</span>
         </label>
         <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+          <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
           <input
             type="text"
             value={formData.name}
@@ -39,11 +39,11 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
+        <label className={labelClass}>
           Familiya <span className="text-danger-500">*</span>
         </label>
         <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+          <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
           <input
             type="text"
             value={formData.familiya}
@@ -57,11 +57,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-          Otasining ismi
-        </label>
+        <label className={labelClass}>Otasining ismi</label>
         <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+          <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
           <input
             type="text"
             value={formData.middle_name}
@@ -74,22 +72,19 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       </div>
 
       <div>
-        <label className="block text-xs font-bold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
+        <label className={labelClass}>
           Jins <span className="text-danger-500">*</span>
         </label>
-        <div className="relative">
-          <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
-          <select
-            value={formData.gender}
-            onChange={(e) => onFieldChange('gender', e.target.value)}
-            ref={registerFieldRef('gender')}
-            className={inputClass(!!errors.gender)}
-          >
-            <option value="">Tanlang</option>
-            <option value="Erkak">Erkak</option>
-            <option value="Ayol">Ayol</option>
-          </select>
-        </div>
+        <select
+          value={formData.gender}
+          onChange={(e) => onFieldChange('gender', e.target.value)}
+          ref={registerFieldRef('gender')}
+          className={selectClass(!!errors.gender)}
+        >
+          <option value="">Tanlang</option>
+          <option value="Erkak">Erkak</option>
+          <option value="Ayol">Ayol</option>
+        </select>
         <FieldError message={errors.gender} />
       </div>
     </div>

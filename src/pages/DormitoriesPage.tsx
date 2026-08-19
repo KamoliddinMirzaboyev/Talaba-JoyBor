@@ -47,7 +47,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
         university: filters.university || '',
         priceRange: filters.priceRange || ''
       }));
-      if (filters.query || filters.location || filters.university || filters.priceRange) {
+      if (filters.university || filters.priceRange || filters.location) {
         setShowFilters(true);
       }
     }
@@ -120,6 +120,12 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
 
     return filtered;
   }, [dormitories, searchQuery, selectedFilters, sortBy]);
+
+  const activeFilterCount = [
+    selectedFilters.university,
+    selectedFilters.priceRange,
+    selectedFilters.capacity,
+  ].filter(Boolean).length;
 
   // Yotoqxonani Listing formatiga o'tkazish
   const convertDormitoryToListing = (dormitory: DormitoryType): Listing => {
@@ -198,9 +204,9 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
     return (
       <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
         <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Skeleton className="h-80 w-full rounded-2xl" count={6} />
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <Skeleton className="h-64 w-full rounded-2xl" count={6} />
           </div>
         </div>
       </div>
@@ -211,176 +217,146 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
     <div className="min-h-screen bg-surface-50 dark:bg-surface-900">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-4xl font-bold text-surface-900 dark:text-white mb-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <h1 className="text-base sm:text-xl font-semibold tracking-tight text-surface-900 dark:text-white">
             Yotoqxonalar
           </h1>
-          <p className="text-lg text-surface-600 dark:text-surface-300 max-w-2xl mx-auto">
-            O'zbekiston universitetlarining eng yaxshi yotoqxonalarini toping
-          </p>
-        </motion.div>
+          <div className="flex items-center gap-1 rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-0.5">
+            <button
+              onClick={() => setViewMode('grid')}
+              aria-label="Ro'yxat"
+              className={`p-1.5 rounded-lg transition-colors duration-150 ${
+                viewMode === 'grid'
+                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400'
+                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('map')}
+              aria-label="Xarita"
+              className={`p-1.5 rounded-lg transition-colors duration-150 ${
+                viewMode === 'map'
+                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400'
+                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
+              }`}
+            >
+              <MapIcon className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
 
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 mb-8"
-        >
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            {/* Search Input */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
+        <div className="mb-3">
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 min-w-0">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
               <input
-                type="text"
+                type="search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Yotoqxona, universitet yoki manzilni qidiring..."
-                className="w-full pl-12 pr-4 py-3 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
+                placeholder="Qidirish..."
+                className="w-full pl-8 pr-2.5 py-2 text-xs sm:text-sm border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
               />
             </div>
-
-            <div className="flex gap-3">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
-              >
-                <option value="name">Nomi bo'yicha</option>
-                <option value="price-low">Arzon narx</option>
-                <option value="price-high">Qimmat narx</option>
-                <option value="capacity">Joy soni</option>
-                <option value="distance">Masofa</option>
-              </select>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setShowFilters(!showFilters)}
-                className="px-4 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-150 flex items-center gap-2"
-              >
-                <SlidersHorizontal className="w-5 h-5" />
-                Filtrlar
-              </motion.button>
-            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              aria-label="Saralash"
+              className="w-[7.5rem] shrink-0 px-2 py-2 text-xs border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-800 dark:text-surface-200 rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
+            >
+              <option value="name">Nomi</option>
+              <option value="price-low">Arzon</option>
+              <option value="price-high">Qimmat</option>
+              <option value="capacity">Joy</option>
+              <option value="distance">Masofa</option>
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowFilters(!showFilters)}
+              aria-expanded={showFilters}
+              className={`relative shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-xl border transition-colors duration-150 ${
+                showFilters || activeFilterCount > 0
+                  ? 'bg-brand-600 border-brand-600 text-white'
+                  : 'bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300'
+              }`}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 rounded-full bg-danger-500 text-white text-[10px] font-semibold leading-4 text-center">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
           </div>
 
-          {/* Advanced Filters */}
           {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="border-t border-surface-200 dark:border-surface-700 pt-4"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-                    Universitet
-                  </label>
+            <div className="mt-2 rounded-xl border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 p-2.5">
+              <div className="grid grid-cols-2 gap-2">
+                <label className="block col-span-2 sm:col-span-1">
+                  <span className="block text-[11px] font-medium text-surface-500 dark:text-surface-400 mb-1">Universitet</span>
                   <select
                     value={selectedFilters.university}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, university: e.target.value }))}
-                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
+                    className="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent"
                   >
-                    <option value="">Barcha universitetlar</option>
+                    <option value="">Barchasi</option>
                     {universities.map(uni => (
                       <option key={uni} value={uni}>{uni}</option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-                    Narx oralig'i
-                  </label>
+                </label>
+                <label className="block">
+                  <span className="block text-[11px] font-medium text-surface-500 dark:text-surface-400 mb-1">Narx</span>
                   <select
                     value={selectedFilters.priceRange}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, priceRange: e.target.value }))}
-                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
+                    className="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent"
                   >
-                    <option value="">Barcha narxlar</option>
+                    <option value="">Barchasi</option>
                     {priceRanges.map(range => (
-                      <option key={range.value} value={range.value}>{range.label} so'm</option>
+                      <option key={range.value} value={range.value}>{range.label}</option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-                    Minimal joy soni
-                  </label>
+                </label>
+                <label className="block">
+                  <span className="block text-[11px] font-medium text-surface-500 dark:text-surface-400 mb-1">Joy</span>
                   <select
                     value={selectedFilters.capacity}
                     onChange={(e) => setSelectedFilters(prev => ({ ...prev, capacity: e.target.value }))}
-                    className="w-full px-3 py-2 border border-surface-300 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-colors duration-150"
+                    className="w-full px-2 py-1.5 text-xs border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent"
                   >
                     <option value="">Istalgan</option>
-                    <option value="1">1+ joy</option>
-                    <option value="5">5+ joy</option>
-                    <option value="10">10+ joy</option>
-                    <option value="20">20+ joy</option>
+                    <option value="1">1+</option>
+                    <option value="5">5+</option>
+                    <option value="10">10+</option>
+                    <option value="20">20+</option>
                   </select>
-                </div>
-
-                <div className="flex items-end">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setSelectedFilters({
-                      location: '',
-                      university: '',
-                      priceRange: '',
-                      capacity: '',
-                      amenities: []
-                    })}
-                    className="w-full px-4 py-2 border border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-50 dark:hover:bg-surface-700 transition-colors duration-150"
-                  >
-                    Tozalash
-                  </motion.button>
-                </div>
+                </label>
               </div>
-            </motion.div>
+              {activeFilterCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedFilters({
+                    location: '',
+                    university: '',
+                    priceRange: '',
+                    capacity: '',
+                    amenities: []
+                  })}
+                  className="mt-2 text-[11px] font-medium text-brand-600 dark:text-brand-400"
+                >
+                  Filtrlarni tozalash
+                </button>
+              )}
+            </div>
           )}
-        </motion.div>
-
-        {/* Results */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-surface-600 dark:text-surface-300">
-            <span className="font-semibold text-surface-900 dark:text-white">{filteredDormitories.length}</span> ta yotoqxona topildi
-          </p>
-
-          <div className="flex bg-white dark:bg-surface-900 rounded-xl p-1 shadow-sm border border-surface-200 dark:border-surface-800">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-xl transition-colors duration-150 ${
-                viewMode === 'grid' 
-                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400' 
-                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
-              }`}
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('map')}
-              className={`p-2 rounded-xl transition-colors duration-150 ${
-                viewMode === 'map' 
-                  ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400' 
-                  : 'text-surface-400 hover:text-surface-600 dark:hover:text-surface-300'
-              }`}
-            >
-              <MapIcon className="w-5 h-5" />
-            </button>
-          </div>
         </div>
+
+        <p className="text-[11px] sm:text-xs text-surface-500 dark:text-surface-400 mb-2.5">
+          <span className="font-medium text-surface-800 dark:text-surface-200">{filteredDormitories.length}</span> ta yotoqxona
+        </p>
 
         {/* View Content */}
         {viewMode === 'grid' ? (
@@ -391,7 +367,7 @@ const DormitoriesPage: React.FC<DormitoriesPageProps> = ({ onListingSelect, onAp
               description="Qidiruv shartlarini o'zgartirib qaytadan urinib ko'ring"
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
               {filteredDormitories.map((dormitory) => renderDormitoryCard(dormitory))}
             </div>
           )
