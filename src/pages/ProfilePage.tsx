@@ -2,7 +2,7 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
-import { User, Mail, Phone, MapPin, Edit3, Save, X, Camera, Lock, FileText, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
+import { User, GraduationCap, Phone, MapPin, Edit3, Save, X, Camera, FileText, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
 
 import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
@@ -40,7 +40,6 @@ const ProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [editedProfile, setEditedProfile] = useState<ProfileData | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,7 +63,6 @@ const ProfilePage: React.FC = () => {
         setProfile(hydrated);
         setEditedProfile(hydrated);
         setImageFile(null);
-        setPassword('');
       } catch (error) {
         if (isAxiosError(error) && error.response?.status === 401) {
             navigate('/login');
@@ -133,7 +131,7 @@ const ProfilePage: React.FC = () => {
     }
     try {
       // API faqat JSON qabul qiladi, FormData emas
-      const updateData: Partial<UserProfile> & { username?: string; password?: string } = {
+      const updateData: Partial<UserProfile> & { username?: string } = {
         username: editedProfile.username,
         email: editedProfile.email,
         first_name: editedProfile.first_name || '',
@@ -144,21 +142,12 @@ const ProfilePage: React.FC = () => {
         address: editedProfile.address || '',
         telegram: editedProfile.telegram || '',
       };
-      if (password.trim()) {
-        if (password.trim().length < 6) {
-          setFieldErrors((prev) => ({ ...prev, password: 'Parol kamida 6 ta belgi' }));
-          setSaving(false);
-          return;
-        }
-        updateData.password = password.trim();
-      }
-      
+
       const data = await authAPI.updateProfile(updateData);
-      
+
       setProfile(data);
       setEditedProfile(data);
       setImageFile(null);
-      setPassword('');
       setSuccess('Profil muvaffaqiyatli yangilandi!');
       setIsEditing(false);
       updateUserProfile(data); // Update AuthContext after successful profile update
@@ -193,7 +182,6 @@ const ProfilePage: React.FC = () => {
   const handleCancel = () => {
     setEditedProfile(profile);
     setImageFile(null);
-    setPassword('');
     setIsEditing(false);
     setError('');
     setSuccess('');
@@ -353,8 +341,10 @@ const ProfilePage: React.FC = () => {
                       className="w-24 h-24 rounded-full object-cover border-4 border-brand-500 mx-auto"
                     />
                   ) : (
-                    <div className="w-24 h-24 bg-gradient-to-r from-brand-600 to-success-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                      {editedProfile.username?.charAt(0).toUpperCase() || 'U'}
+                    <div className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto ${
+                      theme === 'dark' ? 'bg-brand-900/30 text-brand-400' : 'bg-brand-50 text-brand-600'
+                    }`}>
+                      <GraduationCap className="w-11 h-11" />
                     </div>
                   )}
                   {isEditing && (
@@ -374,10 +364,10 @@ const ProfilePage: React.FC = () => {
                   )}
                 </div>
                 <h3 className={`text-lg font-semibold mt-3 ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
-                  {editedProfile.username}
+                  {[editedProfile.first_name, editedProfile.last_name].filter(Boolean).join(' ') || editedProfile.username}
                 </h3>
-                <p className={`text-sm ${theme === 'dark' ? 'text-surface-300' : 'text-surface-600'}`}>
-                  {editedProfile.bio || ''}
+                <p className={`text-sm ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`}>
+                  @{editedProfile.username}
                 </p>
               </div>
               {/* Navigation */}
@@ -470,27 +460,6 @@ const ProfilePage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
-                        Foydalanuvchi nomi
-                      </label>
-                      <div className="relative">
-                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
-                        <input
-                          type="text"
-                          value={editedProfile.username}
-                          onChange={(e) => handleInputChange('username', e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
-                            theme === 'dark' 
-                              ? 'bg-surface-700 border-surface-600 text-white' 
-                              : 'bg-white border-surface-300 text-surface-900'
-                          } ${fieldErrors.username ? 'border-danger-500' : ''}`}
-                          placeholder="Foydalanuvchi nomi"
-                          disabled={!isEditing}
-                        />
-                        {fieldErrors.username && <div className="text-danger-500 text-xs mt-1">{fieldErrors.username}</div>}
-                      </div>
-                    </div>
-                    <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
                         Ism
                       </label>
                       <div className="relative">
@@ -529,25 +498,6 @@ const ProfilePage: React.FC = () => {
                           disabled={!isEditing}
                         />
                         {fieldErrors.last_name && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.last_name}</div>}
-                      </div>
-                    </div>
-                    <div>
-                      <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
-                        Email
-                      </label>
-                      <div className="relative">
-                        <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
-                        <input
-                          type="email"
-                          value={editedProfile.email}
-                          disabled
-                          className={`w-full pl-10 pr-4 py-3 border rounded-xl ${
-                            theme === 'dark' 
-                              ? 'bg-surface-600 border-surface-500 text-surface-400' 
-                              : 'bg-surface-100 border-surface-300 text-surface-500'
-                          }`}
-                          placeholder="Email"
-                        />
                       </div>
                     </div>
                     <div>
@@ -654,23 +604,23 @@ const ProfilePage: React.FC = () => {
                     </div>
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-surface-300' : 'text-surface-700'}`}>
-                        Parol (ixtiyoriy)
+                        Foydalanuvchi nomi
                       </label>
                       <div className="relative">
-                        <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
+                        <User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}`} />
                         <input
-                          type="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          type="text"
+                          value={editedProfile.username}
+                          onChange={(e) => handleInputChange('username', e.target.value)}
                           className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${
-                            theme === 'dark' 
-                              ? 'bg-surface-700 border-surface-600 text-white' 
+                            theme === 'dark'
+                              ? 'bg-surface-700 border-surface-600 text-white'
                               : 'bg-white border-surface-300 text-surface-900'
-                          } ${fieldErrors.password ? 'border-danger-500' : ''}`}
-                          placeholder="Yangi parol (ixtiyoriy)"
+                          } ${fieldErrors.username ? 'border-danger-500' : ''}`}
+                          placeholder="Foydalanuvchi nomi"
                           disabled={!isEditing}
                         />
-                        {fieldErrors.password && <div className={`text-xs mt-1 ${theme === 'dark' ? 'text-danger-400' : 'text-danger-600'}`}>{fieldErrors.password}</div>}
+                        {fieldErrors.username && <div className="text-danger-500 text-xs mt-1">{fieldErrors.username}</div>}
                       </div>
                     </div>
                   </div>

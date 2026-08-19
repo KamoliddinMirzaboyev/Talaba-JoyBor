@@ -18,8 +18,6 @@ import {
   GraduationCap,
   Layers,
   ChevronRight,
-  LogOut,
-  Bell,
   Settings,
   Building,
   Phone,
@@ -33,45 +31,54 @@ import EmptyState from "../components/EmptyState";
 import { mediaUrl, authAPI } from "../services/api";
 import { formatDate } from "../utils/format";
 
+function displayValue(value: string | number | null | undefined): string {
+  if (value === null || value === undefined || value === '' || value === 'undefined') return '—';
+  return String(value);
+}
+
+function isPlacedStudent(data: StudentDashboard | null): boolean {
+  if (!data) return false;
+  const placement = (data.placement_status || '').toLowerCase();
+  if (placement.includes('joylash')) return true;
+  if (data.room_info?.id && data.floor_info?.id) return true;
+  if (typeof data.room === 'number' && data.room > 0 && typeof data.floor === 'number' && data.floor > 0) {
+    return true;
+  }
+  return false;
+}
 
 const DashboardPage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [applications, setApplications] = useState<Application[]>([]);
   const [studentDashboard, setStudentDashboard] = useState<StudentDashboard | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Sahifa yuklanganda yuqoriga scroll qilish
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // API dan dashboard ma'lumotlarini yuklash
   useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+
     const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        
-        // Try to get student dashboard first
-        try {
-          const studentData = await authAPI.getStudentDashboard();
-          setStudentDashboard(studentData as StudentDashboard);
-        } catch (err) {
-          // Fallback to applications if dashboard not available
-          const applicationsData = await authAPI.getApplications();
-          setApplications(applicationsData as Application[]);
-        }
-      } catch (error) {
-        // Handle error silently
-        setApplications([]);
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+      const [dashResult, appsResult] = await Promise.allSettled([
+        authAPI.getStudentDashboard(),
+        authAPI.getApplications(),
+      ]);
+      if (cancelled) return;
+
+      setStudentDashboard(dashResult.status === 'fulfilled' ? dashResult.value : null);
+      setApplications(appsResult.status === 'fulfilled' ? appsResult.value : []);
+      setLoading(false);
     };
 
-    if (user) {
-      fetchDashboardData();
-    }
+    void fetchDashboardData();
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   // Fix: get first name safely
@@ -170,8 +177,23 @@ const DashboardPage: React.FC = () => {
     }
   };
 
-  // Student Dashboard mavjud bo'lsa (yotoqxonaga qabul qilingan talaba)
-  if (studentDashboard) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
+        <Header />
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 space-y-3">
+          <Skeleton className="h-8 w-48 rounded-xl" />
+          <div className="grid grid-cols-2 gap-2.5">
+            <Skeleton className="h-20 rounded-2xl" count={4} />
+          </div>
+          <Skeleton className="h-40 w-full rounded-2xl" />
+        </div>
+      </div>
+    );
+  }
+
+  // Yotoqxonaga joylashgan talaba — xona/qavat ma'lumoti bor
+  if (isPlacedStudent(studentDashboard) && studentDashboard) {
     const userImage = studentDashboard.picture ? mediaUrl(studentDashboard.picture) : null;
 
     const totalPaid = studentDashboard.recent_payments?.reduce((sum, p) => sum + p.amount, 0) || 0;
@@ -189,11 +211,11 @@ const DashboardPage: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <h1 className="text-3xl md:text-4xl font-black text-surface-900 dark:text-white mb-2 tracking-tight">
-                Xush kelibsiz, {studentDashboard.name}! 👋
+              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight text-surface-900 dark:text-white mb-1">
+                Xush kelibsiz, {displayValue(studentDashboard.name)}
               </h1>
-              <p className="text-surface-500 dark:text-surface-400 text-base md:text-lg">
-                Yotoqxonangizdagi so'nggi ma'lumotlarni kuzatib boring
+              <p className="text-xs sm:text-sm text-surface-500 dark:text-surface-400">
+                Yotoqxona ma'lumotlari
               </p>
             </motion.div>
           </div>
@@ -205,10 +227,20 @@ const DashboardPage: React.FC = () => {
               {/* Status Quick Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: "Qavat", value: studentDashboard.floor_info?.name, icon: Layers, color: "text-brand-600", bg: "bg-brand-50 dark:bg-brand-900/20" },
-                  { label: "Xona", value: studentDashboard.room_info?.name, icon: Home, color: "text-brand-600", bg: "bg-brand-50 dark:bg-brand-900/20" },
-                  { label: "Xonadoshlar", value: `${studentDashboard.room_info?.current_occupancy}/${studentDashboard.room_info?.capacity}`, icon: Users, color: "text-brand-600", bg: "bg-brand-50 dark:bg-brand-900/20" },
-                  { label: "Davomat", value: "98%", icon: CalendarCheck, color: "text-success-600", bg: "bg-success-50 dark:bg-success-900/20" },
+                  { label: "Qavat", value: displayValue(studentDashboard.floor_info?.name), icon: Layers, color: "text-brand-600", bg: "bg-brand-50 dark:bg-brand-900/20" },
+                  { label: "Xona", value: displayValue(studentDashboard.room_info?.name), icon: Home, color: "text-brand-600", bg: "bg-brand-50 dark:bg-brand-900/20" },
+                  {
+                    label: "Xonadoshlar",
+                    value:
+                      studentDashboard.room_info?.current_occupancy != null &&
+                      studentDashboard.room_info?.capacity != null
+                        ? `${studentDashboard.room_info.current_occupancy}/${studentDashboard.room_info.capacity}`
+                        : displayValue(studentDashboard.roommates?.length),
+                    icon: Users,
+                    color: "text-brand-600",
+                    bg: "bg-brand-50 dark:bg-brand-900/20",
+                  },
+                  { label: "Davomat", value: "—", icon: CalendarCheck, color: "text-success-600", bg: "bg-success-50 dark:bg-success-900/20" },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -221,7 +253,7 @@ const DashboardPage: React.FC = () => {
                       <item.icon className="w-5 h-5" />
                     </div>
                     <p className="text-[10px] font-bold text-surface-400 dark:text-surface-500 uppercase tracking-widest mb-1">{item.label}</p>
-                    <p className="font-black text-surface-900 dark:text-white text-base truncate">{item.value}</p>
+                    <p className="font-semibold text-surface-900 dark:text-white text-sm truncate">{item.value}</p>
                   </motion.div>
                 ))}
               </div>
@@ -453,28 +485,31 @@ const DashboardPage: React.FC = () => {
                 </button>
               </div>
 
-              {/* Application Status Refined */}
-              <div className="bg-white dark:bg-surface-900 rounded-3xl p-8 border border-surface-200 dark:border-surface-800 shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-                <div className="relative z-10">
-                  <p className="text-[10px] font-black text-surface-400 uppercase tracking-widest mb-6">Ariza Holati</p>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 bg-brand-50 dark:bg-brand-900/20 rounded-2xl flex items-center justify-center text-brand-600">
-                      <CheckCircle className="w-8 h-8" />
+              {/* Application Status */}
+              {studentDashboard.application_info && (
+                <div className="bg-white dark:bg-surface-900 rounded-2xl p-6 border border-surface-200 dark:border-surface-800 shadow-sm relative overflow-hidden">
+                  <p className="text-[10px] font-bold text-surface-400 uppercase tracking-widest mb-4">Ariza holati</p>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center text-brand-600">
+                      <CheckCircle className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-xl font-black text-surface-900 dark:text-white">{studentDashboard.application_info?.status || "Tasdiqlangan"}</h4>
-                      <p className="text-[10px] font-bold text-surface-400 uppercase tracking-widest">{formatDate(studentDashboard.application_info?.created_at || '')} yuborilgan</p>
+                      <h4 className="text-base font-semibold text-surface-900 dark:text-white">{displayValue(studentDashboard.application_info.status)}</h4>
+                      {studentDashboard.application_info.created_at && (
+                        <p className="text-[10px] font-bold text-surface-400 uppercase tracking-widest">{formatDate(studentDashboard.application_info.created_at)} yuborilgan</p>
+                      )}
                     </div>
                   </div>
-                  <div className="p-4 bg-surface-50 dark:bg-surface-800/50 rounded-2xl border border-surface-200 dark:border-surface-800">
-                    <p className="text-[10px] font-black text-surface-400 uppercase mb-2">Admin izohi:</p>
-                    <p className="text-sm font-medium text-surface-600 dark:text-surface-300 italic leading-relaxed">
-                      "{studentDashboard.application_info?.admin_comment || "Sizning arizangiz muvaffaqiyatli qabul qilindi."}"
-                    </p>
-                  </div>
+                  {studentDashboard.application_info.admin_comment && (
+                    <div className="p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-800">
+                      <p className="text-[10px] font-bold text-surface-400 uppercase mb-2">Admin izohi:</p>
+                      <p className="text-sm font-medium text-surface-600 dark:text-surface-300 leading-relaxed">
+                        "{studentDashboard.application_info.admin_comment}"
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -482,61 +517,35 @@ const DashboardPage: React.FC = () => {
     );
   }
 
-  // Oddiy dashboard (ariza yuborgan, lekin hali qabul qilinmagan)
+  // Joylashmagan talaba — ariza holati
   return (
-    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pb-24 md:pb-12">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-950 pb-8">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <h1 className="text-3xl md:text-4xl font-black text-surface-900 dark:text-white mb-2 tracking-tight">
-              Xush kelibsiz, {firstName}! 👋
-            </h1>
-            <p className="text-surface-500 dark:text-surface-400 text-base md:text-lg">
-              Arizalaringiz holatini shu yerdan kuzatib boring
-            </p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3"
-          >
-            <button className="p-3 bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 text-surface-500 hover:text-brand-600 transition-colors duration-150 shadow-sm">
-              <Bell className="w-6 h-6" />
-            </button>
-            <button 
-              onClick={logout}
-              className="p-3 bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-800 text-danger-500 hover:bg-danger-50 dark:hover:bg-danger-900/20 transition-all duration-150 shadow-sm"
-            >
-              <LogOut className="w-6 h-6" />
-            </button>
-          </motion.div>
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
+        <div className="mb-3">
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight text-surface-900 dark:text-white">
+            Xush kelibsiz, {firstName}
+          </h1>
+          <p className="text-xs text-surface-500 dark:text-surface-400 mt-0.5">
+            Arizalaringiz holati
+          </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          {stats.map((stat, index) => (
-            <motion.div
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 mb-4">
+          {stats.map((stat) => (
+            <div
               key={stat.label}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-surface-900 p-5 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 group hover:border-brand-500/30 transition-all duration-150"
+              className="bg-white dark:bg-surface-900 p-3 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                <div className={`w-10 h-10 ${stat.bg} rounded-xl flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform`}>
-                  <stat.icon className="w-5 h-5" />
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className={`w-8 h-8 ${stat.bg} rounded-xl flex items-center justify-center ${stat.color}`}>
+                  <stat.icon className="w-4 h-4" />
                 </div>
-                <p className="text-2xl font-black text-surface-900 dark:text-white leading-none">{stat.value}</p>
+                <p className="text-lg font-semibold text-surface-900 dark:text-white leading-none">{stat.value}</p>
               </div>
-              <p className="text-[10px] font-bold text-surface-400 dark:text-surface-500 uppercase tracking-widest">{stat.label}</p>
-            </motion.div>
+              <p className="text-[11px] font-medium text-surface-500">{stat.label}</p>
+            </div>
           ))}
         </div>
 
@@ -561,13 +570,13 @@ const DashboardPage: React.FC = () => {
                     )}
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-2xl font-black mb-2">Tabriklaymiz! 🎉</h2>
-                    <p className="text-brand-50 font-medium mb-6 leading-relaxed">
-                      Sizning <span className="font-black underline underline-offset-4">{approvedApplication.dormitory_name}</span> uchun arizangiz muvaffaqiyatli tasdiqlandi.
+                    <h2 className="text-base font-semibold mb-1">Ariza tasdiqlandi</h2>
+                    <p className="text-brand-50 text-sm mb-4 leading-relaxed">
+                      <span className="font-semibold">{approvedApplication.dormitory_name}</span> uchun arizangiz tasdiqlandi. Joylashuv kutilmoqda.
                     </p>
                     <button
                       onClick={() => navigate(`/application/${approvedApplication.id}`)}
-                      className="px-8 py-3 bg-white text-brand-700 rounded-xl font-black text-sm hover:bg-brand-50 transition-colors duration-150 shadow-sm uppercase tracking-widest"
+                      className="px-4 py-2 bg-white text-brand-700 rounded-xl font-semibold text-sm hover:bg-brand-50 transition-colors duration-150 shadow-sm"
                     >
                       Batafsil ko'rish
                     </button>
@@ -577,14 +586,13 @@ const DashboardPage: React.FC = () => {
             )}
 
             {/* Recent Applications List */}
-            <div className="bg-white dark:bg-surface-900 rounded-3xl shadow-sm border border-surface-200 dark:border-surface-800 p-6 md:p-8">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-black text-surface-900 dark:text-white flex items-center gap-3">
-                  <div className="w-1.5 h-6 bg-brand-500 rounded-full"></div>
-                  So'nggi Arizalar
+            <div className="bg-white dark:bg-surface-900 rounded-2xl shadow-sm border border-surface-200 dark:border-surface-800 p-3.5 sm:p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-surface-900 dark:text-white">
+                  Arizalar
                 </h2>
                 {applications.length > 0 && (
-                  <button onClick={() => navigate("/applications")} className="text-xs font-black text-brand-600 uppercase tracking-widest hover:underline">
+                  <button onClick={() => navigate("/applications")} className="text-xs font-medium text-brand-600">
                     Hammasi
                   </button>
                 )}
@@ -615,7 +623,7 @@ const DashboardPage: React.FC = () => {
                           <Home className="w-6 h-6" />
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-black text-surface-900 dark:text-white truncate leading-tight mb-1 group-hover:text-brand-600 transition-colors duration-150">
+                          <h4 className="font-semibold text-sm text-surface-900 dark:text-white truncate leading-tight mb-0.5 group-hover:text-brand-600 transition-colors duration-150">
                             {app.dormitory_name || app.dormitory?.name}
                           </h4>
                           <p className="text-xs font-medium text-surface-500 dark:text-surface-400 truncate">
@@ -644,39 +652,21 @@ const DashboardPage: React.FC = () => {
           <div className="lg:col-span-4 space-y-8">
             
             {/* Quick Actions Widget */}
-            <div className="bg-white dark:bg-surface-900 rounded-3xl p-8 border border-surface-200 dark:border-surface-800 shadow-sm">
-              <h3 className="text-lg font-black text-surface-900 dark:text-white mb-6">Tezkor Harakatlar</h3>
-              <div className="grid grid-cols-1 gap-3">
+            <div className="bg-white dark:bg-surface-900 rounded-2xl p-4 border border-surface-200 dark:border-surface-800 shadow-sm">
+              <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-3">Tezkor</h3>
+              <div className="grid grid-cols-1 gap-2">
                 {quickActions.map((action) => (
                   <button
                     key={action.label}
                     onClick={() => navigate(action.path)}
-                    className="flex items-center gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-2xl border border-transparent hover:border-surface-200 dark:hover:border-surface-700 transition-all duration-150 group"
+                    className="flex items-center gap-3 p-2.5 bg-surface-50 dark:bg-surface-800/50 rounded-xl transition-colors duration-150"
                   >
-                    <div className={`w-10 h-10 bg-white dark:bg-surface-900 rounded-xl flex items-center justify-center ${action.color} shadow-sm group-hover:scale-110 transition-transform`}>
-                      <action.icon className="w-5 h-5" />
+                    <div className={`w-8 h-8 bg-white dark:bg-surface-900 rounded-xl flex items-center justify-center ${action.color}`}>
+                      <action.icon className="w-4 h-4" />
                     </div>
-                    <span className="text-sm font-black text-surface-700 dark:text-surface-300 uppercase tracking-widest">{action.label}</span>
+                    <span className="text-sm font-medium text-surface-700 dark:text-surface-300">{action.label}</span>
                   </button>
                 ))}
-              </div>
-            </div>
-
-            {/* Help Widget */}
-            <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-3xl p-8 text-white shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110"></div>
-              <div className="relative z-10">
-                <MessageCircle className="w-10 h-10 text-brand-200 mb-6" />
-                <h3 className="text-xl font-black mb-2">Yordam kerakmi?</h3>
-                <p className="text-brand-100 text-sm font-medium mb-8 leading-relaxed">
-                  Savollaringiz bormi yoki muammoga duch keldingizmi? Bizning qo'llab-quvvatlash markazimizga murojaat qiling.
-                </p>
-                <button 
-                  onClick={() => navigate('/help')}
-                  className="w-full py-4 bg-white text-brand-700 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-brand-50 transition-colors duration-150 shadow-sm"
-                >
-                  Bog'lanish
-                </button>
               </div>
             </div>
           </div>
