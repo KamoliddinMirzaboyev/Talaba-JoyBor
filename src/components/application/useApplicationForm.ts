@@ -1,9 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authAPI } from '../../services/api';
+import { authAPI, StudentInfo } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { getGlobalSelectedListing, clearGlobalSelectedListing } from '../../App';
+import { Application } from '../../types';
 import { ApplicationFormData, District, Province } from './types';
+
+function toFormPhone(raw?: string | number | null): string {
+  const digits = String(raw ?? '').replace(/\D/g, '');
+  if (!digits) return '';
+  if (digits.startsWith('998')) return digits.slice(0, 12);
+  if (digits.length === 9) return `998${digits}`;
+  return digits;
+}
+
+function pickText(...values: Array<string | number | null | undefined>): string {
+  for (const value of values) {
+    const text = String(value ?? '').trim();
+    if (text) return text;
+  }
+  return '';
+}
+
+function namedValue(
+  value: { name?: string } | number | string | null | undefined
+): string {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object' && value.name) return value.name;
+  return '';
+}
 
 const FIELD_ORDER = [
   'gender',
@@ -58,6 +84,10 @@ export function useApplicationForm() {
   const [uploadingFiles, setUploadingFiles] = useState<Record<string, boolean>>({});
 
   const fieldRefs = useRef<Record<string, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>>({});
+  const pendingLocation = useRef<{ province: string; district: string }>({
+    province: '',
+    district: '',
+  });
   const registerFieldRef =
     (key: string) => (el: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null) => {
       fieldRefs.current[key] = el;
@@ -83,30 +113,94 @@ export function useApplicationForm() {
   }, [errors]);
 
   useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        name: user?.first_name || '',
-        familiya: user?.last_name || '',
-        phone: user?.phone || '',
-      }));
-    }
+    if (!user) return;
+    setFormData((prev) => ({
+      ...prev,
+      name: prev.name || user.first_name || '',
+      familiya: prev.familiya || user.last_name || '',
+      phone: prev.phone || toFormPhone(user.phone),
+    }));
   }, [user]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [provincesData] = await Promise.all([
-          authAPI.getProvinces(),
-          authAPI.getDormitories(),
-        ]);
-        setProvinces(provincesData);
-      } catch {
-        // silent
+    let cancelled = false;
+    const hydrate = async () => {
+      const [profile, fullProfile, dashboard, lastApp, provincesData] = await Promise.all([
+        authAPI.getProfile().catch(() => null) as Promise<Record<string, unknown> | null>,
+        authAPI.getMyFullProfile().catch(() => null),
+        authAPI.getStudentDashboard().catch(() => null),
+        authAPI.getApplications().then((apps) => apps[0] ?? null).catch(() => null),
+        authAPI.getProvinces().catch(() => [] as Province[]),
+      ]);
+      if (cancelled) return;
+      setProvinces(provincesData);
+
+      const studentInfo: StudentInfo = fullProfile?.student_info || {};
+
+      const lastAppExtra = lastApp as Application & { gender?: string; jshshir?: string; pinfl?: string };
+
+      setFormData((prev) => ({
+        ...prev,
+        name:
+          prev.name ||
+          pickText(dashboard?.name, lastApp?.name, user?.first_name, profile?.first_name as string),
+        familiya:
+          prev.familiya ||
+          pickText(dashboard?.last_name, lastApp?.last_name, user?.last_name, profile?.last_name as string),
+        middle_name: prev.middle_name || pickText(dashboard?.middle_name, lastApp?.middle_name),
+        phone:
+          prev.phone ||
+          toFormPhone(
+            pickText(dashboard?.phone, lastApp?.phone, studentInfo.phone, user?.phone, profile?.phone as string)
+          ),
+        faculty: prev.faculty || pickText(dashboard?.faculty, lastApp?.faculty, studentInfo.faculty),
+        direction: prev.direction || pickText(dashboard?.direction, lastApp?.direction),
+        course: prev.course || pickText(dashboard?.course, lastApp?.course, studentInfo.course),
+        group: prev.group || pickText(dashboard?.group, lastApp?.group, studentInfo.group),
+        gender: prev.gender || pickText(dashboard?.gender, lastAppExtra?.gender),
+        passport: prev.passport || pickText(dashboard?.passport, lastApp?.passport),
+        pinfl: prev.pinfl || pickText(lastAppExtra?.jshshir, lastAppExtra?.pinfl),
+      }));
+
+      // Talabaning saqlangan manzili (viloyat/tuman) — /profiles/ eng ishonchli manba
+      const provinceName = pickText(
+        studentInfo.province,
+        dashboard?.province_name,
+        lastApp?.province_name,
+        namedValue(lastApp?.province)
+      );
+      const districtName = pickText(
+        studentInfo.district,
+        dashboard?.district_name,
+        lastApp?.district_name,
+        namedValue(lastApp?.district)
+      );
+      pendingLocation.current = { province: provinceName, district: districtName };
+
+      const matched = provincesData.find(
+        (item) => item.name.toLowerCase() === provinceName.toLowerCase()
+      );
+      if (matched) {
+        setSelectedProvinceId(matched.id);
+        setFormData((prev) => ({ ...prev, city: prev.city || matched.name }));
       }
     };
-    fetchData();
-  }, []);
+    void hydrate();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    const provinceName = pendingLocation.current.province;
+    if (!provinceName || !provinces.length) return;
+    const matched = provinces.find(
+      (item) => item.name.toLowerCase() === provinceName.toLowerCase()
+    );
+    if (!matched) return;
+    setSelectedProvinceId(matched.id);
+    setFormData((prev) => ({ ...prev, city: prev.city || matched.name }));
+  }, [provinces]);
 
   useEffect(() => {
     if (!selectedProvinceId) {
@@ -127,6 +221,17 @@ export function useApplicationForm() {
       cancelled = true;
     };
   }, [selectedProvinceId]);
+
+  useEffect(() => {
+    const districtName = pendingLocation.current.district;
+    if (!districtName || !districts.length) return;
+    const matched = districts.find(
+      (item) => item.name.toLowerCase() === districtName.toLowerCase()
+    );
+    if (!matched) return;
+    setFormData((prev) => ({ ...prev, village: prev.village || matched.name }));
+    pendingLocation.current.district = '';
+  }, [districts]);
 
   const handlePassportChange = (value: string) => {
     const cleanValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '');

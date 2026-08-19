@@ -10,7 +10,7 @@ import EmptyState from '../components/EmptyState';
 import { useAuth } from '../contexts/AuthContext';
 import { formatPhoneInput, formatPhoneNumber, formatDate, formatPrice } from '../utils/format';
 import { useTheme } from '../contexts/ThemeContext';
-import { authAPI, UserProfile } from '../services/api';
+import { authAPI, UserProfile, FullProfile } from '../services/api';
 import { Application } from '../types';
 import { statusTone, statusLabel } from '../utils/applicationStatus';
 
@@ -38,6 +38,7 @@ const ProfilePage: React.FC = () => {
   }, []);
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [fullProfile, setFullProfile] = useState<FullProfile | null>(null);
   const [editedProfile, setEditedProfile] = useState<ProfileData | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [activeTab, setActiveTab] = useState('profile');
@@ -91,6 +92,8 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfile();
+    // O'qish/to'lov ma'lumotlari — ixtiyoriy, asosiy profilni bloklamaydi
+    authAPI.getMyFullProfile().then(setFullProfile).catch(() => {});
     // eslint-disable-next-line
   }, []);
 
@@ -393,6 +396,41 @@ const ProfilePage: React.FC = () => {
                   </motion.button>
                 ))}
               </nav>
+
+              {/* Talaba va to'lov holati — qisqa, faqat mavjud ma'lumot ko'rsatiladi */}
+              {(fullProfile?.student_info || fullProfile?.payment_summary) && (
+                <div className={`mt-4 pt-4 border-t space-y-2 ${theme === 'dark' ? 'border-surface-700' : 'border-surface-200'}`}>
+                  {fullProfile.student_info?.course && (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}>Kurs</span>
+                      <span className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
+                        {fullProfile.student_info.course}
+                      </span>
+                    </div>
+                  )}
+                  {fullProfile.student_info?.dormitory_name && (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}>Yotoqxona</span>
+                      <span className={`font-semibold truncate max-w-[120px] ${theme === 'dark' ? 'text-white' : 'text-surface-900'}`}>
+                        {fullProfile.student_info.dormitory_name}
+                        {fullProfile.student_info.room_name ? ` · ${fullProfile.student_info.room_name}` : ''}
+                      </span>
+                    </div>
+                  )}
+                  {fullProfile.payment_summary && (
+                    <div className="flex items-center justify-between text-xs">
+                      <span className={theme === 'dark' ? 'text-surface-400' : 'text-surface-500'}>To'lov</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                        fullProfile.payment_summary.is_debtor
+                          ? theme === 'dark' ? 'bg-danger-900/30 text-danger-400' : 'bg-danger-100 text-danger-700'
+                          : theme === 'dark' ? 'bg-success-900/30 text-success-400' : 'bg-success-100 text-success-700'
+                      }`}>
+                        {fullProfile.payment_summary.is_debtor ? 'Qarzdor' : "Qarz yo'q"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           </div>
           {/* Main Content */}

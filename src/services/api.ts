@@ -140,6 +140,43 @@ export interface UserProfile {
   telegram?: string;
 }
 
+// /profiles/ — talabaning to'liq (o'qish + to'lov) ma'lumoti, /me/dan farqli, faqat o'qish uchun
+export interface StudentInfo {
+  id?: number;
+  name?: string | null;
+  phone?: string | null;
+  course?: string | null;
+  faculty?: string | null;
+  group?: string | null;
+  province?: string | null;
+  district?: string | null;
+  address?: string | null;
+  dormitory_id?: number | null;
+  dormitory_name?: string | null;
+  room_name?: string | null;
+  is_active?: boolean;
+  placement_status?: string | null;
+  application_status?: string | null;
+}
+
+export interface PaymentSummary {
+  total_payments: number;
+  approved_payments: number;
+  total_amount: number;
+  last_payment_date: string | null;
+  last_payment_amount: number;
+  is_debtor: boolean;
+  has_valid_payment: boolean;
+}
+
+export interface FullProfile {
+  image?: string | null;
+  address?: string | null;
+  telegram?: string | null;
+  student_info: StudentInfo | null;
+  payment_summary: PaymentSummary | null;
+}
+
 // API functions
 export const authAPI = {
   // Register user
@@ -178,6 +215,13 @@ export const authAPI = {
   getProfile: async (): Promise<UserProfile> => {
     const response = await api.get('/me/');
     return response.data;
+  },
+
+  // O'qish/to'lov ma'lumotlari (faqat o'qish uchun; tahrirlash /me/ orqali)
+  getMyFullProfile: async (): Promise<FullProfile | null> => {
+    const response = await api.get('/profiles/');
+    const results = response.data?.results;
+    return Array.isArray(results) && results.length > 0 ? results[0] : null;
   },
 
   // Update user profile
@@ -350,13 +394,15 @@ export const authAPI = {
   getApplications: async (): Promise<Application[]> => {
     try {
       const response = await api.get('/student/application/');
-      // Agar javob bitta obyekt bo'lsa, uni massivga o'raymiz
       const payload = response.data;
       if (Array.isArray(payload)) return payload;
       if (payload && Array.isArray(payload.results)) return payload.results;
       if (payload && typeof payload === 'object' && payload.id != null) return [payload];
       return [];
     } catch (error: unknown) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      // Backend ariza yo'qida 404 + "Sizning arizangiz topilmadi" qaytaradi
+      if (status === 404) return [];
       throw error;
     }
   },
