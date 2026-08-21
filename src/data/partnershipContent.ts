@@ -1,4 +1,4 @@
-/** Hamkorlik kontenti — real API stats/dorms/unis (localStorage mock yo‘q). */
+/** Hamkorlik kontenti — real API (`/superadmin/platform/`, `/stats/`, `/tariffs/`). */
 
 import { API_BASE_URL, mediaUrl } from '../services/api';
 
@@ -33,16 +33,11 @@ export interface PartnershipVideo {
   description: string;
 }
 
-export interface PartnershipImage {
-  id: string;
-  imageUrl: string;
-  caption: string;
-}
-
 export interface PartnershipContent {
   heroTitle: string;
   heroSubtitle: string;
   heroCtaLabel: string;
+  heroImageUrl: string;
   aboutTitle: string;
   aboutBody: string;
   stats: PartnershipStat[];
@@ -52,8 +47,6 @@ export interface PartnershipContent {
   plans: PartnershipPlan[];
   videosTitle: string;
   videos: PartnershipVideo[];
-  galleryTitle: string;
-  gallery: PartnershipImage[];
   ctaTitle: string;
   ctaBody: string;
   ctaButtonLabel: string;
@@ -122,7 +115,7 @@ function baseFeatures(): PartnershipFeature[] {
       id: 'f5',
       icon: 'Shield',
       title: 'Rollar',
-      description: 'Superadmin, admin, sardor, talaba.',
+      description: 'Admin, sardor, talaba.',
     },
     {
       id: 'f6',
@@ -133,87 +126,66 @@ function baseFeatures(): PartnershipFeature[] {
   ];
 }
 
+interface PlatformBannerApi {
+  id: number;
+  image_url?: string;
+  source_url?: string;
+  is_primary?: boolean;
+  sort_order?: number;
+}
+
+interface PlatformSettingsApi {
+  official_name?: string;
+  hero_title?: string;
+  hero_subtitle?: string;
+  support_url?: string;
+  about?: string;
+  banners?: PlatformBannerApi[];
+}
+
 export async function loadPartnershipContent(): Promise<PartnershipContent> {
-  try {
-    const cms = await fetch(`${API_BASE_URL}/public/partnership/`, { cache: 'no-store' });
-    if (cms.ok) {
-      return (await cms.json()) as PartnershipContent;
-    }
-  } catch {
-    /* CMS yo‘q */
-  }
-
+  let platform: PlatformSettingsApi = {};
   let statsPayload: Record<string, unknown> = {};
-  let dorms: Array<Record<string, unknown>> = [];
-  let unis: Array<Record<string, unknown>> = [];
+  let tariffs: Array<Record<string, unknown>> = [];
 
   try {
-    const [sRes, dRes, uRes] = await Promise.all([
+    const [pRes, sRes, tRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/superadmin/platform/`),
       fetch(`${API_BASE_URL}/stats/`),
-      fetch(`${API_BASE_URL}/dormitories/`),
-      fetch(`${API_BASE_URL}/universities/`),
+      fetch(`${API_BASE_URL}/tariffs/`),
     ]);
+    if (pRes.ok) platform = (await pRes.json()) as PlatformSettingsApi;
     if (sRes.ok) statsPayload = (await sRes.json()) as Record<string, unknown>;
-    if (dRes.ok) {
-      const d = await dRes.json();
-      dorms = Array.isArray(d) ? d : d.results || [];
-    }
-    if (uRes.ok) {
-      const u = await uRes.json();
-      unis = Array.isArray(u) ? u : u.results || [];
+    if (tRes.ok) {
+      const t = await tRes.json();
+      tariffs = Array.isArray(t) ? t : t.results || [];
     }
   } catch {
     /* partial */
   }
 
-  const rooms = (statsPayload.rooms as Record<string, unknown>) || {};
   const dormsStat = (statsPayload.dormitories as Record<string, unknown>) || {};
   const users = (statsPayload.users as Record<string, unknown>) || {};
   const unisStat = (statsPayload.universities as Record<string, unknown>) || {};
 
-  const uniCount = num(unisStat.total) || unis.length;
-  const dormCount = num(dormsStat.total) || dorms.length;
-  const roomCount = num(rooms.total);
-  const studentCount = num(users.students) || num(users.active) || num(users.total);
+  const banners = (platform.banners || []).slice().sort((a, b) => num(a.sort_order) - num(b.sort_order));
+  const primaryBanner = banners.find((b) => b.is_primary) || banners[0];
 
-  const dormNames = dorms
-    .map((d) => String(d.name || ''))
-    .filter(Boolean)
-    .join(', ');
-
-  const gallery: PartnershipImage[] = [];
-  dorms.forEach((d) => {
-    const images = (d.images as Array<string | { image?: string }>) || [];
-    images.forEach((img, i) => {
-      const url = mediaUrl(typeof img === 'string' ? img : img?.image);
-      if (url) {
-        gallery.push({
-          id: `g-${d.id}-${i}`,
-          imageUrl: url,
-          caption: String(d.name || ''),
-        });
-      }
-    });
-  });
+  const activeTariffs = tariffs
+    .filter((t) => t.is_active !== false)
+    .sort((a, b) => num(a.sort_order) - num(b.sort_order));
 
   const plans: PartnershipPlan[] =
-    dorms.length > 0
-      ? dorms.slice(0, 3).map((d, i) => ({
-          id: `plan-${d.id}`,
-          name: String(d.name || `Yotoqxona ${i + 1}`),
-          price:
-            d.month_price != null
-              ? Number(d.month_price).toLocaleString('uz-UZ')
-              : '—',
-          period: d.month_price != null ? 'so‘m / oy' : '',
-          description: String(d.university_name || d.address || ''),
-          features: [
-            String(d.address || 'Manzil'),
-            d.is_active ? 'Faol' : 'Nofaol',
-            d.phone_numer ? `Tel: ${d.phone_numer}` : 'Telefon API da yo‘q',
-          ],
-          highlighted: i === 0,
-          ctaLabel: 'Ariza topshirish',
+    activeTariffs.length > 0
+      ? activeTariffs.map((t) => ({
+          id: `tariff-${t.id}`,
+          name: String(t.name || ''),
+          price: t.month_price != null ? Number(t.month_price).toLocaleString('uz-UZ') : '—',
+          period: t.month_price != null ? 'so‘m / oy' : '',
+          description: String(t.subtitle || ''),
+          features: Array.isArray(t.features) ? (t.features as string[]) : [],
+          highlighted: Boolean(t.is_popular),
+          ctaLabel: 'Hamkor bo‘lish',
         }))
       : [
           {
@@ -221,7 +193,7 @@ export async function loadPartnershipContent(): Promise<PartnershipContent> {
             name: 'Hozircha tarif yo‘q',
             price: '—',
             period: '',
-            description: 'API da yotoqxona topilmadi',
+            description: 'Tariflar hali e’lon qilinmagan',
             features: ['Keyinroq yangilanadi'],
             highlighted: false,
             ctaLabel: 'Aloqa',
@@ -229,32 +201,31 @@ export async function loadPartnershipContent(): Promise<PartnershipContent> {
         ];
 
   return {
-    heroTitle: 'JoyBor — yotoqxona boshqaruvi',
+    heroTitle: platform.hero_title || 'JoyBor — yotoqxona boshqaruvi',
     heroSubtitle:
+      platform.hero_subtitle ||
       'Universitet, yotoqxona va talabalar uchun yagona platforma. Ma’lumotlar real API dan.',
     heroCtaLabel: 'Bog‘lanish',
+    heroImageUrl: mediaUrl(primaryBanner?.image_url) || '',
     aboutTitle: 'Loyiha haqida',
-    aboutBody: dormNames
-      ? `Platformadagi yotoqxonalar: ${dormNames}.\n\nAriza, to‘lov, davomat va xona boshqaruvi bitta tizimda.`
-      : 'JoyBor — yotoqxona boshqaruvi. Hozircha ochiq yotoqxona ro‘yxati bo‘sh yoki yuklanmadi.',
+    aboutBody: platform.about || 'JoyBor — yotoqxona boshqaruvi.',
     stats: [
-      { id: 's1', label: 'Yotoqxonalar', value: String(dormCount) },
-      { id: 's2', label: 'Talabalar', value: String(studentCount) },
-      { id: 's3', label: 'Universitetlar', value: String(uniCount) },
-      { id: 's4', label: 'Xonalar', value: String(roomCount) },
+      { id: 's1', label: 'Hamkorlar', value: String(num(dormsStat.total)) },
+      { id: 's2', label: 'Foydalanuvchilar', value: String(num(users.total)) },
+      { id: 's3', label: 'Universitetlar', value: String(num(unisStat.total)) },
     ],
     features: baseFeatures(),
-    pricingTitle: 'Yotoqxonalar',
-    pricingSubtitle: 'API dagi joriy yotoqxonalar va oylik narxlar',
+    pricingTitle: 'Tariflar',
+    pricingSubtitle: 'Yotoqxonangiz hajmiga mos tarifni tanlang',
     plans,
     videosTitle: 'Video',
     videos: [],
-    galleryTitle: 'Yotoqxona rasmlari',
-    gallery: gallery.slice(0, 12),
     ctaTitle: 'Hamkorlikka tayyormisiz?',
-    ctaBody: 'Universitet yoki yotoqxona sifatida ulanish uchun aloqa sahifasiga o‘ting.',
+    ctaBody: platform.support_url
+      ? 'Universitet yoki yotoqxona sifatida ulanish uchun biz bilan bog‘laning.'
+      : 'Universitet yoki yotoqxona sifatida ulanish uchun aloqa sahifasiga o‘ting.',
     ctaButtonLabel: 'Aloqa sahifasi',
-    ctaButtonHref: '/contact',
+    ctaButtonHref: platform.support_url || '/contact',
     updatedAt: new Date().toISOString(),
   };
 }

@@ -52,7 +52,6 @@ const fadeUp = {
 const PartnershipPage: React.FC = () => {
   const navigate = useNavigate();
   const [content, setContent] = useState<PartnershipContent | null>(null);
-  const [lightbox, setLightbox] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -89,7 +88,17 @@ const PartnershipPage: React.FC = () => {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-surface-200 dark:border-surface-800">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-brand-100 dark:from-surface-950 dark:via-surface-900 dark:to-brand-950/40" />
+        {content.heroImageUrl && (
+          <motion.img
+            src={content.heroImageUrl}
+            alt=""
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 0.22, scale: 1 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-50/90 via-white/80 to-brand-100/90 dark:from-surface-950/90 dark:via-surface-900/85 dark:to-brand-950/60" />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <motion.div {...fadeUp} className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 text-xs font-semibold mb-5">
@@ -121,23 +130,22 @@ const PartnershipPage: React.FC = () => {
           </motion.div>
 
           {/* Stats */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.25, delay: 0.05 }}
-            className="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
-          >
-            {content.stats.map((s) => (
-              <div
+          <div className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            {content.stats.map((s, idx) => (
+              <motion.div
                 key={s.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: 0.05 + idx * 0.05 }}
                 className="rounded-2xl bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 p-5 shadow-sm"
               >
                 <p className="text-2xl sm:text-3xl font-bold text-brand-600 dark:text-brand-400">
                   {s.value}
                 </p>
                 <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">{s.label}</p>
-              </div>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -319,37 +327,6 @@ const PartnershipPage: React.FC = () => {
         </section>
       )}
 
-      {/* Gallery */}
-      {content.gallery.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
-          <h2 className="text-2xl sm:text-3xl font-bold text-surface-900 dark:text-white mb-10">
-            {content.galleryTitle}
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {content.gallery.map((img) => (
-              <button
-                key={img.id}
-                type="button"
-                onClick={() => setLightbox(img.imageUrl)}
-                className="group text-left rounded-2xl overflow-hidden border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40"
-              >
-                <div className="aspect-[4/3] overflow-hidden bg-surface-100 dark:bg-surface-800">
-                  <img
-                    src={img.imageUrl}
-                    alt={img.caption || ''}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                  />
-                </div>
-                {img.caption && (
-                  <p className="p-3 text-sm text-surface-600 dark:text-surface-400">{img.caption}</p>
-                )}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* CTA */}
       <section className="pb-20 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 text-white p-8 sm:p-12 shadow-sm">
@@ -367,22 +344,6 @@ const PartnershipPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          onClick={() => setLightbox(null)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <img loading="lazy"
-            src={lightbox}
-            alt=""
-            className="max-w-full max-h-[90vh] rounded-xl object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
     </div>
   );
 };
