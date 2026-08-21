@@ -18,15 +18,19 @@ import {
   FileText,
   Handshake,
   Send,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNotifications } from "../contexts/NotificationContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const { unreadCount } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -50,7 +54,7 @@ const Header: React.FC = () => {
     { label: "Profil", path: "/profile", icon: User },
     { label: "Dashboard", path: "/dashboard", icon: Home },
     { label: "Arizalar", path: "/applications", icon: FileText },
-    { label: "Xabarlar", path: "/messages", icon: MessageCircle },
+    { label: "Shikoyat va takliflar", path: "/messages", icon: MessageCircle },
     { label: "Saqlangan", path: "/saved", icon: Heart },
     { label: "Bildirishnomalar", path: "/notifications", icon: Bell },
     { label: "Sozlamalar", path: "/settings", icon: Settings },
@@ -139,6 +143,21 @@ const Header: React.FC = () => {
 
           {/* User Actions */}
           <div className="flex items-center gap-4">
+            {/* Theme Toggle */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleTheme}
+              aria-label="Mavzuni almashtirish"
+              className="p-2 rounded-xl text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 hover:text-brand-600 dark:hover:text-brand-400 transition-colors duration-150"
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </motion.button>
+
             {isAuthenticated && user ? (
               <div className="flex items-center gap-3">
                 {/* Notifications */}

@@ -20,6 +20,7 @@ import {
   ContactContent,
   loadContactContent,
   phoneToTel,
+  telegramHandle,
 } from '../data/contactContent';
 
 interface Statistics {
@@ -308,7 +309,7 @@ const AboutPage: React.FC = () => {
                 </span>
               </a>
               <a
-                href={contact.telegramUrl}
+                href={contact.telegram_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-xl border border-surface-200 dark:border-surface-700 p-4 hover:border-brand-300 dark:hover:border-brand-700 transition-colors duration-150"
@@ -320,7 +321,7 @@ const AboutPage: React.FC = () => {
                   <span className="block text-sm font-medium text-surface-900 dark:text-white">
                     Telegram
                   </span>
-                  <span className="text-sm text-surface-500">{contact.telegramBot}</span>
+                  <span className="text-sm text-surface-500">{telegramHandle(contact.telegram_url)}</span>
                 </span>
               </a>
             </div>
@@ -335,9 +336,9 @@ const AboutPage: React.FC = () => {
               Aloqa sahifasi
               <ArrowRight className="w-4 h-4" />
             </button>
-            {contact?.telegramUrl && (
+            {contact?.telegram_url && (
               <a
-                href={contact.telegramUrl}
+                href={contact.telegram_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-800 dark:text-surface-100 font-medium hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors duration-150"

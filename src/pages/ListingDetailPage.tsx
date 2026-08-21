@@ -91,6 +91,7 @@ const ListingDetailPage: React.FC = () => {
             address: string;
             university_name: string;
             phone_number?: string;
+            phone_numer?: string;
             phone?: string;
             contact_phone?: string;
             admin_phone?: string;
@@ -161,7 +162,7 @@ const ListingDetailPage: React.FC = () => {
                 reviews: 0,
                 admin: {
                   name: dorm.admin_name || "Yotoqxona Ma'muriyati",
-                  phone: dorm.phone_number || dorm.phone || dorm.contact_phone || dorm.admin_phone || undefined,
+                  phone: dorm.phone_number || dorm.phone_numer || dorm.phone || dorm.contact_phone || dorm.admin_phone || undefined,
                   email: dorm.email || undefined,
                 },
                 features: {

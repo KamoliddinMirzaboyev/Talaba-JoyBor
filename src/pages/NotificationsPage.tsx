@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Check, Filter, Search, Calendar, MessageCircle, CheckCircle, Info, RefreshCw, Clock } from 'lucide-react';
+import { Bell, Check, Search, Calendar, MessageCircle, Info, RefreshCw } from 'lucide-react';
 import { Notification } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
 import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
-import { useTheme } from '../contexts/ThemeContext';
 import { authAPI } from '../services/api';
 import { formatTime } from "../utils/format";
 
@@ -32,7 +31,6 @@ interface RawApiNotification {
 
 const NotificationsPage: React.FC = () => {
   const { user } = useAuth();
-  const { theme } = useTheme();
   const { refreshUnreadCount } = useNotifications();
   const navigate = useNavigate();
 
@@ -110,14 +108,14 @@ const NotificationsPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-surface-50 dark:bg-surface-950 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-surface-900 dark:text-white mb-4">
-            Tizimga kirish talab etiladi
+          <h2 className="text-lg font-semibold text-surface-900 dark:text-white mb-3">
+            Tizimga kiring
           </h2>
           <button
             onClick={() => navigate('/login')}
-            className="bg-brand-600 text-white px-6 py-3 rounded-xl hover:bg-brand-700 transition-colors duration-200"
+            className="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-brand-700 transition-colors duration-150"
           >
-            Tizimga kirish
+            Kirish
           </button>
         </div>
       </div>
@@ -142,12 +140,12 @@ const NotificationsPage: React.FC = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'application':
-        return <Calendar className="w-5 h-5" />;
+        return <Calendar className="w-4 h-4" />;
       case 'message':
-        return <MessageCircle className="w-5 h-5" />;
+        return <MessageCircle className="w-4 h-4" />;
       case 'system':
       default:
-        return <Info className="w-5 h-5" />;
+        return <Info className="w-4 h-4" />;
     }
   };
 
@@ -218,109 +216,63 @@ const NotificationsPage: React.FC = () => {
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
       <Header />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Clean Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
-        >
-          <div className="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-700 p-6">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
-                    <Bell className="w-6 h-6 text-brand-600 dark:text-brand-400" />
-                  </div>
-                  {unreadCount > 0 && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-danger-500 text-white text-xs rounded-full flex items-center justify-center font-medium">
-                      {unreadCount > 99 ? '99+' : unreadCount}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-surface-900 dark:text-white">
-                    Bildirishnomalar
-                  </h1>
-                  <p className="text-surface-600 dark:text-surface-400">
-                    {unreadCount > 0 ? `${unreadCount} ta yangi xabar` : 'Barcha xabarlar o\'qilgan'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action buttons - moved below for mobile */}
-              <div className="flex flex-wrap items-center gap-3">
-                {unreadCount > 0 && (
-                  <button
-                    onClick={handleMarkAllAsRead}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200 text-sm font-medium"
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="hidden sm:inline">Barchasini o'qilgan</span>
-                    <span className="sm:hidden">Barchasi</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => window.location.reload()}
-                  className="flex items-center gap-2 px-4 py-2 bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors duration-200 text-sm font-medium"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  Yangilash
-                </button>
-              </div>
-            </div>
+      <div className="max-w-4xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <div>
+            <h1 className="text-base sm:text-xl font-semibold tracking-tight text-surface-900 dark:text-white">
+              Bildirishnomalar
+            </h1>
+            <p className="text-[11px] text-surface-500 dark:text-surface-400 mt-0.5">
+              {unreadCount > 0 ? `${unreadCount} ta o'qilmagan` : "Yangi xabar yo'q"}
+            </p>
           </div>
-        </motion.div>
-
-        {/* Clean Filters and Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white dark:bg-surface-900 rounded-xl shadow-sm border border-surface-200 dark:border-surface-700 p-6 mb-8"
-        >
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-surface-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Bildirishnomalarni qidiring..."
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
-                    ? 'border-surface-600 bg-surface-700 text-white placeholder-surface-400'
-                    : 'border-surface-300 bg-white text-surface-900 placeholder-surface-500'
-                  }`}
-              />
-            </div>
-
-            {/* Filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-surface-400" />
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value as 'all' | 'unread' | 'application' | 'message' | 'system')}
-                className={`px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent transition-all duration-200 ${theme === 'dark'
-                    ? 'border-surface-600 bg-surface-700 text-white'
-                    : 'border-surface-300 bg-white text-surface-900'
-                  }`}
+          <div className="flex items-center gap-1.5">
+            {unreadCount > 0 && (
+              <button
+                onClick={handleMarkAllAsRead}
+                className="px-2.5 py-1.5 text-xs font-medium text-brand-600 dark:text-brand-400"
               >
-                <option value="all">Barchasi</option>
-                <option value="unread">O'qilmaganlar</option>
-                <option value="application">Arizalar</option>
-                <option value="message">Xabarlar</option>
-                <option value="system">Tizim</option>
-                <option value="reminder">Eslatmalar</option>
-              </select>
-            </div>
+                Barchasini o'qish
+              </button>
+            )}
+            <button
+              onClick={() => loadNotifications(1, false)}
+              aria-label="Yangilash"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-xl border border-surface-200 dark:border-surface-700 text-surface-500"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
           </div>
-        </motion.div>
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          <div className="relative flex-1 min-w-0">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-surface-400" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Qidirish..."
+              className="w-full pl-8 pr-2.5 py-2 text-xs sm:text-sm border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-900 dark:text-white rounded-xl focus:ring-2 focus:ring-brand-500/40 focus:border-transparent"
+            />
+          </div>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as 'all' | 'unread' | 'application' | 'message' | 'system')}
+            className="w-[7.25rem] shrink-0 px-2 py-2 text-xs border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-800 dark:text-surface-200 rounded-xl focus:ring-2 focus:ring-brand-500/40"
+          >
+            <option value="all">Barchasi</option>
+            <option value="unread">O'qilmagan</option>
+            <option value="application">Ariza</option>
+            <option value="message">Xabar</option>
+            <option value="system">Tizim</option>
+            <option value="reminder">Eslatma</option>
+          </select>
+        </div>
 
         {/* Notifications List */}
         {loading ? (
-          <Skeleton className="h-28 w-full rounded-xl" count={4} />
+          <Skeleton className="h-16 w-full rounded-2xl" count={4} />
         ) : filteredNotifications.length === 0 ? (
           <EmptyState
             icon={Bell}
@@ -332,117 +284,50 @@ const NotificationsPage: React.FC = () => {
             }
           />
         ) : (
-          <div className="space-y-6">
-            {filteredNotifications.map((notification, index) => (
-              <motion.div
+          <div className="space-y-2">
+            {filteredNotifications.map((notification) => (
+              <div
                 key={notification.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
                 onClick={() => handleNotificationClick(notification)}
-                className={`group relative bg-white dark:bg-surface-900 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border ${!notification.read
-                    ? 'border-l-4 border-l-brand-500 bg-brand-50/30 dark:bg-brand-900/10 border-surface-200 dark:border-surface-700'
-                    : 'border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600'
-                  }`}
+                className={`flex items-start gap-2.5 p-3 rounded-2xl border cursor-pointer transition-colors duration-150 ${
+                  !notification.read
+                    ? 'bg-brand-50/60 dark:bg-brand-900/15 border-brand-200 dark:border-brand-800'
+                    : 'bg-white dark:bg-surface-900 border-surface-200 dark:border-surface-800'
+                }`}
               >
-                <div className="p-4 sm:p-6">
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    {/* Clean icon */}
-                    <div className="relative flex-shrink-0">
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center ${getNotificationColor(notification.type)}`}>
-                        {getNotificationIcon(notification.type)}
-                      </div>
-                      {!notification.read && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-brand-500 rounded-full"></div>
-                      )}
-                    </div>
-
-                    {/* Image if available */}
-                    {notification.image && (
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl overflow-hidden flex-shrink-0 border border-surface-200 dark:border-surface-700">
-                        <img loading="lazy"
-                          src={notification.image}
-                          alt="Notification"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2 gap-1 sm:gap-2">
-                        <h3 className={`font-semibold text-base sm:text-lg ${!notification.read
-                            ? 'text-surface-900 dark:text-white'
-                            : 'text-surface-700 dark:text-surface-300'
-                          }`}>
-                          {notification.title}
-                        </h3>
-                        <div className="flex items-center gap-1 text-xs sm:text-sm text-surface-500 dark:text-surface-400 flex-shrink-0">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span>{formatTime(notification.timestamp)}</span>
-                        </div>
-                      </div>
-
-                      <p className={`text-sm sm:text-base leading-relaxed mb-3 sm:mb-4 ${!notification.read
-                          ? 'text-surface-700 dark:text-surface-300'
-                          : 'text-surface-600 dark:text-surface-400'
-                        } ${notification.message.length > 100 ? 'line-clamp-2' : ''}`}>
-                        {notification.message.length > 100 ?
-                          `${notification.message.substring(0, 100)}...` :
-                          notification.message
-                        }
-                      </p>
-
-                      {/* Action section */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${getNotificationColor(notification.type)}`}>
-                            {notification.type === 'application' ? 'Ariza' :
-                              notification.type === 'message' ? 'Xabar' :
-                                notification.type === 'system' ? 'Tizim' :
-                                  notification.type === 'reminder' ? 'Eslatma' : 'Bildirishnoma'}
-                          </span>
-                          {notification.priority && (
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${notification.priority === 'high' ? 'bg-danger-100 text-danger-600 dark:bg-danger-900/30 dark:text-danger-400' :
-                                notification.priority === 'medium' ? 'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400' :
-                                  'bg-surface-100 text-surface-600 dark:bg-surface-900/30 dark:text-surface-400'
-                              }`}>
-                              {notification.priority === 'high' ? 'Muhim' :
-                                notification.priority === 'medium' ? 'O\'rta' : 'Past'}
-                            </span>
-                          )}
-                          {(notification.image || notification.message.length > 200) && (
-                            <span className="px-2 py-1 bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400 rounded-full text-xs font-medium">
-                              Ko'proq o'qish
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          {!notification.read ? (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleMarkAsRead(notification.id);
-                              }}
-                              className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-brand-600 text-white rounded-xl hover:bg-brand-700 transition-colors duration-200 text-xs sm:text-sm"
-                              title="O'qilgan deb belgilash"
-                            >
-                              <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span className="hidden sm:inline">O'qilgan</span>
-                            </button>
-                          ) : (
-                            <div className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-surface-100 dark:bg-surface-700 text-surface-600 dark:text-surface-400 rounded-xl text-xs sm:text-sm">
-                              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span className="hidden sm:inline">O'qilgan</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${getNotificationColor(notification.type)}`}>
+                  {getNotificationIcon(notification.type)}
                 </div>
-              </motion.div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className={`text-sm font-semibold truncate ${
+                      !notification.read ? 'text-surface-900 dark:text-white' : 'text-surface-700 dark:text-surface-300'
+                    }`}>
+                      {notification.title}
+                    </h3>
+                    <span className="text-[11px] text-surface-400 shrink-0">
+                      {formatTime(notification.timestamp)}
+                    </span>
+                  </div>
+                  {notification.message && (
+                    <p className="text-xs text-surface-500 dark:text-surface-400 line-clamp-2 mt-0.5">
+                      {notification.message}
+                    </p>
+                  )}
+                </div>
+                {!notification.read && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkAsRead(notification.id);
+                    }}
+                    className="w-7 h-7 shrink-0 inline-flex items-center justify-center rounded-lg text-brand-600"
+                    title="O'qilgan"
+                  >
+                    <Check className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             ))}
           </div>
         )}
@@ -453,12 +338,12 @@ const NotificationsPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-center mt-8"
+            className="text-center mt-4"
           >
             <button
               onClick={handleLoadMore}
               disabled={loadingMore}
-              className="px-6 py-3 bg-brand-600 text-white rounded-xl hover:bg-brand-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
+              className="px-4 py-2 bg-brand-600 text-white rounded-xl hover:bg-brand-700 disabled:opacity-50 text-sm font-medium transition-colors duration-150"
             >
               {loadingMore ? 'Yuklanmoqda...' : 'Ko\'proq yuklash'}
             </button>

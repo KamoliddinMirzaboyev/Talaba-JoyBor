@@ -5,7 +5,6 @@ import {
   Phone,
   MapPin,
   Clock,
-  MessageCircle,
   Mail,
   ShieldCheck,
   Headphones,
@@ -15,21 +14,23 @@ import {
   Check,
   HelpCircle,
   Instagram,
-  Facebook,
+  Youtube,
+  Globe,
   Send,
   ChevronDown,
   ArrowRight,
   Building2,
   CheckCircle2,
+  AlertTriangle,
 } from 'lucide-react';
 import Header from '../components/Header';
-import DormitoryMap from '../components/DormitoryMap';
 import ContactForm from '../components/ContactForm';
 import Skeleton from '../components/Skeleton';
 import {
   ContactContent,
   loadContactContent,
   phoneToTel,
+  telegramHandle,
 } from '../data/contactContent';
 
 const quickFaqs = [
@@ -50,12 +51,15 @@ const quickFaqs = [
 const ContactPage: React.FC = () => {
   const navigate = useNavigate();
   const [c, setC] = useState<ContactContent | null>(null);
+  const [loading, setLoading] = useState(true);
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    loadContactContent().then(setC);
+    loadContactContent()
+      .then(setC)
+      .finally(() => setLoading(false));
   }, []);
 
   const handleCopy = (text: string, type: string) => {
@@ -64,7 +68,7 @@ const ContactPage: React.FC = () => {
     setTimeout(() => setCopiedText(null), 2000);
   };
 
-  if (!c) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
         <Header />
@@ -85,25 +89,42 @@ const ContactPage: React.FC = () => {
     );
   }
 
+  if (!c) {
+    return (
+      <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
+        <Header />
+        <div className="max-w-6xl mx-auto px-4 py-24 text-center">
+          <AlertTriangle className="w-10 h-10 text-danger-500 mx-auto mb-3" />
+          <h2 className="text-lg font-bold text-surface-900 dark:text-white">
+            Aloqa ma'lumotlarini yuklab bo'lmadi
+          </h2>
+          <p className="text-sm text-surface-500 dark:text-surface-400 mt-1">
+            Internet aloqasini tekshirib qayta urinib ko'ring.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const primaryCards = [
     {
       icon: Phone,
       title: 'Call-markaz',
-      value: c.phone || '+998 71 200 44 22',
-      subtext: 'Bepul qo‘ng‘iroq va maslahat',
+      value: c.phone,
+      subtext: c.phone_extra ? `Qo‘shimcha: ${c.phone_extra}` : 'Bepul qo‘ng‘iroq va maslahat',
       actionLabel: 'Qo‘ng‘iroq qilish',
-      href: phoneToTel(c.phone || '+998712004422'),
+      href: phoneToTel(c.phone),
       badge: 'Faol',
       chipStyle: 'bg-brand-500/10 text-brand-600 dark:text-brand-400 border-brand-500/20',
       iconBg: 'bg-brand-600 text-white',
     },
     {
       icon: Send,
-      title: 'Telegram Bot',
-      value: c.telegramBot || '@JoyBorSupportBot',
+      title: 'Telegram',
+      value: telegramHandle(c.telegram_url),
       subtext: '24/7 onlayn qo‘llab-quvvatlash',
       actionLabel: 'Telegramda yozish',
-      href: c.telegramUrl || 'https://t.me/JoyBorSupportBot',
+      href: c.telegram_url,
       badge: '24/7 Onlayn',
       chipStyle: 'bg-info-500/10 text-info-600 dark:text-info-400 border-info-500/20',
       iconBg: 'bg-info-600 text-white',
@@ -111,10 +132,10 @@ const ContactPage: React.FC = () => {
     {
       icon: Mail,
       title: 'Email manzil',
-      value: c.email || 'support@joybor.uz',
+      value: c.email,
       subtext: 'Rasmiy murojaat va hamkorlik',
       actionLabel: 'Xat yuborish',
-      href: `mailto:${c.email || 'support@joybor.uz'}`,
+      href: `mailto:${c.email}`,
       badge: 'Rasmiy',
       chipStyle: 'bg-success-500/10 text-success-600 dark:text-success-400 border-success-500/20',
       iconBg: 'bg-success-600 text-white',
@@ -122,39 +143,21 @@ const ContactPage: React.FC = () => {
     {
       icon: Clock,
       title: 'Ish tartibi',
-      value: c.workHours || 'Du — Sha: 09:00 — 18:00',
-      subtext: 'Yakshanba — onlayn navbatchi',
-      actionLabel: 'Joylashuvni ko‘rish',
+      value: c.working_hours,
+      subtext: 'Manzil va ish vaqti',
+      actionLabel: 'Manzilni ko‘rish',
       href: '#office-map',
       badge: 'Ish vaqti',
       chipStyle: 'bg-warning-500/10 text-warning-600 dark:text-warning-400 border-warning-500/20',
       iconBg: 'bg-warning-600 text-white',
     },
-  ];
+  ].filter((card) => card.value);
 
   const socials = [
-    {
-      name: 'Telegram Kanal',
-      handle: '@JoyBorUz',
-      url: 'https://t.me/JoyBorUz',
-      icon: MessageCircle,
-      desc: 'Yangiliklar va bo‘sh joylar',
-    },
-    {
-      name: 'Instagram',
-      handle: '@joybor_uz',
-      url: c.instagramUrl || 'https://instagram.com/joybor_uz',
-      icon: Instagram,
-      desc: 'Foto va video sharhlar',
-    },
-    {
-      name: 'Facebook',
-      handle: 'JoyBor Rasmiy',
-      url: c.facebookUrl || 'https://facebook.com/joyboruz',
-      icon: Facebook,
-      desc: 'Hamjamiyat va e’lonlar',
-    },
-  ];
+    { name: 'Instagram', url: c.instagram_url, icon: Instagram, desc: 'Foto va video sharhlar' },
+    { name: 'YouTube', url: c.youtube_url, icon: Youtube, desc: 'Video sharhlar va yangiliklar' },
+    { name: 'Rasmiy vebsayt', url: c.website_url, icon: Globe, desc: 'To‘liq ma’lumot' },
+  ].filter((s) => s.url);
 
   return (
     <div className="min-h-screen bg-surface-50 dark:bg-surface-950">
@@ -342,38 +345,15 @@ const ContactPage: React.FC = () => {
                 {c.address}
               </p>
 
-              {/* Map embed */}
-              <div className="rounded-2xl overflow-hidden border border-surface-200 dark:border-surface-700 shadow-inner">
-                <DormitoryMap
-                  height="220px"
-                  dormitories={[
-                    {
-                      id: 'joybor-hq',
-                      name: c.mapLabel || 'JoyBor Bosh Ofisi',
-                      address: c.address,
-                      price: '',
-                      phone: c.phone,
-                      latitude: c.mapLat,
-                      longitude: c.mapLng,
-                    },
-                  ]}
-                  center={[c.mapLat, c.mapLng]}
-                  zoom={15}
-                />
-              </div>
-
-              <div className="mt-3 flex items-center justify-between text-xs text-surface-500 dark:text-surface-400">
-                <span>Mo'ljal: Amir Temur shoh ko‘chasi</span>
-                <a
-                  href={`https://maps.google.com/?q=${c.mapLat},${c.mapLng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-600 hover:underline flex items-center gap-1 font-semibold"
-                >
-                  <span>Google Maps</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:underline"
+              >
+                <span>Google Maps'da ko‘rish</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
 
             {/* Interactive Mini FAQ */}
@@ -438,6 +418,7 @@ const ContactPage: React.FC = () => {
             </div>
 
             {/* Social Channels */}
+            {socials.length > 0 && (
             <div className="bg-white dark:bg-surface-900 rounded-3xl border border-surface-200 dark:border-surface-800 p-6 shadow-sm">
               <h3 className="font-bold text-surface-900 dark:text-white text-base mb-1">
                 Biz ijtimoiy tarmoqlarda
@@ -466,7 +447,7 @@ const ContactPage: React.FC = () => {
                             {s.name}
                           </p>
                           <p className="text-[11px] text-surface-500 dark:text-surface-400">
-                            {s.handle} • {s.desc}
+                            {s.desc}
                           </p>
                         </div>
                       </div>
@@ -476,30 +457,6 @@ const ContactPage: React.FC = () => {
                 })}
               </div>
             </div>
-
-            {/* Emergency Hotline */}
-            {c.emergencyPhone && (
-              <div className="rounded-3xl border border-danger-200 dark:border-danger-900/50 bg-danger-50/80 dark:bg-danger-950/30 p-5 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-danger-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-danger-800 dark:text-danger-200">
-                      Shoshilinch ishonch telefoni
-                    </h4>
-                    <p className="text-xs text-danger-700/80 dark:text-danger-400">
-                      {c.emergencyNote || '24/7 navbatchi operator'}
-                    </p>
-                  </div>
-                </div>
-                <a
-                  href={phoneToTel(c.emergencyPhone)}
-                  className="px-3.5 py-2 rounded-xl bg-danger-600 hover:bg-danger-700 text-white text-xs font-bold transition-colors whitespace-nowrap shadow-sm"
-                >
-                  Qo‘ng‘iroq
-                </a>
-              </div>
             )}
           </div>
         </div>

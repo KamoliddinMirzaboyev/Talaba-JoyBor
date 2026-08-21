@@ -22,6 +22,7 @@ import {
   ContactContent,
   loadContactContent,
   phoneToTel,
+  telegramHandle,
 } from '../data/contactContent';
 
 type CategoryId =
@@ -221,15 +222,15 @@ const HelpPage: React.FC = () => {
         {
           title: 'Telegram bot',
           description: 'Tezkor yordam va savollar',
-          meta: contact.telegramBot,
+          meta: telegramHandle(contact.telegram_url),
           icon: MessageCircle,
-          action: () => window.open(contact.telegramUrl, '_blank'),
+          action: () => window.open(contact.telegram_url, '_blank'),
           chip: 'bg-brand-100 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300',
           accent: 'hover:border-brand-300 dark:hover:border-brand-700',
         },
         {
           title: "Telefon qo'ng'irog'i",
-          description: contact.workHours,
+          description: contact.working_hours,
           meta: contact.phone,
           icon: Phone,
           action: () => window.open(phoneToTel(contact.phone)),
