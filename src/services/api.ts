@@ -3,15 +3,17 @@ import { Application, StudentDashboard } from '../types';
 import { sessionStore } from './sessionStore';
 
 // API base URL — production JoyBor Django API
-export const API_BASE_URL = 'https://api.joy-bor.uz/api';
-export const API_ORIGIN = 'https://api.joy-bor.uz';
+export const API_ORIGIN = 'https://joyborv1.pythonanywhere.com';
+export const API_BASE_URL = 'https://joyborv1.pythonanywhere.com/api';
 export const apiUrl = (path: string) => `${API_BASE_URL}/${path.replace(/^\/+/, '')}`;
 
 /** API ba'zan http media URL qaytaradi */
 export function mediaUrl(url?: string | null): string {
   if (!url) return '';
   if (url.startsWith('//')) return `https:${url}`;
-  if (url.startsWith('http://api.joy-bor.uz')) return url.replace('http://', 'https://');
+  if (url.startsWith('http://joyborv1.pythonanywhere.com')) {
+    return url.replace('http://', 'https://');
+  }
   if (url.startsWith('/')) return `${API_ORIGIN}${url}`;
   return url;
 }
